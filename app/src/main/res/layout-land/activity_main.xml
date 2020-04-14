@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical">
+
+
+        <TextView
+            android:id="@+id/film1TitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="143dp"
+            android:layout_marginLeft="143dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/film1Name"
+            android:textAppearance="@style/MyTitleStyleLand"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/film1Image"
+            android:layout_width="120dp"
+            android:layout_height="155dp"
+            android:layout_marginStart="115dp"
+            android:layout_marginLeft="115dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/content_descr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/film1TitleTV"
+            app:srcCompat="@drawable/film1" />
+
+        <TextView
+            android:id="@+id/film2TitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="110dp"
+            android:layout_marginLeft="110dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/film2Name"
+            android:textAppearance="@style/MyTitleStyleLand"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/film1Image" />
+
+        <ImageView
+            android:id="@+id/film2Image"
+            android:layout_width="0dp"
+            android:layout_height="155dp"
+            android:layout_marginStart="115dp"
+            android:layout_marginLeft="115dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="203dp"
+            android:layout_marginRight="203dp"
+            android:contentDescription="@string/content_descr"
+            app:layout_constraintEnd_toStartOf="@+id/film4Image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/film2TitleTV"
+            app:srcCompat="@drawable/film2" />
+
+        <Button
+            android:id="@+id/detail1Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="142dp"
+            android:text="@string/detail"
+            app:layout_constraintStart_toEndOf="@+id/film1Image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/detail2Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="138dp"
+            android:text="@string/detail"
+            app:layout_constraintStart_toEndOf="@+id/film2Image"
+            app:layout_constraintTop_toBottomOf="@+id/detail1Btn" />
+
+        <TextView
+            android:id="@+id/film3TitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="156dp"
+            android:layout_marginRight="156dp"
+            android:text="@string/film3Name"
+            android:textAppearance="@style/MyTitleStyleLand"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/film3Image"
+            android:layout_width="120sp"
+            android:layout_height="155sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="172dp"
+            android:layout_marginRight="172dp"
+            android:contentDescription="@string/content_descr"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/film3TitleTV"
+            app:srcCompat="@drawable/film3" />
+
+        <Button
+            android:id="@+id/detail3Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="142dp"
+            android:text="@string/detail"
+            app:layout_constraintStart_toEndOf="@+id/film3Image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/film4TitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="190dp"
+            android:layout_marginRight="190dp"
+            android:text="@string/film4Name"
+            android:textAppearance="@style/MyTitleStyleLand"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/film3Image" />
+
+        <ImageView
+            android:id="@+id/film4Image"
+            android:layout_width="0dp"
+            android:layout_height="155sp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="173dp"
+            android:layout_marginRight="173dp"
+            android:contentDescription="@string/content_descr"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/film2Image"
+            app:layout_constraintTop_toBottomOf="@+id/film4TitleTV"
+            app:srcCompat="@drawable/film4" />
+
+        <Button
+            android:id="@+id/detail4Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="138dp"
+            android:text="@string/detail"
+            app:layout_constraintStart_toEndOf="@+id/film4Image"
+            app:layout_constraintTop_toBottomOf="@+id/detail3Btn" />
+
+        <Button
+            android:id="@+id/themeButton"
+            android:layout_width="80dp"
+            android:layout_height="77dp"
+            android:text="@string/change_theme"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
