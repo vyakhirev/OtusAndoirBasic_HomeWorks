@@ -2,12 +2,12 @@ package com.vyakhirev.filmsinfo
 
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 const val FILM_INDEX = "film_index"
@@ -26,24 +26,25 @@ class MainActivity : AppCompatActivity() {
             themesSwitcher = true
         }
 
+        val favor = arrayListOf<Film>()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        detail1Btn.setOnClickListener { startDetail(0) }
-        detail2Btn.setOnClickListener { startDetail(1) }
-        detail3Btn.setOnClickListener { startDetail(2) }
-        detail4Btn.setOnClickListener { startDetail(3) }
+// RecyclerView
+        val layoutManager = LinearLayoutManager(this)
+        filmsRecyclerView.layoutManager = layoutManager
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        val adapter = FilmsAdapter(this, Supplier.films)
+        filmsRecyclerView.adapter = adapter
 
-        themeButton.setOnClickListener {
+// Themes button handler
+        themeBtn.setOnClickListener {
             recreate()
         }
-
-        if (savedInstanceState != null) {
-            when (savedInstanceState.getInt(FILM_INDEX)) {
-                0 -> film1TitleTV.setBackgroundColor(Color.CYAN)
-                1 -> film2TitleTV.setBackgroundColor(Color.CYAN)
-                2 -> film3TitleTV.setBackgroundColor(Color.CYAN)
-                3 -> film4TitleTV.setBackgroundColor(Color.CYAN)
-            }
+// Favorites btn
+        favoritesBtn.setOnClickListener {
+            val intent = Intent(this, FavoritesActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -53,29 +54,29 @@ class MainActivity : AppCompatActivity() {
         outState.putBoolean("theme_switcher", themesSwitcher)
     }
 
-    private fun startDetail(ind: Int) {
-        val intent = Intent(this, DetailActivity::class.java)
-        intent.putExtra(FILM_INDEX, ind)
-        when (ind) {
-            0 -> {
-                film1TitleTV.setBackgroundColor(Color.CYAN)
-                filmClicked = 0
-            }
-            1 -> {
-                film2TitleTV.setBackgroundColor(Color.CYAN)
-                filmClicked = 1
-            }
-            2 -> {
-                film3TitleTV.setBackgroundColor(Color.CYAN)
-                filmClicked = 2
-            }
-            3 -> {
-                film4TitleTV.setBackgroundColor(Color.CYAN)
-                filmClicked = 3
-            }
-        }
-        startActivity(intent)
-    }
+//    private fun startDetail(ind: Int) {
+//        val intent = Intent(this, DetailActivity::class.java)
+//        intent.putExtra(FILM_INDEX, ind)
+//        when (ind) {
+//            0 -> {
+//                film1TitleTV.setBackgroundColor(Color.CYAN)
+//                filmClicked = 0
+//            }
+//            1 -> {
+//                film2TitleTV.setBackgroundColor(Color.CYAN)
+//                filmClicked = 1
+//            }
+//            2 -> {
+//                film3TitleTV.setBackgroundColor(Color.CYAN)
+//                filmClicked = 2
+//            }
+//            3 -> {
+//                film4TitleTV.setBackgroundColor(Color.CYAN)
+//                filmClicked = 3
+//            }
+//        }
+//        startActivity(intent)
+//    }
 
     //    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBackPressed() {
