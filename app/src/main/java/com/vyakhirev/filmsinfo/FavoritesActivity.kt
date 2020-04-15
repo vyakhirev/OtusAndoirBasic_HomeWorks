@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_favorites.*
 import kotlinx.android.synthetic.main.activity_main.*
 
+var favor = arrayListOf<Film>()
 class FavoritesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,14 +17,7 @@ class FavoritesActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         favoritesRecyclerView.layoutManager = layoutManager
         layoutManager.orientation = LinearLayoutManager.VERTICAL
-
-        val favor = arrayListOf<Film>()
-        var ind:Int=Supplier.films.size-1
-        for (i in 0..ind) {
-            if (Supplier.films[i].isFavorite)
-                favor.add(Supplier.films[i])
-        }
-        val adapter = FilmsAdapter(this, favor)
+        val adapter = FavoritesAdapter(this, Supplier.films)
         favoritesRecyclerView.adapter = adapter
     }
 }

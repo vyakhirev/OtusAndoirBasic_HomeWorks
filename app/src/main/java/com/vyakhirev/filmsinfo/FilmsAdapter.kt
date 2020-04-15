@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +26,15 @@ class FilmsAdapter(private val context: Context, private val films: List<Film>) 
         holder.setData(film, position)
     }
 
+//    override fun getItemViewType(position: Int): Int {
+//        return if (Supplier.films[position].isFavorite)  VIEW_TYPE_FAVORITE else VIEW_TYPE_ITEM
+//    }
+//
+//    companion object {
+//        const val VIEW_TYPE_ITEM= 0
+//        const val VIEW_TYPE_FAVORITE = 1
+//    }
+
     inner class FilmsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var currentFilm: Film? = null
         private var currentPosition = 0
@@ -39,24 +47,32 @@ class FilmsAdapter(private val context: Context, private val films: List<Film>) 
                 openDetails(currentPosition)
             }
             itemView.favoritesImgView.setOnClickListener {
-                if(!Supplier.films[currentPosition].isFavorite)
-                    Supplier.films[currentPosition].isFavorite=true
-                else Supplier.films[currentPosition].isFavorite=false
-                Log.d("kan1",Supplier.films[currentPosition].isFavorite.toString())
-                Toast.makeText(context, itemView.movieTitleTextView.text.toString() + " added to favorites!", Toast.LENGTH_SHORT).show()
+                if (!films[currentPosition].isFavorite) {
+                    films[currentPosition].isFavorite = true
+//                    favor.add(films[currentPosition])
+                    Toast.makeText(
+                        context,
+                        itemView.movieTitleTextView.text.toString() + " added to favorites!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }else Toast.makeText(
+                    context,
+                    itemView.movieTitleTextView.text.toString() + " already in favorites!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
         private fun openDetails(num: Int) {
             itemView.movieTitleTextView.setBackgroundColor(Color.CYAN)
-            Supplier.films[currentPosition].isViewed = true
+            films[currentPosition].isViewed = true
             val intent = Intent(itemView.context, DetailActivity::class.java)
             intent.putExtra(FILM_INDEX, num)
             context.startActivity(intent)
         }
 
         fun setData(film: Film?, pos: Int) {
-            if (Supplier.films[pos].isViewed) itemView.movieTitleTextView.setBackgroundColor(Color.CYAN)
+            if (films[pos].isViewed) itemView.movieTitleTextView.setBackgroundColor(Color.CYAN)
             itemView.movieTitleTextView.text = film!!.title
             itemView.posterImgView.setImageURI(getPosterUri(pos))
             this.currentFilm = film
