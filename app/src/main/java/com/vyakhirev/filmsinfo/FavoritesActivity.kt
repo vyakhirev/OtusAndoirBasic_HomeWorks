@@ -1,7 +1,6 @@
 package com.vyakhirev.filmsinfo
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_favorites.*
@@ -17,7 +16,7 @@ class FavoritesActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         favoritesRecyclerView.layoutManager = layoutManager
         layoutManager.orientation = LinearLayoutManager.VERTICAL
-        val adapter = FavoritesAdapter(this, Supplier.films)
+        val adapter = FavoritesAdapter(this, films)
         favoritesRecyclerView.adapter = adapter
     }
 }

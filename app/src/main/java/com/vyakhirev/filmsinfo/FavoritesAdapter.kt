@@ -1,8 +1,7 @@
 package com.vyakhirev.filmsinfo
 
 import android.content.Context
-import android.opengl.Visibility
-import android.util.Log
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,29 +11,38 @@ import kotlinx.android.synthetic.main.favorite_item.view.*
 class FavoritesAdapter(private val context: Context, private val favorites: List<Film>) :
     RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
 
-
     inner class FavoritesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var currentFilm: Film? = null
         private var currentPosition = 0
 
         init {
             itemView.deleteIV.setOnClickListener {
-                favorites[currentPosition].isFavorite=false
+                films[currentPosition].isFavorite = false
                 notifyItemRemoved(currentPosition)
-                Log.d("Kan2", "$currentPosition...removed!")
             }
         }
 
         fun setData(film: Film, pos: Int) {
-            if (favorites[pos].isFavorite) {
+            this.currentFilm = film
+            this.currentPosition = pos
+            if (favorites[currentPosition].isFavorite) {
                 itemView.favTitleTV.text = film.title
-                this.currentFilm = film
-                this.currentPosition = pos
+                itemView.favorPosterIV.setImageURI(getPosterUri(currentPosition))
             } else {
                 itemView.visibility = View.GONE
-                itemView.layoutParams.height=0
-                itemView.layoutParams.width=0
-//                RecyclerView.LayoutParams(0, 0)
+                itemView.layoutParams.height = 0
+                itemView.layoutParams.width = 0
+            }
+        }
+
+        private fun getPosterUri(ind: Int): Uri {
+            return if (ind < 4) {
+                Uri.parse("android.resource://com.vyakhirev.filmsinfo/drawable/film" + (ind + 1).toString())
+            } else {
+                Uri.parse(
+                    "android.resource://com.vyakhirev.filmsinfo/drawable/film" + (1..4).random()
+                        .toString()
+                )
             }
         }
     }

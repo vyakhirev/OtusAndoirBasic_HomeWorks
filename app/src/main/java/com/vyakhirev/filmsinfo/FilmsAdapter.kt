@@ -25,6 +25,12 @@ class FilmsAdapter(private val context: Context, private val films: List<Film>) 
         val film = films[position]
         holder.setData(film, position)
     }
+//    private fun setAnimation(viewToAnimate: View) {
+//        if (viewToAnimate.animation == null) {
+//            val animation = AnimationUtils.loadAnimation(viewToAnimate.context, android.R.anim.slide_in_left)
+//            viewToAnimate.animation = animation
+//        }
+//    }
 
 //    override fun getItemViewType(position: Int): Int {
 //        return if (Supplier.films[position].isFavorite)  VIEW_TYPE_FAVORITE else VIEW_TYPE_ITEM
@@ -55,7 +61,7 @@ class FilmsAdapter(private val context: Context, private val films: List<Film>) 
                         itemView.movieTitleTextView.text.toString() + " added to favorites!",
                         Toast.LENGTH_SHORT
                     ).show()
-                }else Toast.makeText(
+                } else Toast.makeText(
                     context,
                     itemView.movieTitleTextView.text.toString() + " already in favorites!",
                     Toast.LENGTH_SHORT
