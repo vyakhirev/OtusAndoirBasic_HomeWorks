@@ -32,16 +32,12 @@ class MainActivity : AppCompatActivity() {
             setTheme(R.style.AppThemeDark)
             themesSwitcher = true
         }
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-// RecyclerView
-        val layoutManager = LinearLayoutManager(this)
-        filmsRecyclerView.layoutManager = layoutManager
-        layoutManager.orientation = LinearLayoutManager.VERTICAL
-        val adapter = FilmsAdapter(this, films)
-        filmsRecyclerView.adapter = adapter
-
+        filmsRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = FilmsAdapter(context, films)
+        }
 //        ItemDecoration
         val itemDecor = CustomItemDecoration(this, DividerItemDecoration.VERTICAL)
         ContextCompat.getDrawable(this, R.drawable.my_divider)?.let { itemDecor.setDrawable(it) }
@@ -57,7 +53,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(FILM_INDEX, filmClicked)
+        outState.putBoolean("theme_switcher", themesSwitcher)
+    }
     // CustomItemDecorator
     class CustomItemDecoration(context: Context, orientation: Int) :
         DividerItemDecoration(context, orientation) {
@@ -79,12 +79,6 @@ class MainActivity : AppCompatActivity() {
             super.getItemOffsets(outRect, view, parent, state)
             outRect.bottom = 150
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(FILM_INDEX, filmClicked)
-        outState.putBoolean("theme_switcher", themesSwitcher)
     }
 
     override fun onBackPressed() {

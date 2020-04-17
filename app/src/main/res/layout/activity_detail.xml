@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -37,7 +38,6 @@
         <TextView
             android:id="@+id/descrTV"
             style="@style/MyDetailDescStyle"
-            android:scrollbars = "vertical"
             android:layout_width="0dp"
             android:layout_height="119dp"
             android:layout_marginStart="32dp"
@@ -45,6 +45,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
+            android:scrollbars="vertical"
             android:text="@string/film1Descr"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

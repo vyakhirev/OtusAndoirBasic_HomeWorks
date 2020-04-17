@@ -1,5 +1,7 @@
 package com.vyakhirev.filmsinfo
 
+import android.net.Uri
+
 data class Film(
     var title: String,
     var imgUri: String,
@@ -7,6 +9,17 @@ data class Film(
     var isViewed: Boolean = false,
     var isFavorite: Boolean = false
 )
+
+fun getPosterUri(ind: Int): Uri {
+    return if (ind < 4) {
+        Uri.parse("android.resource://com.vyakhirev.filmsinfo/drawable/film" + (ind + 1).toString())
+    } else {
+        Uri.parse(
+            "android.resource://com.vyakhirev.filmsinfo/drawable/film" + (1..4).random()
+                .toString()
+        )
+    }
+}
 
 val films = listOf<Film>(
     Film(
