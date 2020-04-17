@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//        RecyclerView setup
         filmsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = FilmsAdapter(context, films)
