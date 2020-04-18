@@ -2,17 +2,19 @@ package com.vyakhirev.filmsinfo
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-        when (intent.getIntExtra("number", 0)) {
+        descrTV.movementMethod = ScrollingMovementMethod()
+
+        when (intent.getIntExtra(FILM_INDEX, 0)) {
             0 -> {
                 poster.setImageResource(R.drawable.film1)
                 descrTV.setText(R.string.film1Descr)
@@ -27,6 +29,11 @@ class DetailActivity : AppCompatActivity() {
                 poster.setImageResource(R.drawable.film3)
                 descrTV.setText(R.string.film3Descr)
                 titleTv.setText(R.string.film3Name)
+            }
+            3 -> {
+                poster.setImageResource(R.drawable.film4)
+                descrTV.setText(R.string.film4Descr)
+                titleTv.setText(R.string.film4Name)
             }
         }
 

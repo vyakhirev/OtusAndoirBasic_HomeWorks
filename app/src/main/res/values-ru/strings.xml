@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Справочник фильмов</string>
+    <string name="film1Name">Ad Astra</string>
+    <string name="film1Descr">Близкое будущее, время, когда и надежда, и трудности заставляют человечество смотреть на звезды и дальше. В то время как таинственный феномен грозит уничтожить жизнь на планете Земля, астронавт Рой Макбрайд предпринимает миссию через необъятность космоса и его многочисленные опасности, чтобы раскрыть правду о потерянной экспедиции, которая десятилетия назад смело столкнулась с пустотой и тишиной в поисках неизвестного.</string>
+    <string name="film2Name">Sonic the Hedgehog</string>
+    <string name="film2Descr">Основанный на глобальной франшизе видеоигр-блокбастеров от Sega, Sonic the Hedgehog рассказывает историю самого быстрого ежа в мире, когда он обнимает свой новый дом на Земле. В этой приключенческой комедии с живым действием Соник и его новый лучший друг объединяются, чтобы защитить планету от злого гения Доктора Роботника и его планов по мировому господству.</string>
+    <string name="film3Name">Jumanji: The Next Level</string>
+    <string name="film3Descr">Когда банда возвращается в Джуманджи, чтобы спасти одного из своих, они обнаруживают, что все не так, как они ожидали. Игрокам придется отважиться на неизвестные и неизведанные части, чтобы избежать самой опасной игры в мире.</string>
+    <string name="film4Name">Breaking Bad</string>
+    <string name="film4Descr">Когда у Уолтера Уайта, учителя химии, диагностируют рак третьей стадии и дают прогноз, что ему осталось жить всего два года.Он наполняется чувством бесстрашия и неумолимым желанием обеспечить финансовое будущее своей семьи.</string>
+    <string name="detail">Информация</string>
+    <string name="Like">Понравилось</string>
+    <string name="Poster">Постер</string>
+    <string name="share_button">Share button</string>
+    <string name="Comment">Ваши комментарии</string>
+    <string name="Invite_button">Пригласить друга</string>
+    <string name="change_theme">Темы</string>
+    <string name="content_descr">Постер фильма</string>
+    <string name="exit_dialog">Действительно хотите закрыть приложение?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+</resources>
