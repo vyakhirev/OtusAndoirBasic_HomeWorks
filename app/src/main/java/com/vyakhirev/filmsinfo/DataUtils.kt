@@ -1,11 +1,6 @@
 package com.vyakhirev.filmsinfo
 
-import android.app.Dialog
-import android.content.Context
 import android.net.Uri
-import android.view.Window
-import android.widget.Button
-import android.widget.TextView
 
 data class Film(
     var title: String,

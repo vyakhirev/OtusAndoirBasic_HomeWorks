@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.movie_item.view.*
 
-class FilmsAdapter(private val context: Context, private val films: List<Film>,private val listener: ((ind: Int) -> Unit)?) :
+class FilmsAdapter(private val context: Context, private val films: List<Film>, private val listener: ((ind: Int) -> Unit)?) :
     RecyclerView.Adapter<FilmsAdapter.FilmsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmsViewHolder {
@@ -22,7 +22,6 @@ class FilmsAdapter(private val context: Context, private val films: List<Film>,p
     override fun onBindViewHolder(holder: FilmsViewHolder, position: Int) {
         val film = films[position]
         holder.setData(film, position)
-
     }
 
     inner class FilmsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -43,7 +42,6 @@ class FilmsAdapter(private val context: Context, private val films: List<Film>,p
                 } else showToast("removed from favorites!")
             }
         }
-
 
         fun setData(film: Film?, pos: Int) {
             if (films[pos].isViewed) itemView.movieTitleTextView.setTextColor(Color.BLUE)

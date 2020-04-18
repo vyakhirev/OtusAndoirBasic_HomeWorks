@@ -33,12 +33,12 @@ class ListMovieFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_list_movie, container, false)
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,13 +47,13 @@ class ListMovieFragment : Fragment() {
 //        themeBtn.setOnClickListener {
 //            recreate()
 //        }
-        favoritesBtn.setOnClickListener {
-            activity!!.supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, FavoritesListFragment(), FavoritesListFragment.TAG)
-                .addToBackStack(null)
-                .commit()
-        }
+//        favoritesBtn.setOnClickListener {
+//            activity!!.supportFragmentManager
+//                .beginTransaction()
+//                .replace(R.id.fragmentContainer, FavoritesListFragment(), FavoritesListFragment.TAG)
+//                .addToBackStack(null)
+//                .commit()
+//        }
 
         filmsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -81,7 +81,6 @@ class ListMovieFragment : Fragment() {
         const val TAG = "ListMovieFragment"
     }
 
-
     class CustomItemDecoration(context: Context, orientation: Int) :
         DividerItemDecoration(context, orientation) {
 
@@ -103,5 +102,4 @@ class ListMovieFragment : Fragment() {
             outRect.bottom = 150
         }
     }
-
 }

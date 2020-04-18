@@ -7,8 +7,10 @@ import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-//const val FILM_INDEX = "film_index"
+// const val FILM_INDEX = "film_index"
 const val THEME_SWITCHER = "theme_switcher"
 private var filmClicked: Int = 10000
 private var themesSwitcher = true
@@ -29,7 +31,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener 
                 DetailMovieFragment.newInstance(ind),
                 DetailMovieFragment.TAG
             )
-//            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .addToBackStack(null)
             .commit()
     }
@@ -37,12 +38,52 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragmentContainer, ListMovieFragment(), ListMovieFragment.TAG)
-            .commit()
+
+//        setUpToolbar()
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        openFragment(ListMovieFragment())
     }
 
+    private val mOnNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener {
+            when (it.itemId) {
+
+                R.id.action_list -> {
+                    val firstFragment = ListMovieFragment()
+                    openFragment(firstFragment)
+                    return@OnNavigationItemSelectedListener true
+                }
+
+                R.id.action_favorites -> {
+                    val secondFragment = FavoritesListFragment()
+                    openFragment(secondFragment)
+                    return@OnNavigationItemSelectedListener true
+                }
+
+                R.id.action_settings -> {
+                    val thirdFragment = FavoritesListFragment()
+                    openFragment(thirdFragment)
+                    return@OnNavigationItemSelectedListener true
+                }
+            }
+            false
+        }
+
+    private fun openFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragmentContainer, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+//    fun setUpToolbar() {
+//
+//        // Hide action bar
+//        val actionBar = supportActionBar
+//        actionBar!!.hide()
+//    }
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
@@ -70,7 +111,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener 
     }
 }
 
-
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        if (themesSwitcher) {
 //            themesSwitcher = false
@@ -81,21 +121,21 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener 
 //        }
 //        super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_main)
-////        RecyclerView setup
+// //        RecyclerView setup
 //        filmsRecyclerView.apply {
 //            layoutManager = LinearLayoutManager(context)
 //            adapter = FilmsAdapter(context, films)
 //        }
-////        ItemDecoration
+// //        ItemDecoration
 //        val itemDecor = CustomItemDecoration(this, DividerItemDecoration.VERTICAL)
 //        ContextCompat.getDrawable(this, R.drawable.my_divider)?.let { itemDecor.setDrawable(it) }
 //        filmsRecyclerView.addItemDecoration(itemDecor)
 //
-//// Themes button handler
+// // Themes button handler
 //        themeBtn.setOnClickListener {
 //            recreate()
 //        }
-//// Favorites btn
+// // Favorites btn
 //        favoritesBtn.setOnClickListener {
 //            val intent = Intent(this, FavoritesActivity::class.java)
 //            startActivity(intent)
