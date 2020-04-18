@@ -1,13 +1,18 @@
 package com.vyakhirev.filmsinfo
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.favorite_item.view.*
+import kotlinx.android.synthetic.main.movie_item.view.*
 
-class FavoritesAdapter(private val context: Context, private val favorites: List<Film>) :
+class FavoritesAdapter(
+    private val context: Context,
+    private val favorites: List<Film>
+) :
     RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritesViewHolder {
@@ -45,5 +50,11 @@ class FavoritesAdapter(private val context: Context, private val favorites: List
                 itemView.layoutParams.width = 0
             }
         }
+
+        private fun openDetails(num: Int) {
+            itemView.movieTitleTextView.setTextColor(Color.BLUE)
+            favorites[num].isViewed = true
+        }
+
     }
 }

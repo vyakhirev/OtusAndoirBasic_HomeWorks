@@ -2,14 +2,22 @@ package com.vyakhirev.filmsinfo
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.movie_item.view.*
 
-class FilmsAdapter(private val context: Context, private val films: List<Film>, private val listener: ((ind: Int) -> Unit)?) :
+class FilmsAdapter(
+    private val context: Context,
+    private val films: List<Film>,
+    private val listener: ((ind: Int) -> Unit)?
+) :
     RecyclerView.Adapter<FilmsAdapter.FilmsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmsViewHolder {
@@ -38,8 +46,25 @@ class FilmsAdapter(private val context: Context, private val films: List<Film>, 
             itemView.favoritesImgView.setOnClickListener {
                 if (!films[currentPosition].isFavorite) {
                     films[currentPosition].isFavorite = true
-                    showToast("added to favorites!")
-                } else showToast("removed from favorites!")
+                    val snackbar =
+                        Snackbar.make(it, "Films added to favorites", Snackbar.LENGTH_INDEFINITE)
+                    //Создаем кнопку действий
+                    val listener = View.OnClickListener {
+                        Log.d("Kan", "Kavtorev")
+                        films[currentPosition].isFavorite = false
+                    }
+                    snackbar.setAction("Undo", listener)
+                    snackbar.setActionTextColor(ContextCompat.getColor(context, R.color.indigo))
+                    val snackbarView = snackbar.view
+                    val snackbarTextId = com.google.android.material.R.id.snackbar_text
+                    val textView = snackbarView.findViewById<View>(snackbarTextId) as TextView
+                    textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+                    snackbarView.setBackgroundColor(Color.GRAY)
+                    snackbar.show()
+                    it.postDelayed({
+                        snackbar.dismiss()
+                    }, 5000)
+                } else showToast(films[currentPosition].title +" is already favorites!")
             }
         }
 
@@ -60,7 +85,7 @@ class FilmsAdapter(private val context: Context, private val films: List<Film>, 
         private fun showToast(msg: String) {
             Toast.makeText(
                 context,
-                itemView.movieTitleTextView.text.toString() + " " + msg,
+                msg,
                 Toast.LENGTH_SHORT
             ).show()
         }

@@ -29,6 +29,7 @@ class FavoritesListFragment : Fragment() {
             adapter = FavoritesAdapter(context, films)
         }
     }
+
     companion object {
         const val TAG = "FavoritesListFragment"
     }
