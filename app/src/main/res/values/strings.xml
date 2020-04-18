@@ -20,4 +20,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="favorites">Favorites</string>
+    <string name="films_list">Films list</string>
+    <string name="favorites_menu">Favorites</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -21,4 +21,7 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="favorites">Избранное</string>
+    <string name="films_list">Фильмы</string>
+    <string name="favorites_menu">Любимые</string>
+    <string name="settings">Настройки</string>
 </resources>
