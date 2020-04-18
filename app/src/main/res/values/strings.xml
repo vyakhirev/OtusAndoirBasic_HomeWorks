@@ -19,4 +19,5 @@
     <string name="exit_dialog">Do you really want to exit?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="favorites">Favorites</string>
 </resources>

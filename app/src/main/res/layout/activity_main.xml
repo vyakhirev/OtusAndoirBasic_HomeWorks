@@ -7,133 +7,40 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/themeButton"
-        android:layout_width="75sp"
-        android:layout_height="71sp"
-        android:layout_gravity="center"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:id="@+id/themeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginStart="16sp"
+        android:layout_marginLeft="16sp"
+        android:layout_marginTop="16sp"
         android:text="@string/change_theme"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <ScrollView
-        android:id="@+id/scrollView2"
+
+    <Button
+        android:id="@+id/favoritesBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16sp"
+        android:layout_marginLeft="16sp"
+        android:layout_marginTop="16sp"
+        android:text="@string/favorites"
+        app:layout_constraintStart_toEndOf="@+id/themeBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/filmsRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="1dp"
         android:layout_marginLeft="1dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="1dp"
         android:layout_marginRight="1dp"
         android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <LinearLayout
-            android:id="@+id/films"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/film1TitleTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/film1Name"
-                android:textAppearance="@style/MyTitleStyle" />
-
-            <ImageView
-                android:id="@+id/film1Image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/film1Descr"
-                app:srcCompat="@drawable/film1" />
-
-            <Button
-                android:id="@+id/detail1Btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/detail" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="50dp" />
-
-            <TextView
-                android:id="@+id/film2TitleTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/film2Name"
-                android:textAppearance="@style/MyTitleStyle" />
-
-            <ImageView
-                android:id="@+id/film2Image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/film1Descr"
-                app:srcCompat="@drawable/film2" />
-
-            <Button
-                android:id="@+id/detail2Btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/detail" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="50dp" />
-
-            <TextView
-                android:id="@+id/film3TitleTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/film3Name"
-                android:textAppearance="@style/MyTitleStyle" />
-
-            <ImageView
-                android:id="@+id/film3Image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/film1Descr"
-                app:srcCompat="@drawable/film3" />
-
-            <Button
-                android:id="@+id/detail3Btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/detail" />
-            <TextView
-                android:id="@+id/film4TitleTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/film4Name"
-                android:textAppearance="@style/MyTitleStyle" />
-
-            <ImageView
-                android:id="@+id/film4Image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/film4Descr"
-                app:srcCompat="@drawable/film4" />
-
-            <Button
-                android:id="@+id/detail4Btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/detail" />
-        </LinearLayout>
-    </ScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/favoritesBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
