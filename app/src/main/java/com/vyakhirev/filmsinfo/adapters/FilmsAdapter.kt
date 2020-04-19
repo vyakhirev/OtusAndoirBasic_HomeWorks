@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo
+package com.vyakhirev.filmsinfo.adapters
 
 import android.content.Context
 import android.graphics.Color
@@ -6,16 +6,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
+import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.data.Movie
 import kotlinx.android.synthetic.main.movie_item.view.*
 
 class FilmsAdapter(
     private val context: Context,
-    private val films: List<Film>,
+    private val films: List<Movie>,
     private val listener: ((ind: Int) -> Unit)?
 ) :
     RecyclerView.Adapter<FilmsAdapter.FilmsViewHolder>() {
@@ -33,7 +38,7 @@ class FilmsAdapter(
     }
 
     inner class FilmsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var currentFilm: Film? = null
+        private var currentFilm: Movie? = null
         private var currentPosition = 0
 
         init {
@@ -48,13 +53,18 @@ class FilmsAdapter(
                     films[currentPosition].isFavorite = true
                     val snackbar =
                         Snackbar.make(it, "Films added to favorites", Snackbar.LENGTH_INDEFINITE)
-                    //Создаем кнопку действий
+                    // Создаем кнопку действий
                     val listener = View.OnClickListener {
                         Log.d("Kan", "Kavtorev")
                         films[currentPosition].isFavorite = false
                     }
                     snackbar.setAction("Undo", listener)
-                    snackbar.setActionTextColor(ContextCompat.getColor(context, R.color.indigo))
+                    snackbar.setActionTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.indigo
+                        )
+                    )
                     val snackbarView = snackbar.view
                     val snackbarTextId = com.google.android.material.R.id.snackbar_text
                     val textView = snackbarView.findViewById<View>(snackbarTextId) as TextView
@@ -64,16 +74,25 @@ class FilmsAdapter(
                     it.postDelayed({
                         snackbar.dismiss()
                     }, 5000)
-                } else showToast(films[currentPosition].title +" is already favorites!")
+                } else showToast(films[currentPosition].title + " is already favorites!")
             }
         }
 
-        fun setData(film: Film?, pos: Int) {
+        fun setData(film: Movie?, pos: Int) {
             if (films[pos].isViewed) itemView.movieTitleTextView.setTextColor(Color.BLUE)
             itemView.movieTitleTextView.text = film!!.title
-            itemView.posterImgView.setImageURI(getPosterUri(pos))
+            itemView.posterImgView.loadImage(films[pos].posterPath)
             this.currentFilm = film
             this.currentPosition = pos
+        }
+
+        private fun ImageView.loadImage(uri: String?) {
+            val options = RequestOptions()
+                .error(R.mipmap.ic_launcher_round)
+            Glide.with(this.context)
+                .setDefaultRequestOptions(options)
+                .load(uri)
+                .into(this)
         }
 
         private fun openDetails(num: Int) {

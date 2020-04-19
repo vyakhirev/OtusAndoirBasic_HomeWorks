@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo
+package com.vyakhirev.filmsinfo.view
 
 import android.app.Dialog
 import android.os.Bundle
@@ -9,12 +9,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.vyakhirev.filmsinfo.BuildConfig
+import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.data.Movie
 
 // const val FILM_INDEX = "film_index"
 const val THEME_SWITCHER = "theme_switcher"
 private var filmClicked: Int = 10000
 private var themesSwitcher = true
-
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener {
 
     override fun onFilmClick(ind: Int) {
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
@@ -50,19 +53,22 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener 
             when (it.itemId) {
 
                 R.id.action_list -> {
-                    val firstFragment = ListMovieFragment()
+                    val firstFragment =
+                        ListMovieFragment()
                     openFragment(firstFragment)
                     return@OnNavigationItemSelectedListener true
                 }
 
                 R.id.action_favorites -> {
-                    val secondFragment = FavoritesListFragment()
+                    val secondFragment =
+                        FavoritesListFragment()
                     openFragment(secondFragment)
                     return@OnNavigationItemSelectedListener true
                 }
 
                 R.id.action_settings -> {
-                    val thirdFragment = FavoritesListFragment()
+                    val thirdFragment =
+                        FavoritesListFragment()
                     openFragment(thirdFragment)
                     return@OnNavigationItemSelectedListener true
                 }

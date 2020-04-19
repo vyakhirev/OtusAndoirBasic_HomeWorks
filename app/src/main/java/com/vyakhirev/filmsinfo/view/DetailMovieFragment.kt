@@ -1,12 +1,13 @@
-package com.vyakhirev.filmsinfo
+package com.vyakhirev.filmsinfo.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_detail_movie.*
+import com.vyakhirev.filmsinfo.R
 import kotlin.text.StringBuilder
+import kotlinx.android.synthetic.main.fragment_detail_movie.*
 
 /**
  * A simple [Fragment] subclass.
@@ -27,21 +28,27 @@ class DetailMovieFragment : Fragment() {
         when (arguments!!.getInt(FILM_INDEX, 0)) {
             0 -> {
                 poster.setImageResource(R.drawable.film1)
-                val string=StringBuilder(getString(R.string.film1Descr)+getString(R.string.film1Descr))
+                val string = StringBuilder(getString(R.string.film1Descr) + getString(
+                    R.string.film1Descr
+                ))
                 string.append(string).append(string).append(string)
                 descrTV.text = string
                 titleTV.setText(R.string.film1Name)
             }
             1 -> {
                 poster.setImageResource(R.drawable.film2)
-                val string=StringBuilder(getString(R.string.film2Descr)+getString(R.string.film2Descr))
+                val string = StringBuilder(getString(R.string.film2Descr) + getString(
+                    R.string.film2Descr
+                ))
                 string.append(string).append(string).append(string)
                 descrTV.text = string
                 titleTV.setText(R.string.film2Name)
             }
             2 -> {
                 poster.setImageResource(R.drawable.film3)
-                val string=StringBuilder(getString(R.string.film3Descr)+getString(R.string.film3Descr))
+                val string = StringBuilder(getString(R.string.film3Descr) + getString(
+                    R.string.film3Descr
+                ))
                 string.append(string).append(string).append(string)
                 descrTV.text = string
 
@@ -49,7 +56,9 @@ class DetailMovieFragment : Fragment() {
             }
             3 -> {
                 poster.setImageResource(R.drawable.film4)
-                val string=StringBuilder(getString(R.string.film4Descr)+getString(R.string.film4Descr))
+                val string = StringBuilder(getString(R.string.film4Descr) + getString(
+                    R.string.film4Descr
+                ))
                 string.append(string).append(string).append(string)
                 descrTV.text = string
                 titleTV.setText(R.string.film4Name)

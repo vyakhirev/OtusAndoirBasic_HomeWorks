@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo
+package com.vyakhirev.filmsinfo.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -13,12 +13,27 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.vyakhirev.filmsinfo.BuildConfig
+import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.adapters.FilmsAdapter
+import com.vyakhirev.filmsinfo.data.Movie
+import com.vyakhirev.filmsinfo.data.MoviesResponse
+import com.vyakhirev.filmsinfo.data.films
+import com.vyakhirev.filmsinfo.network.MovieApiClient
 import kotlinx.android.synthetic.main.fragment_list_movie.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * A simple [Fragment] subclass.
+ *
+ *
  */
+
 class ListMovieFragment : Fragment() {
+
+//    lateinit var films: List<Movie>
 
     interface OnFilmClickListener {
         fun onFilmClick(ind: Int)
@@ -28,7 +43,6 @@ class ListMovieFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         retainInstance = true
     }
 
@@ -42,25 +56,36 @@ class ListMovieFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val call = MovieApiClient.apiClient.getTopRatedMovies(BuildConfig.TMDB_API_KEY, "ru")
+        call.enqueue(object : Callback<MoviesResponse> {
+            override fun onResponse(
+                call: Call<MoviesResponse>,
+                response: Response<MoviesResponse>
+            ) {
+                films = response.body()!!.results
+                filmsRecyclerView.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = FilmsAdapter(
+                        context,
+                        films
+                    ) { listener?.onFilmClick(it) }
+                }
+            }
 
-//             Themes button handler
-//        themeBtn.setOnClickListener {
-//            recreate()
-//        }
-//        favoritesBtn.setOnClickListener {
-//            activity!!.supportFragmentManager
-//                .beginTransaction()
-//                .replace(R.id.fragmentContainer, FavoritesListFragment(), FavoritesListFragment.TAG)
-//                .addToBackStack(null)
-//                .commit()
-//        }
+            override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
+                Log.e(TAG, t.toString())
+            }
+        })
 
-        filmsRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = FilmsAdapter(context, films) { listener?.onFilmClick(it) }
-        }
-        val itemDecor = CustomItemDecoration(context!!, DividerItemDecoration.VERTICAL)
-        ContextCompat.getDrawable(context!!, R.drawable.my_divider)
+        val itemDecor =
+            CustomItemDecoration(
+                context!!,
+                DividerItemDecoration.VERTICAL
+            )
+        ContextCompat.getDrawable(
+            context!!,
+            R.drawable.my_divider
+        )
             ?.let { itemDecor.setDrawable(it) }
         filmsRecyclerView.addItemDecoration(itemDecor)
     }
