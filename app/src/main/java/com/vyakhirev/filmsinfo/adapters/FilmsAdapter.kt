@@ -6,16 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
+import com.vyakhirev.filmsinfo.data.loadImage
 import kotlinx.android.synthetic.main.movie_item.view.*
 
 class FilmsAdapter(
@@ -84,15 +82,6 @@ class FilmsAdapter(
             itemView.posterImgView.loadImage(films[pos].posterPath)
             this.currentFilm = film
             this.currentPosition = pos
-        }
-
-        private fun ImageView.loadImage(uri: String?) {
-            val options = RequestOptions()
-                .error(R.mipmap.ic_launcher_round)
-            Glide.with(this.context)
-                .setDefaultRequestOptions(options)
-                .load(uri)
-                .into(this)
         }
 
         private fun openDetails(num: Int) {

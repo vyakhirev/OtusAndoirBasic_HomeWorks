@@ -1,8 +1,10 @@
 package com.vyakhirev.filmsinfo.data
 
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.gson.annotations.SerializedName
-
-import java.util.ArrayList
+import com.vyakhirev.filmsinfo.R
 
 class Movie(
     posterPath: String,
@@ -31,12 +33,21 @@ class Movie(
     var video: Boolean?,
     @SerializedName("vote_average")
     var voteAverage: Double?,
-    var isViewed:Boolean=false,
-    var isFavorite:Boolean=false
+    var isViewed: Boolean = false,
+    var isFavorite: Boolean = false
 ) {
     @SerializedName("poster_path")
     var posterPath: String? = null
         get() = "https://image.tmdb.org/t/p/w500$field"
 }
 
-var films: List<Movie> = listOf()
+var films: ArrayList<Movie> = ArrayList()
+
+fun ImageView.loadImage(uri: String?) {
+    val options = RequestOptions()
+        .error(R.mipmap.ic_launcher_round)
+    Glide.with(this.context)
+        .setDefaultRequestOptions(options)
+        .load(uri)
+        .into(this)
+}

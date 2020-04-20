@@ -1,6 +1,7 @@
 package com.vyakhirev.filmsinfo.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,11 @@ import kotlinx.android.synthetic.main.fragment_favorites_list.*
  * A simple [Fragment] subclass.
  */
 class FavoritesListFragment : Fragment() {
+    interface OnFavorClickListener {
+        fun onFavorClick(ind: Int)
+    }
+
+    private var listener: OnFavorClickListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,11 +38,25 @@ class FavoritesListFragment : Fragment() {
             adapter = FavoritesAdapter(
                 context,
                 films
-            )
+            ) {
+                listener?.onFavorClick(it)
+            }
         }
     }
 
     companion object {
         const val TAG = "FavoritesListFragment"
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        if (activity is OnFavorClickListener) {
+            listener = activity as OnFavorClickListener
+        } else {
+            throw Exception("Activity must implement OnNewsClickListener")
+        }
+
+        Log.d(ListMovieFragment.TAG, "onActivityCreated")
     }
 }

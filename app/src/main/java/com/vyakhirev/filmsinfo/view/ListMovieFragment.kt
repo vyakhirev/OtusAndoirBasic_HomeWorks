@@ -16,8 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.adapters.FilmsAdapter
-import com.vyakhirev.filmsinfo.data.Movie
-import com.vyakhirev.filmsinfo.data.MoviesResponse
+import com.vyakhirev.filmsinfo.data.MovieResponse
 import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.network.MovieApiClient
 import kotlinx.android.synthetic.main.fragment_list_movie.*
@@ -56,24 +55,35 @@ class ListMovieFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val call = MovieApiClient.apiClient.getTopRatedMovies(BuildConfig.TMDB_API_KEY, "ru")
-        call.enqueue(object : Callback<MoviesResponse> {
-            override fun onResponse(
-                call: Call<MoviesResponse>,
-                response: Response<MoviesResponse>
-            ) {
-                films = response.body()!!.results
-                filmsRecyclerView.apply {
-                    layoutManager = LinearLayoutManager(context)
-                    adapter = FilmsAdapter(
-                        context,
-                        films
-                    ) { listener?.onFilmClick(it) }
-                }
-            }
+        filmsRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = FilmsAdapter(
+                context,
+                films
+            ) { listener?.onFilmClick(it) }
+        }
 
-            override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
-                Log.e(TAG, t.toString())
+        loadFilms(1)
+        refreshLayout.setOnRefreshListener {
+            films.clear()
+            loadFilms(1)
+            refreshLayout.isRefreshing = false
+        }
+
+        filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            var pageCount = 1
+            val itemsInPage = 20
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                // findLastVisibleItemPosition
+
+                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == films.size - 1) {
+                        pageCount++
+                        loadFilms(pageCount)
+                        recyclerView.adapter?.notifyItemRangeInserted(
+                            films.size,
+                            films.size + itemsInPage
+                        )
+                    }
             }
         })
 
@@ -88,6 +98,29 @@ class ListMovieFragment : Fragment() {
         )
             ?.let { itemDecor.setDrawable(it) }
         filmsRecyclerView.addItemDecoration(itemDecor)
+    }
+
+    fun loadFilms(page: Int) {
+        filmsRecyclerView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+        loadingTV.visibility = View.VISIBLE
+        val call = MovieApiClient.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
+        call.enqueue(object : Callback<MovieResponse> {
+            override fun onResponse(
+                call: Call<MovieResponse>,
+                response: Response<MovieResponse>
+            ) {
+                films.addAll(response.body()!!.results)
+                Thread.sleep(500)
+                filmsRecyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+                loadingTV.visibility = View.GONE
+            }
+
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                Log.e(TAG, t.toString())
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

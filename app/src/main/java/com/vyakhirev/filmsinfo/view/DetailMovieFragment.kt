@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.vyakhirev.filmsinfo.R
-import kotlin.text.StringBuilder
+import com.vyakhirev.filmsinfo.data.films
+import com.vyakhirev.filmsinfo.data.loadImage
 import kotlinx.android.synthetic.main.fragment_detail_movie.*
 
 /**
@@ -25,45 +26,10 @@ class DetailMovieFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        when (arguments!!.getInt(FILM_INDEX, 0)) {
-            0 -> {
-                poster.setImageResource(R.drawable.film1)
-                val string = StringBuilder(getString(R.string.film1Descr) + getString(
-                    R.string.film1Descr
-                ))
-                string.append(string).append(string).append(string)
-                descrTV.text = string
-                titleTV.setText(R.string.film1Name)
-            }
-            1 -> {
-                poster.setImageResource(R.drawable.film2)
-                val string = StringBuilder(getString(R.string.film2Descr) + getString(
-                    R.string.film2Descr
-                ))
-                string.append(string).append(string).append(string)
-                descrTV.text = string
-                titleTV.setText(R.string.film2Name)
-            }
-            2 -> {
-                poster.setImageResource(R.drawable.film3)
-                val string = StringBuilder(getString(R.string.film3Descr) + getString(
-                    R.string.film3Descr
-                ))
-                string.append(string).append(string).append(string)
-                descrTV.text = string
-
-                titleTV.setText(R.string.film3Name)
-            }
-            3 -> {
-                poster.setImageResource(R.drawable.film4)
-                val string = StringBuilder(getString(R.string.film4Descr) + getString(
-                    R.string.film4Descr
-                ))
-                string.append(string).append(string).append(string)
-                descrTV.text = string
-                titleTV.setText(R.string.film4Name)
-            }
-        }
+        val index = arguments!!.getInt(FILM_INDEX)
+        poster.loadImage(films[index].posterPath)
+        titleTV.text = films[index].title
+        descrTV.text = films[index].overview
     }
     companion object {
         const val TAG = "DetailMovieFragment"

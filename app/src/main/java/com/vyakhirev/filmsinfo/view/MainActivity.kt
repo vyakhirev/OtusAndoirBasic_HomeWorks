@@ -9,18 +9,22 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.data.Movie
+import kotlinx.android.synthetic.main.fragment_detail_movie.*
 
 // const val FILM_INDEX = "film_index"
 const val THEME_SWITCHER = "theme_switcher"
 private var filmClicked: Int = 10000
 private var themesSwitcher = true
-class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener {
+
+class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
+    FavoritesListFragment.OnFavorClickListener {
 
     override fun onFilmClick(ind: Int) {
-        Log.d("Kan", "Kancheg!")
+        openFilmDetailed(ind)
+    }
+
+    override fun onFavorClick(ind: Int) {
         openFilmDetailed(ind)
     }
 
@@ -40,7 +44,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
@@ -63,6 +66,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener 
                     val secondFragment =
                         FavoritesListFragment()
                     openFragment(secondFragment)
+//                    toolbar.title = "Kan!"
                     return@OnNavigationItemSelectedListener true
                 }
 
