@@ -49,29 +49,7 @@ class FilmsAdapter(
             itemView.favoritesImgView.setOnClickListener {
                 if (!films[currentPosition].isFavorite) {
                     films[currentPosition].isFavorite = true
-                    val snackbar =
-                        Snackbar.make(it, "Films added to favorites", Snackbar.LENGTH_INDEFINITE)
-                    // Создаем кнопку действий
-                    val listener = View.OnClickListener {
-                        Log.d("Kan", "Kavtorev")
-                        films[currentPosition].isFavorite = false
-                    }
-                    snackbar.setAction("Undo", listener)
-                    snackbar.setActionTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.indigo
-                        )
-                    )
-                    val snackbarView = snackbar.view
-                    val snackbarTextId = com.google.android.material.R.id.snackbar_text
-                    val textView = snackbarView.findViewById<View>(snackbarTextId) as TextView
-                    textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
-                    snackbarView.setBackgroundColor(Color.GRAY)
-                    snackbar.show()
-                    it.postDelayed({
-                        snackbar.dismiss()
-                    }, 5000)
+                    showSnack()
                 } else showToast(films[currentPosition].title + " is already favorites!")
             }
         }
@@ -88,6 +66,32 @@ class FilmsAdapter(
             itemView.movieTitleTextView.setTextColor(Color.BLUE)
             films[num].isViewed = true
             listener?.invoke(num)
+        }
+
+        private fun showSnack() {
+            val snack =
+                Snackbar.make(itemView, "Films added to favorites", Snackbar.LENGTH_INDEFINITE)
+            // Создаем кнопку действий
+            val listener = View.OnClickListener {
+                Log.d("Kan", "Kavtorev")
+                films[currentPosition].isFavorite = false
+            }
+            snack.setAction("Undo", listener)
+            snack.setActionTextColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.indigo
+                )
+            )
+            val snackView = snack.view
+            val snackTextId = com.google.android.material.R.id.snackbar_text
+            val textView = snackView.findViewById<View>(snackTextId) as TextView
+            textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+            snackView.setBackgroundColor(Color.GRAY)
+            snack.show()
+            itemView.postDelayed({
+                snack.dismiss()
+            }, 5000)
         }
 
         private fun showToast(msg: String) {

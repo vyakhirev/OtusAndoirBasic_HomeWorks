@@ -56,7 +56,5 @@ class FavoritesListFragment : Fragment() {
         } else {
             throw Exception("Activity must implement OnNewsClickListener")
         }
-
-        Log.d(ListMovieFragment.TAG, "onActivityCreated")
     }
 }

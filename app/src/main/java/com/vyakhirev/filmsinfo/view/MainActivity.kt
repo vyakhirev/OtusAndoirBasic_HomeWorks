@@ -47,8 +47,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
-        openFragment(ListMovieFragment())
+        bottomNavigation.selectedItemId=R.id.action_list
     }
 
     private val mOnNavigationItemSelectedListener =
@@ -66,7 +65,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
                     val secondFragment =
                         FavoritesListFragment()
                     openFragment(secondFragment)
-//                    toolbar.title = "Kan!"
                     return@OnNavigationItemSelectedListener true
                 }
 

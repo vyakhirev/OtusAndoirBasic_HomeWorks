@@ -32,8 +32,6 @@ import retrofit2.Response
 
 class ListMovieFragment : Fragment() {
 
-//    lateinit var films: List<Movie>
-
     interface OnFilmClickListener {
         fun onFilmClick(ind: Int)
     }
@@ -55,6 +53,22 @@ class ListMovieFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
+        loadFilms(1)
+        setupRefreshLayout()
+        Log.d("Kan","kan1")
+    }
+
+    private fun setupRefreshLayout() {
+        refreshLayout.setOnRefreshListener {
+            films.clear()
+            loadFilms(1)
+            refreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun setupRecyclerView() {
         filmsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = FilmsAdapter(
@@ -62,31 +76,6 @@ class ListMovieFragment : Fragment() {
                 films
             ) { listener?.onFilmClick(it) }
         }
-
-        loadFilms(1)
-        refreshLayout.setOnRefreshListener {
-            films.clear()
-            loadFilms(1)
-            refreshLayout.isRefreshing = false
-        }
-
-        filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var pageCount = 1
-            val itemsInPage = 20
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                // findLastVisibleItemPosition
-
-                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == films.size - 1) {
-                        pageCount++
-                        loadFilms(pageCount)
-                        recyclerView.adapter?.notifyItemRangeInserted(
-                            films.size,
-                            films.size + itemsInPage
-                        )
-                    }
-            }
-        })
-
         val itemDecor =
             CustomItemDecoration(
                 context!!,
@@ -98,10 +87,28 @@ class ListMovieFragment : Fragment() {
         )
             ?.let { itemDecor.setDrawable(it) }
         filmsRecyclerView.addItemDecoration(itemDecor)
+
+        filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            var pageCount = 1
+            val itemsInPage = 20
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                // findLastVisibleItemPosition
+
+                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == films.size - 1) {
+                    pageCount++
+                    loadFilms(pageCount)
+                    recyclerView.adapter?.notifyItemRangeInserted(
+                        films.size,
+                        films.size + itemsInPage
+                    )
+                }
+            }
+        })
+
     }
 
     fun loadFilms(page: Int) {
-        filmsRecyclerView.visibility = View.GONE
+        filmsRecyclerView.visibility = View.INVISIBLE
         progressBar.visibility = View.VISIBLE
         loadingTV.visibility = View.VISIBLE
         val call = MovieApiClient.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
