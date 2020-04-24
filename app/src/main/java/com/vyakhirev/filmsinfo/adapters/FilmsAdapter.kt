@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
+import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.loadImage
 import kotlinx.android.synthetic.main.movie_item.view.*
 
@@ -47,15 +48,12 @@ class FilmsAdapter(
                 openDetails(currentPosition)
             }
             itemView.favoritesImgView.setOnClickListener {
-                if (!films[currentPosition].isFavorite) {
-                    films[currentPosition].isFavorite = true
-                    showSnack()
-                } else showToast(films[currentPosition].title + " is already favorites!")
+                favorites.add(films[currentPosition])
+                showSnack()
             }
         }
 
         fun setData(film: Movie?, pos: Int) {
-            if (films[pos].isViewed) itemView.movieTitleTextView.setTextColor(Color.BLUE)
             itemView.movieTitleTextView.text = film!!.title
             itemView.posterImgView.loadImage(films[pos].posterPath)
             this.currentFilm = film
@@ -63,7 +61,6 @@ class FilmsAdapter(
         }
 
         private fun openDetails(num: Int) {
-            itemView.movieTitleTextView.setTextColor(Color.BLUE)
             films[num].isViewed = true
             listener?.invoke(num)
         }
@@ -71,10 +68,8 @@ class FilmsAdapter(
         private fun showSnack() {
             val snack =
                 Snackbar.make(itemView, "Films added to favorites", Snackbar.LENGTH_INDEFINITE)
-            // Создаем кнопку действий
             val listener = View.OnClickListener {
-                Log.d("Kan", "Kavtorev")
-                films[currentPosition].isFavorite = false
+                favorites.removeAt(favorites.size-1)
             }
             snack.setAction("Undo", listener)
             snack.setActionTextColor(
@@ -91,7 +86,7 @@ class FilmsAdapter(
             snack.show()
             itemView.postDelayed({
                 snack.dismiss()
-            }, 5000)
+            }, 3000)
         }
 
         private fun showToast(msg: String) {

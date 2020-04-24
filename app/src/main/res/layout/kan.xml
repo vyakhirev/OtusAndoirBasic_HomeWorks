@@ -1,0 +1,46 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/listIcon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:id="@+id/listTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/startButton"
+        app:layout_constraintStart_toEndOf="@id/listIcon"
+        app:layout_constraintTop_toTopOf="@id/listIcon"
+        tools:text="@tools:sample/lorem" />
+
+    <TextView
+        android:id="@+id/listTargetDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/listTitle"
+        app:layout_constraintTop_toBottomOf="@id/listTitle"
+        tools:text="@tools:sample/date/ddmmyy" />
+
+    <ImageView
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_settings_app_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_favorite_black_24dp"
+        tools:ignore="ContentDescription" />
+</androidx.constraintlayout.widget.ConstraintLayout>

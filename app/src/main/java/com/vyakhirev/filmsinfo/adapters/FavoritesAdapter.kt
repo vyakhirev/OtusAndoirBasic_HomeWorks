@@ -2,19 +2,21 @@ package com.vyakhirev.filmsinfo.adapters
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
+import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.data.loadImage
 import kotlinx.android.synthetic.main.favorite_item.view.*
 
 class FavoritesAdapter(
     private val context: Context,
-    private val favorites: List<Movie>,
+    private val favorMovieList: List<Movie>,
     private val listener: ((ind: Int) -> Unit)?
 ) :
     RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
@@ -24,10 +26,10 @@ class FavoritesAdapter(
         return FavoritesViewHolder(view)
     }
 
-    override fun getItemCount(): Int = favorites.size
+    override fun getItemCount(): Int = favorMovieList.size
 
     override fun onBindViewHolder(holder: FavoritesViewHolder, position: Int) {
-        val film = favorites[position]
+        val film = favorMovieList[position]
         holder.setData(film, position)
     }
 
@@ -43,27 +45,22 @@ class FavoritesAdapter(
                 openDetails(currentPosition)
             }
             itemView.deleteIV.setOnClickListener {
-                favorites[currentPosition].isFavorite = false
+                favorites.removeAt(currentPosition)
                 notifyItemRemoved(currentPosition)
+                notifyItemRangeChanged(currentPosition,itemCount)
             }
         }
 
         fun setData(film: Movie, pos: Int) {
             this.currentFilm = film
             this.currentPosition = pos
-            if (favorites[currentPosition].isFavorite) {
-                itemView.favTitleTV.text = film.title
-                itemView.favorPosterIV.loadImage(films[pos].posterPath)
-            } else {
-                itemView.visibility = View.GONE
-                itemView.layoutParams.height = 0
-                itemView.layoutParams.width = 0
-            }
+            itemView.favTitleTV.text = film.title
+            itemView.favorPosterIV.loadImage(films[pos].posterPath)
         }
 
         private fun openDetails(num: Int) {
             itemView.favTitleTV.setTextColor(Color.BLUE)
-            favorites[num].isViewed = true
+            favorMovieList[num].isViewed = true
             listener?.invoke(num)
         }
     }

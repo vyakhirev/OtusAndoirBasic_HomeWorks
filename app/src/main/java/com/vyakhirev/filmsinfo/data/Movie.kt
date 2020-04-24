@@ -33,8 +33,8 @@ class Movie(
     var video: Boolean?,
     @SerializedName("vote_average")
     var voteAverage: Double?,
-    var isViewed: Boolean = false,
-    var isFavorite: Boolean = false
+    var isViewed: Boolean = false
+//    var isFavorite: Boolean = false
 ) {
     @SerializedName("poster_path")
     var posterPath: String? = null
@@ -42,6 +42,8 @@ class Movie(
 }
 
 var films: ArrayList<Movie> = ArrayList()
+var favorites: ArrayList<Movie> = ArrayList()
+
 
 fun ImageView.loadImage(uri: String?) {
     val options = RequestOptions()

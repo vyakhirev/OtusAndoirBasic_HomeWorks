@@ -1,8 +1,8 @@
 package com.vyakhirev.filmsinfo.view
 
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
@@ -10,7 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vyakhirev.filmsinfo.R
-import kotlinx.android.synthetic.main.fragment_detail_movie.*
+import kotlinx.android.synthetic.main.fragment_list_movie.*
+import kotlinx.android.synthetic.main.movie_item.view.*
 
 // const val FILM_INDEX = "film_index"
 const val THEME_SWITCHER = "theme_switcher"
@@ -21,6 +22,8 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
     override fun onFilmClick(ind: Int) {
+//        filmsRecyclerView.getChildAt(ind).movieTitleTextView.setTextColor(Color.BLUE)
+//        filmsRecyclerView.adapter!!.notifyItemChanged(ind)
         openFilmDetailed(ind)
     }
 
@@ -29,7 +32,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     private fun openFilmDetailed(ind: Int) {
-        Log.d("Kan", "OpenDetail")
         supportFragmentManager
             .beginTransaction()
             .replace(
@@ -39,6 +41,12 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             )
             .addToBackStack(null)
             .commit()
+//        filmsRecyclerView.findViewHolderForAdapterPosition(ind)!!.itemView.movieTitleTextView.setBackgroundColor(Color.BLUE)
+//        Toast.makeText(this,"Kan!",Toast.LENGTH_SHORT).show()
+//        filmsRecyclerView[ind].movieTitleTextView.setTextColor(Color.BLUE)
+//        kan.itemView.movieTitleTextView.setTextColor(Color.BLUE)
+//        Log.d("Kan", "Kan is $ind")
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +55,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        bottomNavigation.selectedItemId=R.id.action_list
+        bottomNavigation.selectedItemId = R.id.action_list
     }
 
     private val mOnNavigationItemSelectedListener =

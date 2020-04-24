@@ -53,10 +53,11 @@ class ListMovieFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if(savedInstanceState==null){
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         loadFilms(1)
-        setupRefreshLayout()
+        setupRefreshLayout()}
         Log.d("Kan","kan1")
     }
 
@@ -118,7 +119,7 @@ class ListMovieFragment : Fragment() {
                 response: Response<MovieResponse>
             ) {
                 films.addAll(response.body()!!.results)
-                Thread.sleep(500)
+                Thread.sleep(100)
                 filmsRecyclerView.visibility = View.VISIBLE
                 progressBar.visibility = View.GONE
                 loadingTV.visibility = View.GONE
