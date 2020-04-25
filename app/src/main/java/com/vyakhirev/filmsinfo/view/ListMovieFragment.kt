@@ -55,10 +55,9 @@ class ListMovieFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             super.onViewCreated(view, savedInstanceState)
-
-            filmsRecyclerView.visibility = View.INVISIBLE
-            progressBar.visibility = View.VISIBLE
-            loadingTV.visibility = View.VISIBLE
+//            filmsRecyclerView.visibility = View.INVISIBLE
+//            progressBar.visibility = View.VISIBLE
+//            loadingTV.visibility = View.VISIBLE
             loadFilms(1)
             setupRefreshLayout()
             setupRecyclerView()
@@ -66,7 +65,7 @@ class ListMovieFragment : Fragment() {
         }
     }
 
-       private fun setupRecyclerView() {
+    private fun setupRecyclerView() {
         filmsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = FilmsAdapter(
@@ -110,6 +109,7 @@ class ListMovieFragment : Fragment() {
             films.clear()
             loadFilms(1)
             refreshLayout.isRefreshing = false
+            filmsRecyclerView.adapter!!.notifyDataSetChanged()
         }
     }
 
@@ -117,6 +117,7 @@ class ListMovieFragment : Fragment() {
         filmsRecyclerView.visibility = View.INVISIBLE
         progressBar.visibility = View.VISIBLE
         loadingTV.visibility = View.VISIBLE
+        Thread.sleep(2000)
         val call = MovieApiClient.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
         call.enqueue(object : Callback<MovieResponse> {
             override fun onResponse(
