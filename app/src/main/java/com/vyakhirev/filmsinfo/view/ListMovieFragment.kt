@@ -53,15 +53,15 @@ class ListMovieFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) {
-            super.onViewCreated(view, savedInstanceState)
-//            filmsRecyclerView.visibility = View.INVISIBLE
-//            progressBar.visibility = View.VISIBLE
-//            loadingTV.visibility = View.VISIBLE
-            loadFilms(1)
-            setupRefreshLayout()
-            setupRecyclerView()
 
+        if (savedInstanceState == null) {
+            filmsRecyclerView.visibility = View.INVISIBLE
+            progressBar.visibility = View.VISIBLE
+            loadingTV.visibility = View.VISIBLE
+            super.onViewCreated(view, savedInstanceState)
+            loadFilms(1)
+            setupRecyclerView()
+            setupRefreshLayout()
         }
     }
 
@@ -84,17 +84,17 @@ class ListMovieFragment : Fragment() {
         )
             ?.let { itemDecor.setDrawable(it) }
         filmsRecyclerView.addItemDecoration(itemDecor)
-
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var pageCount = 1
+            var pageCount = 0
             val itemsInPage = 20
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                // findLastVisibleItemPosition
-
                 if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == films.size) {
                     pageCount++
                     Thread.sleep(1000)
-                    loadFilms(pageCount)
+                    if (pageCount == 1) {
+                    loadFilms(pageCount) } else {
+                        loadFilmsMore(pageCount)
+                    }
                     recyclerView.adapter?.notifyItemRangeInserted(
                         films.size + 1,
                         films.size + itemsInPage
@@ -109,26 +109,26 @@ class ListMovieFragment : Fragment() {
             films.clear()
             loadFilms(1)
             refreshLayout.isRefreshing = false
-            filmsRecyclerView.adapter!!.notifyDataSetChanged()
+            filmsRecyclerView.adapter?.notifyDataSetChanged()
         }
     }
 
     fun loadFilms(page: Int) {
-        filmsRecyclerView.visibility = View.INVISIBLE
-        progressBar.visibility = View.VISIBLE
-        loadingTV.visibility = View.VISIBLE
-        Thread.sleep(2000)
+            filmsRecyclerView.visibility = View.INVISIBLE
+            progressBar.visibility = View.VISIBLE
+            loadingTV.visibility = View.VISIBLE
         val call = MovieApiClient.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
         call.enqueue(object : Callback<MovieResponse> {
             override fun onResponse(
                 call: Call<MovieResponse>,
                 response: Response<MovieResponse>
             ) {
+
                 films.addAll(response.body()!!.results)
-//                Thread.sleep(1000)
-                filmsRecyclerView.visibility = View.VISIBLE
-                progressBar.visibility = View.GONE
-                loadingTV.visibility = View.GONE
+                Thread.sleep(1000)
+                    filmsRecyclerView.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                    loadingTV.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
@@ -137,6 +137,24 @@ class ListMovieFragment : Fragment() {
         })
     }
 
+        fun loadFilmsMore(page: Int) {
+            val call = MovieApiClient.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
+            call.enqueue(object : Callback<MovieResponse> {
+                override fun onResponse(
+                    call: Call<MovieResponse>,
+                    response: Response<MovieResponse>
+                ) {
+                    films.addAll(response.body()!!.results)
+                    Thread.sleep(1000)
+                    filmsRecyclerView.visibility = View.GONE
+                    filmsRecyclerView.visibility = View.VISIBLE
+                }
+
+                override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                    Log.e(TAG, t.toString())
+                }
+            })
+    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 

@@ -82,7 +82,7 @@ class FilmsAdapter(
         }
 
         private fun openDetails(num: Int) {
-            films[num].isViewed = true
+//            films[num].isViewed = true
             listener?.invoke(num)
         }
 

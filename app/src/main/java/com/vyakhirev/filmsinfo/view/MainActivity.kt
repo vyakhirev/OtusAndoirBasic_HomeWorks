@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.data.films
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
+import kotlinx.android.synthetic.main.fragment_list_movie.*
 
 // const val FILM_INDEX = "film_index"
 const val THEME_SWITCHER = "theme_switcher"
@@ -21,6 +23,8 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     override fun onFilmClick(ind: Int) {
 //        filmsRecyclerView.adapter!!.notifyItemChanged(ind)
+        films[ind].isViewed = true
+        filmsRecyclerView.adapter?.notifyItemChanged(ind)
         openFilmDetailed(ind)
     }
 
@@ -28,6 +32,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 //        favorites.removeAt(ind)
 //        favoritesRecyclerView.adapter!!.notifyItemRemoved(ind)
 //        favoritesRecyclerView.adapter!!.notifyItemRangeChanged(ind, favoritesRecyclerView.adapter!!.itemCount)
+
         openFilmDetailed(ind)
     }
 
@@ -49,7 +54,8 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        bottomNavigation.selectedItemId = R.id.action_list
+//        bottomNavigation.selectedItemId = R.id.action_list
+        openFragment(ListMovieFragment())
     }
 
     private val mOnNavigationItemSelectedListener =

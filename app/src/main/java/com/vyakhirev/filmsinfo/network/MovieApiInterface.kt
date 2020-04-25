@@ -11,7 +11,7 @@ interface MovieApiInterface {
     fun getPopular(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
-        @Query("page") page: Int = 1
+        @Query("page") page: Int
 
     ): Call<MovieResponse>
 }
