@@ -48,6 +48,7 @@ class FavoritesAdapter(
                 favorites.removeAt(currentPosition)
                 notifyItemRemoved(currentPosition)
                 notifyItemRangeChanged(currentPosition,itemCount)
+//                listener?.invoke(currentPosition)
             }
         }
 
@@ -59,8 +60,8 @@ class FavoritesAdapter(
         }
 
         private fun openDetails(num: Int) {
-            itemView.favTitleTV.setTextColor(Color.BLUE)
-            favorMovieList[num].isViewed = true
+//            itemView.favTitleTV.setTextColor(Color.BLUE)
+//            favorMovieList[num].isViewed = true
             listener?.invoke(num)
         }
     }

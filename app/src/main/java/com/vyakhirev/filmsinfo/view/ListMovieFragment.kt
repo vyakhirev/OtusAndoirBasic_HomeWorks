@@ -53,12 +53,17 @@ class ListMovieFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if(savedInstanceState==null){
-        super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
-        loadFilms(1)
-        setupRefreshLayout()}
-        Log.d("Kan","kan1")
+        if (savedInstanceState == null) {
+            super.onViewCreated(view, savedInstanceState)
+
+            filmsRecyclerView.visibility = View.INVISIBLE
+            progressBar.visibility = View.VISIBLE
+            loadingTV.visibility = View.VISIBLE
+
+            loadFilms(1)
+            setupRefreshLayout()
+            setupRecyclerView()
+        }
     }
 
     private fun setupRefreshLayout() {
@@ -95,11 +100,13 @@ class ListMovieFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 // findLastVisibleItemPosition
 
-                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == films.size - 1) {
+                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == films.size ) {
                     pageCount++
+                    Thread.sleep(3000)
+
                     loadFilms(pageCount)
                     recyclerView.adapter?.notifyItemRangeInserted(
-                        films.size,
+                        films.size+1,
                         films.size + itemsInPage
                     )
                 }
@@ -119,7 +126,7 @@ class ListMovieFragment : Fragment() {
                 response: Response<MovieResponse>
             ) {
                 films.addAll(response.body()!!.results)
-                Thread.sleep(100)
+//                Thread.sleep(1000)
                 filmsRecyclerView.visibility = View.VISIBLE
                 progressBar.visibility = View.GONE
                 loadingTV.visibility = View.GONE
