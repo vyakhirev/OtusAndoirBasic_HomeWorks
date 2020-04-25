@@ -1,8 +1,6 @@
 package com.vyakhirev.filmsinfo.adapters
 
 import android.content.Context
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,7 +45,7 @@ class FavoritesAdapter(
             itemView.deleteIV.setOnClickListener {
                 favorites.removeAt(currentPosition)
                 notifyItemRemoved(currentPosition)
-                notifyItemRangeChanged(currentPosition,itemCount)
+                notifyItemRangeChanged(currentPosition, itemCount)
 //                listener?.invoke(currentPosition)
             }
         }

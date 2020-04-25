@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.data.favorites
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
 // const val FILM_INDEX = "film_index"

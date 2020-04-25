@@ -34,10 +34,10 @@ class FilmsAdapter(
             )
     }
 
-    override fun getItemCount(): Int = films.size+1
+    override fun getItemCount(): Int = films.size + 1
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == itemCount-1) VIEW_TYPE_FOOTER else VIEW_TYPE_ITEM
+        return if (position == itemCount - 1) VIEW_TYPE_FOOTER else VIEW_TYPE_ITEM
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -88,7 +88,7 @@ class FilmsAdapter(
 
         private fun showSnack() {
             val snack =
-                Snackbar.make(itemView, "Films added to favorites", Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(itemView, "Films added to favorites", Snackbar.LENGTH_SHORT)
             val listener = View.OnClickListener {
                 favorites.removeAt(favorites.size - 1)
             }

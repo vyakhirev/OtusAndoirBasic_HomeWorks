@@ -59,22 +59,14 @@ class ListMovieFragment : Fragment() {
             filmsRecyclerView.visibility = View.INVISIBLE
             progressBar.visibility = View.VISIBLE
             loadingTV.visibility = View.VISIBLE
-
             loadFilms(1)
             setupRefreshLayout()
             setupRecyclerView()
+
         }
     }
 
-    private fun setupRefreshLayout() {
-        refreshLayout.setOnRefreshListener {
-            films.clear()
-            loadFilms(1)
-            refreshLayout.isRefreshing = false
-        }
-    }
-
-    private fun setupRecyclerView() {
+       private fun setupRecyclerView() {
         filmsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = FilmsAdapter(
@@ -100,19 +92,25 @@ class ListMovieFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 // findLastVisibleItemPosition
 
-                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == films.size ) {
+                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == films.size) {
                     pageCount++
-                    Thread.sleep(3000)
-
+                    Thread.sleep(1000)
                     loadFilms(pageCount)
                     recyclerView.adapter?.notifyItemRangeInserted(
-                        films.size+1,
+                        films.size + 1,
                         films.size + itemsInPage
                     )
                 }
             }
         })
+    }
 
+    private fun setupRefreshLayout() {
+        refreshLayout.setOnRefreshListener {
+            films.clear()
+            loadFilms(1)
+            refreshLayout.isRefreshing = false
+        }
     }
 
     fun loadFilms(page: Int) {
