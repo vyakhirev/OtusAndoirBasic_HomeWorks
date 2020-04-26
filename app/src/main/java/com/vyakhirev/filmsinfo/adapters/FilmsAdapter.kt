@@ -54,17 +54,7 @@ class FilmsAdapter(
         private var currentPosition = 0
 
         init {
-//            itemView.setOnClickListener {
-//                listener?.invoke(currentPosition)
-//            }
-            itemView.posterImgView.setOnClickListener {
-                listener?.invoke(currentPosition)
-            }
-            itemView.movieTitleTextView.setOnClickListener {
-                listener?.invoke(currentPosition)
-            }
-            itemView.favoritesImgView.setOnClickListener {
-//                films[currentPosition].isFavorite = true
+            itemView.setOnClickListener {
                 listener?.invoke(currentPosition)
             }
         }
@@ -81,42 +71,3 @@ class FilmsAdapter(
         }
     }
 }
-//        private fun openDetails(num: Int) {
-// //            films[num].isViewed = true
-//            listener?.invoke(num)
-//        }
-
-//        private fun showSnack() {
-//            val snack =
-//                Snackbar.make(itemView, "Films added to favorites", Snackbar.LENGTH_SHORT)
-//            val listener = View.OnClickListener {
-//                favorites.removeAt(favorites.size - 1)
-//                films[currentPosition].isFavorite=false
-//            }
-//            snack.setAction("Undo", listener)
-//            snack.setActionTextColor(
-//                ContextCompat.getColor(
-//                    context,
-//                    R.color.indigo
-//                )
-//            )
-//            val snackView = snack.view
-//            val snackTextId = com.google.android.material.R.id.snackbar_text
-//            val textView = snackView.findViewById<View>(snackTextId) as TextView
-//            textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
-//            snackView.setBackgroundColor(Color.GRAY)
-//            snack.show()
-//            itemView.postDelayed({
-//                snack.dismiss()
-//            }, 3000)
-//        }
-//
-//        private fun showToast(msg: String) {
-//            Toast.makeText(
-//                context,
-//                msg,
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }
-//    }
-// }

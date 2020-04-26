@@ -3,11 +3,13 @@ package com.vyakhirev.filmsinfo.view
 import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -28,16 +30,24 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
     override fun onFilmClick(ind: Int) {
-//        filmsRecyclerView.adapter!!.notifyItemChanged(ind)
         films[ind].isViewed = true
-        favorites.add(films[ind])
-        films[ind].isFavorite = true
+        if (!films[ind].isFavorite) {
+            favorites.add(films[ind])
+            films[ind].isFavorite = true
+        }
         filmsRecyclerView.adapter?.notifyItemChanged(ind)
         showSnack(ind)
         openFilmDetailed(ind)
     }
 
     private fun showSnack(ind: Int) {
+//        val snack =
+//            Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT).apply {
+//                view.layoutParams=(
+//                        view.layoutParams as CoordinatorLayout.LayoutParams).apply {
+//                    setMargins(100,110,110,100)
+//                }
+//             }
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
         val listener = View.OnClickListener {
@@ -57,6 +67,13 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         val textView = snackView.findViewById<View>(snackTextId) as TextView
         textView.setTextColor(ContextCompat.getColor(this, android.R.color.white))
         snackView.setBackgroundColor(Color.GRAY)
+
+        val layoutParams = snack.view.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.anchorId = R.id.bottomNav//Id for your bottomNavBar or TabLayout
+        layoutParams.anchorGravity = Gravity.TOP
+        layoutParams.gravity = Gravity.TOP
+        snack.view.layoutParams = layoutParams
+
         snack.show()
         coordinatorLayout1.postDelayed({
             snack.dismiss()
