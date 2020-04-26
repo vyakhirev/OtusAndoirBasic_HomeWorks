@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
-import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.data.loadImage
 import kotlinx.android.synthetic.main.favorite_item.view.*
@@ -36,17 +35,8 @@ class FavoritesAdapter(
         private var currentPosition = 0
 
         init {
-            itemView.favorPosterIV.setOnClickListener {
-                openDetails(currentPosition)
-            }
-            itemView.favTitleTV.setOnClickListener {
-                openDetails(currentPosition)
-            }
-            itemView.deleteIV.setOnClickListener {
-                favorites.removeAt(currentPosition)
-                notifyItemRemoved(currentPosition)
-                notifyItemRangeChanged(currentPosition, itemCount)
-//                listener?.invoke(currentPosition)
+            itemView.setOnClickListener {
+                listener?.invoke(currentPosition)
             }
         }
 
@@ -55,12 +45,6 @@ class FavoritesAdapter(
             this.currentPosition = pos
             itemView.favTitleTV.text = film.title
             itemView.favorPosterIV.loadImage(films[pos].posterPath)
-        }
-
-        private fun openDetails(num: Int) {
-//            itemView.favTitleTV.setTextColor(Color.BLUE)
-//            favorMovieList[num].isViewed = true
-            listener?.invoke(num)
         }
     }
 }

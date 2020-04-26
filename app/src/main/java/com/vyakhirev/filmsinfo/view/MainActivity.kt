@@ -1,15 +1,21 @@
 package com.vyakhirev.filmsinfo.view
 
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
 import kotlinx.android.synthetic.main.fragment_list_movie.*
 
@@ -24,15 +30,47 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     override fun onFilmClick(ind: Int) {
 //        filmsRecyclerView.adapter!!.notifyItemChanged(ind)
         films[ind].isViewed = true
+        favorites.add(films[ind])
+        films[ind].isFavorite = true
         filmsRecyclerView.adapter?.notifyItemChanged(ind)
+        showSnack(ind)
         openFilmDetailed(ind)
     }
 
-    override fun onFavorClick(ind: Int) {
-//        favorites.removeAt(ind)
-//        favoritesRecyclerView.adapter!!.notifyItemRemoved(ind)
-//        favoritesRecyclerView.adapter!!.notifyItemRangeChanged(ind, favoritesRecyclerView.adapter!!.itemCount)
+    private fun showSnack(ind: Int) {
+        val snack =
+            Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
+        val listener = View.OnClickListener {
+            favorites.removeAt(favorites.size - 1)
+            films[ind].isFavorite = false
+            filmsRecyclerView.adapter?.notifyItemChanged(ind)
+        }
+        snack.setAction("Undo", listener)
+        snack.setActionTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.indigo
+            )
+        )
+        val snackView = snack.view
+        val snackTextId = com.google.android.material.R.id.snackbar_text
+        val textView = snackView.findViewById<View>(snackTextId) as TextView
+        textView.setTextColor(ContextCompat.getColor(this, android.R.color.white))
+        snackView.setBackgroundColor(Color.GRAY)
+        snack.show()
+        coordinatorLayout1.postDelayed({
+            snack.dismiss()
+        }, 3000)
+    }
 
+    override fun onFavorClick(ind: Int) {
+        favorites.removeAt(ind)
+        films[ind].isFavorite = false
+        favoritesRecyclerView.adapter?.notifyItemRemoved(ind)
+        favoritesRecyclerView.adapter?.notifyItemRangeChanged(
+            ind,
+            favoritesRecyclerView.adapter!!.itemCount
+        )
         openFilmDetailed(ind)
     }
 
@@ -54,7 +92,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-//        bottomNavigation.selectedItemId = R.id.action_list
         openFragment(ListMovieFragment())
     }
 

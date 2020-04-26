@@ -33,8 +33,8 @@ class Movie(
     var video: Boolean?,
     @SerializedName("vote_average")
     var voteAverage: Double?,
-    var isViewed: Boolean = false
-//    var isFavorite: Boolean = false
+    var isViewed: Boolean = false,
+    var isFavorite: Boolean = false
 ) {
     @SerializedName("poster_path")
     var posterPath: String? = null

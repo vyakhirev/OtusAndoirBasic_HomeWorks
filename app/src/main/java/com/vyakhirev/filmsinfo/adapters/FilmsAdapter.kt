@@ -5,14 +5,9 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
-import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.loadImage
 import kotlinx.android.synthetic.main.movie_item.view.*
 
@@ -59,63 +54,69 @@ class FilmsAdapter(
         private var currentPosition = 0
 
         init {
+//            itemView.setOnClickListener {
+//                listener?.invoke(currentPosition)
+//            }
             itemView.posterImgView.setOnClickListener {
-                openDetails(currentPosition)
+                listener?.invoke(currentPosition)
             }
             itemView.movieTitleTextView.setOnClickListener {
-                openDetails(currentPosition)
+                listener?.invoke(currentPosition)
             }
             itemView.favoritesImgView.setOnClickListener {
-                favorites.add(films[currentPosition])
-                showSnack()
+//                films[currentPosition].isFavorite = true
+                listener?.invoke(currentPosition)
             }
         }
 
         fun setData(film: Movie?, pos: Int) {
-
             itemView.movieTitleTextView.text = film!!.title
             if (films[pos].isViewed) itemView.movieTitleTextView.setTextColor(Color.BLUE)
             else itemView.movieTitleTextView.setTextColor(Color.GRAY)
             itemView.posterImgView.loadImage(films[pos].posterPath)
+            if (films[pos].isFavorite) itemView.favoritesImgView.setImageResource(R.drawable.ic_star_on_24dp)
+            else itemView.favoritesImgView.setImageResource(R.drawable.ic_star_off_36dp)
             this.currentFilm = film
             this.currentPosition = pos
         }
-
-        private fun openDetails(num: Int) {
-//            films[num].isViewed = true
-            listener?.invoke(num)
-        }
-
-        private fun showSnack() {
-            val snack =
-                Snackbar.make(itemView, "Films added to favorites", Snackbar.LENGTH_SHORT)
-            val listener = View.OnClickListener {
-                favorites.removeAt(favorites.size - 1)
-            }
-            snack.setAction("Undo", listener)
-            snack.setActionTextColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.indigo
-                )
-            )
-            val snackView = snack.view
-            val snackTextId = com.google.android.material.R.id.snackbar_text
-            val textView = snackView.findViewById<View>(snackTextId) as TextView
-            textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
-            snackView.setBackgroundColor(Color.GRAY)
-            snack.show()
-            itemView.postDelayed({
-                snack.dismiss()
-            }, 3000)
-        }
-
-        private fun showToast(msg: String) {
-            Toast.makeText(
-                context,
-                msg,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
     }
 }
+//        private fun openDetails(num: Int) {
+// //            films[num].isViewed = true
+//            listener?.invoke(num)
+//        }
+
+//        private fun showSnack() {
+//            val snack =
+//                Snackbar.make(itemView, "Films added to favorites", Snackbar.LENGTH_SHORT)
+//            val listener = View.OnClickListener {
+//                favorites.removeAt(favorites.size - 1)
+//                films[currentPosition].isFavorite=false
+//            }
+//            snack.setAction("Undo", listener)
+//            snack.setActionTextColor(
+//                ContextCompat.getColor(
+//                    context,
+//                    R.color.indigo
+//                )
+//            )
+//            val snackView = snack.view
+//            val snackTextId = com.google.android.material.R.id.snackbar_text
+//            val textView = snackView.findViewById<View>(snackTextId) as TextView
+//            textView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+//            snackView.setBackgroundColor(Color.GRAY)
+//            snack.show()
+//            itemView.postDelayed({
+//                snack.dismiss()
+//            }, 3000)
+//        }
+//
+//        private fun showToast(msg: String) {
+//            Toast.makeText(
+//                context,
+//                msg,
+//                Toast.LENGTH_SHORT
+//            ).show()
+//        }
+//    }
+// }
