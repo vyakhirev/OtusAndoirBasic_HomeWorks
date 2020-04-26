@@ -11,9 +11,6 @@ import com.vyakhirev.filmsinfo.adapters.FavoritesAdapter
 import com.vyakhirev.filmsinfo.data.favorites
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class FavoritesListFragment : Fragment() {
     interface OnFavorClickListener {
         fun onFavorClick(ind: Int)

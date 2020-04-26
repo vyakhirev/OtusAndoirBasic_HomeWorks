@@ -24,12 +24,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-/**
- * A simple [Fragment] subclass.
- *
- *
- */
-
 class ListMovieFragment : Fragment() {
 
     interface OnFilmClickListener {
@@ -55,9 +49,6 @@ class ListMovieFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         if (savedInstanceState == null) {
-//            filmsRecyclerView.visibility = View.INVISIBLE
-//            progressBar.visibility = View.VISIBLE
-//            loadingTV.visibility = View.VISIBLE
             super.onViewCreated(view, savedInstanceState)
             loadFilms(1)
             setupRecyclerView()
@@ -92,7 +83,8 @@ class ListMovieFragment : Fragment() {
                     pageCount++
                     Thread.sleep(1000)
                     if (pageCount == 1) {
-                    loadFilms(pageCount) } else {
+                        loadFilms(pageCount)
+                    } else {
                         loadFilmsMore(pageCount)
                     }
                     recyclerView.adapter?.notifyItemRangeInserted(
@@ -114,9 +106,9 @@ class ListMovieFragment : Fragment() {
     }
 
     fun loadFilms(page: Int) {
-            filmsRecyclerView.visibility = View.INVISIBLE
-            progressBar.visibility = View.VISIBLE
-            loadingTV.visibility = View.VISIBLE
+        filmsRecyclerView.visibility = View.INVISIBLE
+        progressBar.visibility = View.VISIBLE
+        loadingTV.visibility = View.VISIBLE
         val call = MovieApiClient.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
         call.enqueue(object : Callback<MovieResponse> {
             override fun onResponse(
@@ -126,9 +118,9 @@ class ListMovieFragment : Fragment() {
 
                 films.addAll(response.body()!!.results)
                 Thread.sleep(1000)
-                    filmsRecyclerView.visibility = View.VISIBLE
-                    progressBar.visibility = View.GONE
-                    loadingTV.visibility = View.GONE
+                filmsRecyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+                loadingTV.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
@@ -137,26 +129,27 @@ class ListMovieFragment : Fragment() {
         })
     }
 
-        fun loadFilmsMore(page: Int) {
-            val call = MovieApiClient.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
-            call.enqueue(object : Callback<MovieResponse> {
-                override fun onResponse(
-                    call: Call<MovieResponse>,
-                    response: Response<MovieResponse>
-                ) {
-                    films.addAll(response.body()!!.results)
-                    Thread.sleep(1000)
-                    filmsRecyclerView.visibility = View.GONE
-                    filmsRecyclerView.visibility = View.VISIBLE
+    fun loadFilmsMore(page: Int) {
+        val call = MovieApiClient.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
+        call.enqueue(object : Callback<MovieResponse> {
+            override fun onResponse(
+                call: Call<MovieResponse>,
+                response: Response<MovieResponse>
+            ) {
+                films.addAll(response.body()!!.results)
+                Thread.sleep(1000)
+                filmsRecyclerView.visibility = View.GONE
+                filmsRecyclerView.visibility = View.VISIBLE
 //                    progressBar.visibility = View.GONE
 //                    loadingTV.visibility = View.GONE
-                }
+            }
 
-                override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                    Log.e(TAG, t.toString())
-                }
-            })
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                Log.e(TAG, t.toString())
+            }
+        })
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 

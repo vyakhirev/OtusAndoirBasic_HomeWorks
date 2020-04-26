@@ -10,9 +10,6 @@ import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.data.loadImage
 import kotlinx.android.synthetic.main.fragment_detail_movie.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class DetailMovieFragment : Fragment() {
 
     override fun onCreateView(
@@ -31,6 +28,7 @@ class DetailMovieFragment : Fragment() {
         titleTV.text = films[index].title
         descrTV.text = films[index].overview
     }
+
     companion object {
         const val TAG = "DetailMovieFragment"
         private const val FILM_INDEX = "film_index"

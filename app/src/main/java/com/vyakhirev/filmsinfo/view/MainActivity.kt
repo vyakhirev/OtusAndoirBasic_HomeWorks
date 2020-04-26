@@ -41,13 +41,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     private fun showSnack(ind: Int) {
-//        val snack =
-//            Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT).apply {
-//                view.layoutParams=(
-//                        view.layoutParams as CoordinatorLayout.LayoutParams).apply {
-//                    setMargins(100,110,110,100)
-//                }
-//             }
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
         val listener = View.OnClickListener {
@@ -69,7 +62,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         snackView.setBackgroundColor(Color.GRAY)
 
         val layoutParams = snack.view.layoutParams as CoordinatorLayout.LayoutParams
-        layoutParams.anchorId = R.id.bottomNav//Id for your bottomNavBar or TabLayout
+        layoutParams.anchorId = R.id.bottomNav
         layoutParams.anchorGravity = Gravity.TOP
         layoutParams.gravity = Gravity.TOP
         snack.view.layoutParams = layoutParams

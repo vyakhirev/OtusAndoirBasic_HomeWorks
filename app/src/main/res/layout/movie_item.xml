@@ -40,4 +40,5 @@
         app:layout_constraintStart_toEndOf="@+id/posterImgView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/film2Name" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

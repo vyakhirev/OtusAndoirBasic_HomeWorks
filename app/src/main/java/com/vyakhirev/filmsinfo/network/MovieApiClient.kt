@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object MovieApiClient {
 
-    const val BASE_URL = "https://api.themoviedb.org/3/"
+    private const val BASE_URL = "https://api.themoviedb.org/3/"
 
     val apiClient: MovieApiInterface by lazy {
 
