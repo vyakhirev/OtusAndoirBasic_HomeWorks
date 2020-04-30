@@ -16,7 +16,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.favorites
-import com.vyakhirev.filmsinfo.data.films
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
 import kotlinx.android.synthetic.main.fragment_list_movie.*
@@ -30,23 +29,35 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
     override fun onFilmClick(ind: Int) {
-        films[ind].isViewed = true
-        if (!films[ind].isFavorite) {
-            favorites.add(films[ind])
-            films[ind].isFavorite = true
-        }
+        super.onFilmClick(ind)
+        openFilmDetailed(ind)
+    }
+
+    override fun onFavorClick(ind: Int) {
+        super.onFavorClick(ind)
         filmsRecyclerView.adapter?.notifyItemChanged(ind)
         showSnack(ind)
-        openFilmDetailed(ind)
+    }
+
+    override fun onFavorToDetails(ind: Int) {
+        super.onFavorToDetails(ind)
+        onFilmClick(ind)
+    }
+
+    override fun onDeleteFromFavor(ind: Int) {
+        favorites.removeAt(ind)
+        favoritesRecyclerView.adapter?.notifyItemRemoved(ind)
+        favoritesRecyclerView.adapter?.notifyItemRangeChanged(
+            ind,
+            favoritesRecyclerView.adapter!!.itemCount
+        )
     }
 
     private fun showSnack(ind: Int) {
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
         val listener = View.OnClickListener {
-            favorites.removeAt(favorites.size - 1)
-            films[ind].isFavorite = false
-            filmsRecyclerView.adapter?.notifyItemChanged(ind)
+
         }
         snack.setAction("Undo", listener)
         snack.setActionTextColor(
@@ -73,16 +84,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         }, 3000)
     }
 
-    override fun onFavorClick(ind: Int) {
-        favorites.removeAt(ind)
-        films[ind].isFavorite = false
-        favoritesRecyclerView.adapter?.notifyItemRemoved(ind)
-        favoritesRecyclerView.adapter?.notifyItemRangeChanged(
-            ind,
-            favoritesRecyclerView.adapter!!.itemCount
-        )
-        openFilmDetailed(ind)
-    }
 
     private fun openFilmDetailed(ind: Int) {
         supportFragmentManager
@@ -164,4 +165,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         }
         dialog.show()
     }
+
+
 }

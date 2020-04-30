@@ -1,12 +1,14 @@
 package com.vyakhirev.filmsinfo.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
+import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.data.loadImage
 import kotlinx.android.synthetic.main.favorite_item.view.*
@@ -14,7 +16,8 @@ import kotlinx.android.synthetic.main.favorite_item.view.*
 class FavoritesAdapter(
     private val context: Context,
     private val favorMovieList: List<Movie>,
-    private val listener: ((ind: Int) -> Unit)?
+    private val listener: ((ind: Int) -> Unit)?,
+    private val listenerDel: ((ind: Int) -> Unit)?
 ) :
     RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
 
@@ -35,8 +38,14 @@ class FavoritesAdapter(
         private var currentPosition = 0
 
         init {
-            itemView.setOnClickListener {
+            itemView.favTitleTV.setOnClickListener {
                 listener?.invoke(currentPosition)
+            }
+            itemView.favorPosterIV.setOnClickListener {
+                listener?.invoke(currentPosition)
+            }
+            itemView.deleteIV.setOnClickListener {
+                listenerDel?.invoke(currentPosition)
             }
         }
 
@@ -44,6 +53,8 @@ class FavoritesAdapter(
             this.currentFilm = film
             this.currentPosition = pos
             itemView.favTitleTV.text = film.title
+            if (favorites[pos].isViewed) itemView.favTitleTV.setTextColor(Color.BLUE)
+            else itemView.favTitleTV.setTextColor(Color.GRAY)
             itemView.favorPosterIV.loadImage(films[pos].posterPath)
         }
     }

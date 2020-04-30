@@ -17,6 +17,7 @@ import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.adapters.FilmsAdapter
 import com.vyakhirev.filmsinfo.data.MovieResponse
+import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.network.MovieApiClient
 import kotlinx.android.synthetic.main.fragment_list_movie.*
@@ -27,10 +28,20 @@ import retrofit2.Response
 class ListMovieFragment : Fragment() {
 
     interface OnFilmClickListener {
-        fun onFilmClick(ind: Int)
+        fun onFilmClick(ind: Int) {
+            films[ind].isViewed = true
+        }
+
+        fun onFavorClick(ind: Int) {
+            if (!films[ind].isFavorite) {
+                favorites.add(films[ind])
+                films[ind].isFavorite = true
+            }
+        }
     }
 
     private var listener: OnFilmClickListener? = null
+    private var listenerMy: OnFilmClickListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +72,11 @@ class ListMovieFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = FilmsAdapter(
                 context,
-                films
-            ) { listener?.onFilmClick(it) }
+                films,
+                listener = { listener?.onFilmClick(it) },
+                listenerMy = { listenerMy?.onFavorClick(it) })
         }
+
         val itemDecor =
             CustomItemDecoration(
                 context!!,
@@ -77,23 +90,26 @@ class ListMovieFragment : Fragment() {
         filmsRecyclerView.addItemDecoration(itemDecor)
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             var pageCount = 0
-            val itemsInPage = 20
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == films.size) {
                     pageCount++
-                    Thread.sleep(1000)
                     if (pageCount == 1) {
                         loadFilms(pageCount)
                     } else {
                         loadFilmsMore(pageCount)
                     }
-                    recyclerView.adapter?.notifyItemRangeInserted(
-                        films.size + 1,
-                        films.size + itemsInPage
-                    )
+
                 }
+                recyclerView.adapter?.notifyItemRangeInserted(
+                    films.size + 1,
+                    films.size + itemsInPage
+                )
             }
         })
+    }
+
+    fun addFavorite(ind: Int) {
+
     }
 
     private fun setupRefreshLayout() {
@@ -115,9 +131,8 @@ class ListMovieFragment : Fragment() {
                 call: Call<MovieResponse>,
                 response: Response<MovieResponse>
             ) {
-
                 films.addAll(response.body()!!.results)
-                Thread.sleep(1000)
+                filmsRecyclerView.adapter?.notifyDataSetChanged()
                 filmsRecyclerView.visibility = View.VISIBLE
                 progressBar.visibility = View.GONE
                 loadingTV.visibility = View.GONE
@@ -137,9 +152,13 @@ class ListMovieFragment : Fragment() {
                 response: Response<MovieResponse>
             ) {
                 films.addAll(response.body()!!.results)
-                Thread.sleep(1000)
-                filmsRecyclerView.visibility = View.GONE
-                filmsRecyclerView.visibility = View.VISIBLE
+                filmsRecyclerView.adapter?.notifyDataSetChanged()
+//                favoritesRecyclerView.adapter?.notifyItemRangeChanged(
+//                    ind,
+//                    favoritesRecyclerView.adapter!!.itemCount
+//                )
+//                filmsRecyclerView.visibility = View.GONE
+//                filmsRecyclerView.visibility = View.VISIBLE
 //                    progressBar.visibility = View.GONE
 //                    loadingTV.visibility = View.GONE
             }
@@ -155,6 +174,7 @@ class ListMovieFragment : Fragment() {
 
         if (activity is OnFilmClickListener) {
             listener = activity as OnFilmClickListener
+            listenerMy = activity as OnFilmClickListener
         } else {
             throw Exception("Activity must implement OnNewsClickListener")
         }
@@ -164,6 +184,7 @@ class ListMovieFragment : Fragment() {
 
     companion object {
         const val TAG = "ListMovieFragment"
+        const val itemsInPage = 20
     }
 
     class CustomItemDecoration(context: Context, orientation: Int) :

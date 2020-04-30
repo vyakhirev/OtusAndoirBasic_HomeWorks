@@ -14,7 +14,8 @@ import kotlinx.android.synthetic.main.movie_item.view.*
 class FilmsAdapter(
     private val context: Context,
     private val films: List<Movie>,
-    private val listener: ((ind: Int) -> Unit)?
+    private val listener: ((ind: Int) -> Unit)?,
+    private val listenerMy: ((ind: Int) -> Unit)?
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -54,8 +55,17 @@ class FilmsAdapter(
         private var currentPosition = 0
 
         init {
-            itemView.setOnClickListener {
+//            itemView.setOnClickListener {
+//                listener?.invoke(currentPosition)
+//            }
+            itemView.posterImgView.setOnClickListener {
                 listener?.invoke(currentPosition)
+            }
+            itemView.movieTitleTextView.setOnClickListener {
+                listener?.invoke(currentPosition)
+            }
+            itemView.favoritesImgView.setOnClickListener {
+                listenerMy?.invoke(currentPosition)
             }
         }
 

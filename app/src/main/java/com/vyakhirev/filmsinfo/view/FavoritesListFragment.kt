@@ -13,10 +13,17 @@ import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
 class FavoritesListFragment : Fragment() {
     interface OnFavorClickListener {
-        fun onFavorClick(ind: Int)
+        fun onFavorToDetails(ind: Int) {
+            favorites[ind].isViewed = true
+        }
+
+        fun onDeleteFromFavor(ind: Int) {
+            favorites.removeAt(ind)
+        }
     }
 
     private var listener: OnFavorClickListener? = null
+    private var listenerDel: OnFavorClickListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,11 +40,18 @@ class FavoritesListFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = FavoritesAdapter(
                 context,
-                favorites
-            ) {
-                listener?.onFavorClick(it)
-            }
+                favorites,
+                listener = { listener?.onFavorToDetails(it) },
+                listenerDel = { listenerDel?.onDeleteFromFavor(it) }
+            )
         }
+
+    }
+
+    fun undoAddFavorite() {
+        favorites.removeAt(favorites.size - 1)
+//        films[ind].isFavorite = false
+//        filmsRecyclerView.adapter?.notifyItemChanged(ind)
     }
 
     companion object {
@@ -49,8 +63,9 @@ class FavoritesListFragment : Fragment() {
 
         if (activity is OnFavorClickListener) {
             listener = activity as OnFavorClickListener
+            listenerDel = activity as OnFavorClickListener
         } else {
-            throw Exception("Activity must implement OnNewsClickListener")
+            throw Exception("Activity must implement OnFavorClickedListener")
         }
     }
 }
