@@ -1,94 +1,96 @@
 package com.vyakhirev.filmsinfo
 
 import android.app.Dialog
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-const val FILM_INDEX = "film_index"
+// const val FILM_INDEX = "film_index"
 const val THEME_SWITCHER = "theme_switcher"
 private var filmClicked: Int = 10000
 private var themesSwitcher = true
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener {
+
+    override fun onFilmClick(ind: Int) {
+        Log.d("Kan", "Kancheg!")
+        openFilmDetailed(ind)
+    }
+
+    private fun openFilmDetailed(ind: Int) {
+        Log.d("Kan", "OpenDetail")
+        supportFragmentManager
+            .beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                DetailMovieFragment.newInstance(ind),
+                DetailMovieFragment.TAG
+            )
+            .addToBackStack(null)
+            .commit()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (themesSwitcher) {
-            themesSwitcher = false
-            setTheme(R.style.AppThemeLight)
-        } else {
-            setTheme(R.style.AppThemeDark)
-            themesSwitcher = true
-        }
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        detail1Btn.setOnClickListener { startDetail(0) }
-        detail2Btn.setOnClickListener { startDetail(1) }
-        detail3Btn.setOnClickListener { startDetail(2) }
-        detail4Btn.setOnClickListener { startDetail(3) }
 
-        themeButton.setOnClickListener {
-            recreate()
-        }
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
-        if (savedInstanceState != null) {
-            when (savedInstanceState.getInt(FILM_INDEX)) {
-                0 -> film1TitleTV.setBackgroundColor(Color.CYAN)
-                1 -> film2TitleTV.setBackgroundColor(Color.CYAN)
-                2 -> film3TitleTV.setBackgroundColor(Color.CYAN)
-                3 -> film4TitleTV.setBackgroundColor(Color.CYAN)
-            }
-        }
+        openFragment(ListMovieFragment())
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(FILM_INDEX, filmClicked)
-        outState.putBoolean("theme_switcher", themesSwitcher)
-    }
+    private val mOnNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener {
+            when (it.itemId) {
 
-    private fun startDetail(ind: Int) {
-        val intent = Intent(this, DetailActivity::class.java)
-        intent.putExtra(FILM_INDEX, ind)
-        when (ind) {
-            0 -> {
-                film1TitleTV.setBackgroundColor(Color.CYAN)
-                filmClicked = 0
+                R.id.action_list -> {
+                    val firstFragment = ListMovieFragment()
+                    openFragment(firstFragment)
+                    return@OnNavigationItemSelectedListener true
+                }
+
+                R.id.action_favorites -> {
+                    val secondFragment = FavoritesListFragment()
+                    openFragment(secondFragment)
+                    return@OnNavigationItemSelectedListener true
+                }
+
+                R.id.action_settings -> {
+                    val thirdFragment = FavoritesListFragment()
+                    openFragment(thirdFragment)
+                    return@OnNavigationItemSelectedListener true
+                }
             }
-            1 -> {
-                film2TitleTV.setBackgroundColor(Color.CYAN)
-                filmClicked = 1
-            }
-            2 -> {
-                film3TitleTV.setBackgroundColor(Color.CYAN)
-                filmClicked = 2
-            }
-            3 -> {
-                film4TitleTV.setBackgroundColor(Color.CYAN)
-                filmClicked = 3
-            }
+            false
         }
-        startActivity(intent)
+
+    private fun openFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragmentContainer, fragment)
+        transaction.commit()
     }
 
-    //    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBackPressed() {
-        showDialog(getString(R.string.exit_dialog))
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            myExitDialog()
+        }
     }
 
-    private fun showDialog(title: String) {
+    private fun myExitDialog() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.custom_dialog)
         val body = dialog.findViewById(R.id.txt_dia) as TextView
-        body.text = title
+        body.text = getString(R.string.exit_dialog)
         val yesBtn = dialog.findViewById(R.id.btn_yes) as Button
         val noBtn = dialog.findViewById(R.id.btn_no) as Button
         yesBtn.setOnClickListener {
