@@ -1,23 +1,17 @@
 package com.vyakhirev.filmsinfo.view
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.adapters.FilmsAdapter
@@ -25,7 +19,6 @@ import com.vyakhirev.filmsinfo.data.MovieResponse
 import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.network.MovieApiClient
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_list_movie.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,7 +31,7 @@ class ListMovieFragment : Fragment() {
             films[ind].isViewed = true
         }
 
-        fun onFavorClick(ind: Int) {
+        fun onFavorClick(ind: Int){
 
         }
     }
@@ -51,10 +44,6 @@ class ListMovieFragment : Fragment() {
         retainInstance = true
     }
 
-
-fun undoInSnack(){
-
-}
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -73,6 +62,37 @@ fun undoInSnack(){
             setupRefreshLayout()
         }
     }
+//    private fun showSnack(view:View,ind: Int) {
+//        val snack =
+//            Snackbar.make(view, "Films added to favorites", Snackbar.LENGTH_SHORT)
+//        val listener = View.OnClickListener {
+//            favorites.removeAt(favorites.size - 1)
+//            films[ind].isFavorite = false
+//            filmsRecyclerView.adapter?.notifyItemChanged(ind)
+//        }
+//        snack.setAction("Undo", listener)
+//        snack.setActionTextColor(
+//            ContextCompat.getColor(
+//                context!!,
+//                R.color.indigo
+//            )
+//        )
+//        val snackView = snack.view
+//        val snackTextId = com.google.android.material.R.id.snackbar_text
+//        val textView = snackView.findViewById<View>(snackTextId) as TextView
+//        textView.setTextColor(ContextCompat.getColor(context!!, android.R.color.white))
+//        snackView.setBackgroundColor(Color.GRAY)
+//        val layoutParams = snack.view.layoutParams as CoordinatorLayout.LayoutParams
+//        layoutParams.anchorId = R.id.bottomNav
+//        layoutParams.anchorGravity = Gravity.TOP
+//        layoutParams.gravity = Gravity.TOP
+//        snack.view.layoutParams = layoutParams
+//
+//        snack.show()
+//        coordinatorLayout1.postDelayed({
+//            snack.dismiss()
+//        }, 3000)
+//    }
 
     private fun setupRecyclerView() {
         filmsRecyclerView.apply {
@@ -87,9 +107,9 @@ fun undoInSnack(){
                         favorites.add(films[it])
                         films[it].isFavorite = true
                     }
+//                    showSnack(filmsRecyclerView,it)
                     filmsRecyclerView.adapter?.notifyItemChanged(it)
                 })
-
         }
 
         val itemDecor =
@@ -113,7 +133,6 @@ fun undoInSnack(){
                     } else {
                         loadFilmsMore(pageCount)
                     }
-
                 }
                 recyclerView.adapter?.notifyItemRangeInserted(
                     films.size + 1,
@@ -164,14 +183,6 @@ fun undoInSnack(){
             ) {
                 films.addAll(response.body()!!.results)
                 filmsRecyclerView.adapter?.notifyDataSetChanged()
-//                favoritesRecyclerView.adapter?.notifyItemRangeChanged(
-//                    ind,
-//                    favoritesRecyclerView.adapter!!.itemCount
-//                )
-//                filmsRecyclerView.visibility = View.GONE
-//                filmsRecyclerView.visibility = View.VISIBLE
-//                    progressBar.visibility = View.GONE
-//                    loadingTV.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
@@ -200,14 +211,6 @@ fun undoInSnack(){
 
     class CustomItemDecoration(context: Context, orientation: Int) :
         DividerItemDecoration(context, orientation) {
-
-        override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-            super.onDrawOver(c, parent, state)
-        }
-
-        override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-            super.onDraw(c, parent, state)
-        }
 
         override fun getItemOffsets(
             outRect: Rect,

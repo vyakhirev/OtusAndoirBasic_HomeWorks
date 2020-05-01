@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
 import com.vyakhirev.filmsinfo.data.favorites
-import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.data.loadImage
 import kotlinx.android.synthetic.main.favorite_item.view.*
 
@@ -55,7 +54,7 @@ class FavoritesAdapter(
             itemView.favTitleTV.text = film.title
             if (favorites[pos].isViewed) itemView.favTitleTV.setTextColor(Color.BLUE)
             else itemView.favTitleTV.setTextColor(Color.GRAY)
-            itemView.favorPosterIV.loadImage(films[pos].posterPath)
+            itemView.favorPosterIV.loadImage(favorites[pos].posterPath)
         }
     }
 }

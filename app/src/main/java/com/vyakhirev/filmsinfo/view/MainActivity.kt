@@ -18,17 +18,14 @@ import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_favorites_list.*
 import kotlinx.android.synthetic.main.fragment_list_movie.*
 
-// const val FILM_INDEX = "film_index"
 const val THEME_SWITCHER = "theme_switcher"
 private var filmClicked: Int = 10000
 private var themesSwitcher = true
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
-
     override fun onFilmClick(ind: Int) {
         super.onFilmClick(ind)
         openFilmDetailed(ind)
@@ -42,15 +39,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     override fun onFavorToDetails(ind: Int) {
         super.onFavorToDetails(ind)
         onFilmClick(ind)
-    }
-
-    override fun onDeleteFromFavor(ind: Int) {
-////        favorites.removeAt(ind)
-////        favoritesRecyclerView.adapter?.notifyItemRemoved(ind)
-////        favoritesRecyclerView.adapter?.notifyItemRangeChanged(
-////            ind,
-////            favoritesRecyclerView.adapter!!.itemCount
-////        )
     }
 
     private fun showSnack(ind: Int) {
@@ -165,6 +153,4 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         }
         dialog.show()
     }
-
-
 }
