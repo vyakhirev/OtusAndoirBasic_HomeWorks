@@ -2,17 +2,22 @@ package com.vyakhirev.filmsinfo.view
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.adapters.FilmsAdapter
@@ -20,6 +25,7 @@ import com.vyakhirev.filmsinfo.data.MovieResponse
 import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.network.MovieApiClient
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_list_movie.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,10 +39,7 @@ class ListMovieFragment : Fragment() {
         }
 
         fun onFavorClick(ind: Int) {
-            if (!films[ind].isFavorite) {
-                favorites.add(films[ind])
-                films[ind].isFavorite = true
-            }
+
         }
     }
 
@@ -48,6 +51,10 @@ class ListMovieFragment : Fragment() {
         retainInstance = true
     }
 
+
+fun undoInSnack(){
+
+}
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,7 +81,15 @@ class ListMovieFragment : Fragment() {
                 context,
                 films,
                 listener = { listener?.onFilmClick(it) },
-                listenerMy = { listenerMy?.onFavorClick(it) })
+                listenerMy = {
+                    listenerMy?.onFavorClick(it)
+                    if (!films[it].isFavorite) {
+                        favorites.add(films[it])
+                        films[it].isFavorite = true
+                    }
+                    filmsRecyclerView.adapter?.notifyItemChanged(it)
+                })
+
         }
 
         val itemDecor =
@@ -106,10 +121,6 @@ class ListMovieFragment : Fragment() {
                 )
             }
         })
-    }
-
-    fun addFavorite(ind: Int) {
-
     }
 
     private fun setupRefreshLayout() {

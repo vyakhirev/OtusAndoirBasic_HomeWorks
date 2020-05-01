@@ -55,9 +55,6 @@ class FilmsAdapter(
         private var currentPosition = 0
 
         init {
-//            itemView.setOnClickListener {
-//                listener?.invoke(currentPosition)
-//            }
             itemView.posterImgView.setOnClickListener {
                 listener?.invoke(currentPosition)
             }

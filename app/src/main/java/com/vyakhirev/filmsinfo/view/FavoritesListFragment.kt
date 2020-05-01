@@ -17,9 +17,7 @@ class FavoritesListFragment : Fragment() {
             favorites[ind].isViewed = true
         }
 
-        fun onDeleteFromFavor(ind: Int) {
-            favorites.removeAt(ind)
-        }
+        fun onDeleteFromFavor(ind: Int)
     }
 
     private var listener: OnFavorClickListener? = null
@@ -42,7 +40,14 @@ class FavoritesListFragment : Fragment() {
                 context,
                 favorites,
                 listener = { listener?.onFavorToDetails(it) },
-                listenerDel = { listenerDel?.onDeleteFromFavor(it) }
+                listenerDel = {
+                    listenerDel?.onDeleteFromFavor(it)
+                    favorites.removeAt(it)
+//                    favoritesRecyclerView.adapter?.notifyItemRangeChanged(
+//                        it,
+//                        adapter!!.itemCount
+//                    )
+                }
             )
         }
 

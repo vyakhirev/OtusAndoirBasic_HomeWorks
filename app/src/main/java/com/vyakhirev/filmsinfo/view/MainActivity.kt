@@ -16,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.favorites
+import com.vyakhirev.filmsinfo.data.films
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
 import kotlinx.android.synthetic.main.fragment_list_movie.*
@@ -35,7 +36,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     override fun onFavorClick(ind: Int) {
         super.onFavorClick(ind)
-        filmsRecyclerView.adapter?.notifyItemChanged(ind)
         showSnack(ind)
     }
 
@@ -45,19 +45,21 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     override fun onDeleteFromFavor(ind: Int) {
-        favorites.removeAt(ind)
-        favoritesRecyclerView.adapter?.notifyItemRemoved(ind)
-        favoritesRecyclerView.adapter?.notifyItemRangeChanged(
-            ind,
-            favoritesRecyclerView.adapter!!.itemCount
-        )
+////        favorites.removeAt(ind)
+////        favoritesRecyclerView.adapter?.notifyItemRemoved(ind)
+////        favoritesRecyclerView.adapter?.notifyItemRangeChanged(
+////            ind,
+////            favoritesRecyclerView.adapter!!.itemCount
+////        )
     }
 
     private fun showSnack(ind: Int) {
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
         val listener = View.OnClickListener {
-
+            favorites.removeAt(favorites.size - 1)
+            films[ind].isFavorite = false
+            filmsRecyclerView.adapter?.notifyItemChanged(ind)
         }
         snack.setAction("Undo", listener)
         snack.setActionTextColor(
@@ -71,7 +73,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         val textView = snackView.findViewById<View>(snackTextId) as TextView
         textView.setTextColor(ContextCompat.getColor(this, android.R.color.white))
         snackView.setBackgroundColor(Color.GRAY)
-
         val layoutParams = snack.view.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.anchorId = R.id.bottomNav
         layoutParams.anchorGravity = Gravity.TOP
@@ -83,7 +84,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             snack.dismiss()
         }, 3000)
     }
-
 
     private fun openFilmDetailed(ind: Int) {
         supportFragmentManager
