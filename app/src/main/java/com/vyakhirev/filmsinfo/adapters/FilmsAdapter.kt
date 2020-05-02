@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.movie_item.view.*
 
 class FilmsAdapter(
     private val context: Context,
-    private val films: List<Movie>,
+    private var films: List<Movie>,
     private val listener: ((ind: Int) -> Unit)?,
     private val listenerMy: ((ind: Int) -> Unit)?
 ) :
@@ -34,6 +34,11 @@ class FilmsAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return if (position == itemCount - 1) VIEW_TYPE_FOOTER else VIEW_TYPE_ITEM
+    }
+
+    fun update(data: List<Movie>) {
+        films = data
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

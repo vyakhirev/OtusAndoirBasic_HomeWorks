@@ -9,35 +9,33 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.adapters.FilmsAdapter
-import com.vyakhirev.filmsinfo.data.MovieResponse
-import com.vyakhirev.filmsinfo.data.favorites
-import com.vyakhirev.filmsinfo.data.films
-import com.vyakhirev.filmsinfo.network.MovieApiClient
+import com.vyakhirev.filmsinfo.data.*
+import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
+import com.vyakhirev.filmsinfo.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_list_movie.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class ListMovieFragment : Fragment() {
+    private var listener: OnFilmClickListener? = null
+    private var listenerMy: OnFilmClickListener? = null
+    private lateinit var viewModel: FilmListViewModel
+    private lateinit var adapter: FilmsAdapter
+    private val movieDataSource: MovieDataSource = MoviesRepository()
 
     interface OnFilmClickListener {
         fun onFilmClick(ind: Int) {
             films[ind].isViewed = true
         }
 
-        fun onFavorClick(ind: Int){
-
+        fun onFavorClick(ind: Int) {
         }
     }
-
-    private var listener: OnFilmClickListener? = null
-    private var listenerMy: OnFilmClickListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,60 +55,37 @@ class ListMovieFragment : Fragment() {
 
         if (savedInstanceState == null) {
             super.onViewCreated(view, savedInstanceState)
-            loadFilms(1)
+//            loadFilms(1)
+            setupViewModel()
             setupRecyclerView()
+//            setupUi()
             setupRefreshLayout()
         }
     }
-//    private fun showSnack(view:View,ind: Int) {
-//        val snack =
-//            Snackbar.make(view, "Films added to favorites", Snackbar.LENGTH_SHORT)
-//        val listener = View.OnClickListener {
-//            favorites.removeAt(favorites.size - 1)
-//            films[ind].isFavorite = false
-//            filmsRecyclerView.adapter?.notifyItemChanged(ind)
-//        }
-//        snack.setAction("Undo", listener)
-//        snack.setActionTextColor(
-//            ContextCompat.getColor(
-//                context!!,
-//                R.color.indigo
-//            )
-//        )
-//        val snackView = snack.view
-//        val snackTextId = com.google.android.material.R.id.snackbar_text
-//        val textView = snackView.findViewById<View>(snackTextId) as TextView
-//        textView.setTextColor(ContextCompat.getColor(context!!, android.R.color.white))
-//        snackView.setBackgroundColor(Color.GRAY)
-//        val layoutParams = snack.view.layoutParams as CoordinatorLayout.LayoutParams
-//        layoutParams.anchorId = R.id.bottomNav
-//        layoutParams.anchorGravity = Gravity.TOP
-//        layoutParams.gravity = Gravity.TOP
-//        snack.view.layoutParams = layoutParams
-//
-//        snack.show()
-//        coordinatorLayout1.postDelayed({
-//            snack.dismiss()
-//        }, 3000)
-//    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadFilms()
+    }
 
     private fun setupRecyclerView() {
-        filmsRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = FilmsAdapter(
-                context,
-                films,
-                listener = { listener?.onFilmClick(it) },
-                listenerMy = {
-                    listenerMy?.onFavorClick(it)
-                    if (!films[it].isFavorite) {
-                        favorites.add(films[it])
-                        films[it].isFavorite = true
-                    }
+        adapter = FilmsAdapter(
+            context!!,
+            viewModel.movies.value ?: emptyList(),
+            listener = {
+                listener?.onFilmClick(it)
+            },
+            listenerMy = {
+                listenerMy?.onFavorClick(it)
+                if (!films[it].isFavorite) {
+                    favorites.add(films[it])
+                    films[it].isFavorite = true
+                }
 //                    showSnack(filmsRecyclerView,it)
-                    filmsRecyclerView.adapter?.notifyItemChanged(it)
-                })
-        }
+                filmsRecyclerView.adapter?.notifyItemChanged(it)
+            })
+        filmsRecyclerView.layoutManager = LinearLayoutManager(context)
+        filmsRecyclerView.adapter = adapter
 
         val itemDecor =
             CustomItemDecoration(
@@ -124,71 +99,57 @@ class ListMovieFragment : Fragment() {
             ?.let { itemDecor.setDrawable(it) }
         filmsRecyclerView.addItemDecoration(itemDecor)
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var pageCount = 0
+            var pageCount = 1
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == films.size) {
+                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == viewModel.movies.value?.size) {
                     pageCount++
-                    if (pageCount == 1) {
-                        loadFilms(pageCount)
-                    } else {
-                        loadFilmsMore(pageCount)
-                    }
+                    viewModel.loadFilms(pageCount)
                 }
-                recyclerView.adapter?.notifyItemRangeInserted(
-                    films.size + 1,
-                    films.size + itemsInPage
-                )
+//                adapter.notifyItemRangeInserted(
+//                    itemsInPage+1 ,
+//                    itemsInPage
+//                )
+                adapter.notifyDataSetChanged()
             }
         })
     }
 
-    private fun setupRefreshLayout() {
-        refreshLayout.setOnRefreshListener {
-            films.clear()
-            loadFilms(1)
-            refreshLayout.isRefreshing = false
-            filmsRecyclerView.adapter?.notifyDataSetChanged()
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(movieDataSource)
+        ).get(FilmListViewModel::class.java)
+        viewModel.movies.observe(this, renderMovies)
+        viewModel.isViewLoading.observe(this, isViewLoadingObserver)
+        viewModel.onMessageError.observe(this, onMessageErrorObserver)
+//        viewModel.movieSelected.observe(this,)
+    }
+
+    private val renderMovies = Observer<List<Movie>> {
+        progressBar.visibility = View.GONE
+        loadingTV.visibility = View.GONE
+        adapter.update(it)
+    }
+
+    private val onMessageErrorObserver = Observer<Any> {
+        Log.v(TAG, "onMessageError $it")
+        errorImg.visibility = View.VISIBLE
+        errorTV.text = "Error $it"
+        errorTV.visibility = View.VISIBLE
+        retryBtn.visibility = View.VISIBLE
+        retryBtn.setOnClickListener {
+            viewModel.loadFilms()
+            errorImg.visibility = View.GONE
+            errorTV.visibility = View.GONE
+            retryBtn.visibility = View.GONE
         }
     }
 
-    fun loadFilms(page: Int) {
-        filmsRecyclerView.visibility = View.INVISIBLE
-        progressBar.visibility = View.VISIBLE
-        loadingTV.visibility = View.VISIBLE
-        val call = MovieApiClient.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
-        call.enqueue(object : Callback<MovieResponse> {
-            override fun onResponse(
-                call: Call<MovieResponse>,
-                response: Response<MovieResponse>
-            ) {
-                films.addAll(response.body()!!.results)
-                filmsRecyclerView.adapter?.notifyDataSetChanged()
-                filmsRecyclerView.visibility = View.VISIBLE
-                progressBar.visibility = View.GONE
-                loadingTV.visibility = View.GONE
-            }
-
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                Log.e(TAG, t.toString())
-            }
-        })
-    }
-
-    fun loadFilmsMore(page: Int) {
-        val call = MovieApiClient.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
-        call.enqueue(object : Callback<MovieResponse> {
-            override fun onResponse(
-                call: Call<MovieResponse>,
-                response: Response<MovieResponse>
-            ) {
-                films.addAll(response.body()!!.results)
-                filmsRecyclerView.adapter?.notifyDataSetChanged()
-            }
-
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                Log.e(TAG, t.toString())
-            }
-        })
+    private val isViewLoadingObserver = Observer<Boolean> {
+        Log.v(TAG, "isViewLoading $it")
+        val visibility = if (it) View.VISIBLE else View.GONE
+        progressBar.visibility = visibility
+        loadingTV.visibility = visibility
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -220,6 +181,15 @@ class ListMovieFragment : Fragment() {
         ) {
             super.getItemOffsets(outRect, view, parent, state)
             outRect.bottom = 150
+        }
+    }
+
+    private fun setupRefreshLayout() {
+        refreshLayout.setOnRefreshListener {
+            films.clear()
+            viewModel.loadFilms()
+            refreshLayout.isRefreshing = false
+            filmsRecyclerView.adapter?.notifyDataSetChanged()
         }
     }
 }

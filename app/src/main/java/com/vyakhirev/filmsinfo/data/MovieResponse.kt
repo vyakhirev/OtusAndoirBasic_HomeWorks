@@ -8,5 +8,9 @@ data class MovieResponse(
     @SerializedName("total_results")
     var totalResults: Int,
     @SerializedName("total_pages")
-    var totalPages: Int
-)
+    var totalPages: Int,
+    val status: Int?,
+    val msg: String = "Kan!"
+) {
+    fun isSuccess(): Boolean = results.isNotEmpty() // (status==200)
+}
