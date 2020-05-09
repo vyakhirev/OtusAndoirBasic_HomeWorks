@@ -18,17 +18,13 @@ class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
     private val _isViewLoading = MutableLiveData<Boolean>()
     val isViewLoading: LiveData<Boolean> = _isViewLoading
 
-//    private val _movieSelected = MutableLiveData<Movie>()
-//    val movieSelected: LiveData<Movie> = _movieSelected
+    private val _filmClicked = MutableLiveData<Movie>()
+    val filmClicked: LiveData<Movie> = _filmClicked
 
-    //    private val _isEmptyList= MutableLiveData<Boolean>()
-//    val isEmptyList: LiveData<Boolean> = _isEmptyList
-    // init {
-//    loadFilms()
-// }
-    fun loadFilms(page: Int = 1) {
+    var page = 1
+    fun loadFilms() {
         _isViewLoading.postValue(true)
-        repository.retrieveMovies(page, object : OperationCallback<Movie> {
+        repository.retrieveMovies(page++, object : OperationCallback<Movie> {
             override fun onError(error: String?) {
                 _isViewLoading.postValue(false)
                 _onMessageError.postValue(error)
@@ -44,11 +40,7 @@ class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
         })
     }
 
-//    fun openDetails(uuid: Int) {
-//        _movieSelected.postValue(movies.value!![uuid])
-//    }
-
-//    fun addFavorites() {
-//
-//    }
+    fun openDetails(movie: Movie?) {
+        _filmClicked.postValue(movie)
+    }
 }

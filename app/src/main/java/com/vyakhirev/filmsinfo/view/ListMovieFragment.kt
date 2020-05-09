@@ -14,9 +14,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.adapters.FilmsAdapter
-import com.vyakhirev.filmsinfo.data.*
+import com.vyakhirev.filmsinfo.data.Movie
+import com.vyakhirev.filmsinfo.data.favorites
+import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_list_movie.*
@@ -26,11 +29,11 @@ class ListMovieFragment : Fragment() {
     private var listenerMy: OnFilmClickListener? = null
     private lateinit var viewModel: FilmListViewModel
     private lateinit var adapter: FilmsAdapter
-    private val movieDataSource: MovieDataSource = MoviesRepository()
 
     interface OnFilmClickListener {
         fun onFilmClick(ind: Int) {
             films[ind].isViewed = true
+
         }
 
         fun onFavorClick(ind: Int) {
@@ -55,10 +58,8 @@ class ListMovieFragment : Fragment() {
 
         if (savedInstanceState == null) {
             super.onViewCreated(view, savedInstanceState)
-//            loadFilms(1)
             setupViewModel()
             setupRecyclerView()
-//            setupUi()
             setupRefreshLayout()
         }
     }
@@ -71,8 +72,12 @@ class ListMovieFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = FilmsAdapter(
             context!!,
-            viewModel.movies.value ?: emptyList(),
+            listOf(),
             listener = {
+//                viewModel.filmClicked.observe(this, Observer { movie->
+//                    viewModel.openDetails(movie)
+//                })
+                viewModel.openDetails(viewModel.movies.value?.get(it))
                 listener?.onFilmClick(it)
             },
             listenerMy = {
@@ -81,7 +86,6 @@ class ListMovieFragment : Fragment() {
                     favorites.add(films[it])
                     films[it].isFavorite = true
                 }
-//                    showSnack(filmsRecyclerView,it)
                 filmsRecyclerView.adapter?.notifyItemChanged(it)
             })
         filmsRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -99,11 +103,9 @@ class ListMovieFragment : Fragment() {
             ?.let { itemDecor.setDrawable(it) }
         filmsRecyclerView.addItemDecoration(itemDecor)
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var pageCount = 1
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == viewModel.movies.value?.size) {
-                    pageCount++
-                    viewModel.loadFilms(pageCount)
+                    viewModel.loadFilms()
                 }
 //                adapter.notifyItemRangeInserted(
 //                    itemsInPage+1 ,
@@ -116,13 +118,18 @@ class ListMovieFragment : Fragment() {
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(movieDataSource)
+            activity!!,
+            ViewModelFactory(App.instance!!.repository)
         ).get(FilmListViewModel::class.java)
+        if (films.isEmpty()) viewModel.loadFilms()
         viewModel.movies.observe(this, renderMovies)
         viewModel.isViewLoading.observe(this, isViewLoadingObserver)
         viewModel.onMessageError.observe(this, onMessageErrorObserver)
-//        viewModel.movieSelected.observe(this,)
+        viewModel.filmClicked.observe(this, onFilmClicked)
+    }
+
+    private val onFilmClicked = Observer<Movie> {
+        viewModel.openDetails(it)
     }
 
     private val renderMovies = Observer<List<Movie>> {
@@ -187,6 +194,7 @@ class ListMovieFragment : Fragment() {
     private fun setupRefreshLayout() {
         refreshLayout.setOnRefreshListener {
             films.clear()
+            viewModel.page = 0
             viewModel.loadFilms()
             refreshLayout.isRefreshing = false
             filmsRecyclerView.adapter?.notifyDataSetChanged()
