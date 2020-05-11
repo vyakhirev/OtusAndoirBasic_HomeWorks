@@ -21,6 +21,7 @@ class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
     private val _filmClicked = MutableLiveData<Movie>()
     val filmClicked: LiveData<Movie> = _filmClicked
 
+
     var page = 1
     fun loadFilms() {
         _isViewLoading.postValue(true)

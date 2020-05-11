@@ -43,7 +43,7 @@ class Movie(
 
 var films: ArrayList<Movie> = ArrayList()
 var favorites: ArrayList<Movie> = ArrayList()
-
+val indInFavor: MutableList<Int> = mutableListOf()
 fun ImageView.loadImage(uri: String?) {
     val options = RequestOptions()
         .error(R.mipmap.ic_launcher_round)

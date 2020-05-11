@@ -20,6 +20,7 @@ import com.vyakhirev.filmsinfo.adapters.FilmsAdapter
 import com.vyakhirev.filmsinfo.data.Movie
 import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
+import com.vyakhirev.filmsinfo.data.indInFavor
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_list_movie.*
@@ -84,6 +85,7 @@ class ListMovieFragment : Fragment() {
                 listenerMy?.onFavorClick(it)
                 if (!films[it].isFavorite) {
                     favorites.add(films[it])
+                    indInFavor.add(favorites.size - 1, it)
                     films[it].isFavorite = true
                 }
                 filmsRecyclerView.adapter?.notifyItemChanged(it)
