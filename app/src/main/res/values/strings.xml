@@ -23,4 +23,5 @@
     <string name="films_list">Films list</string>
     <string name="favorites_menu">Favorites</string>
     <string name="settings">Settings</string>
+    <string name="films_loading">Films loading…</string>
 </resources>

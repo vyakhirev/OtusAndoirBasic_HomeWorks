@@ -24,4 +24,5 @@
     <string name="films_list">Фильмы</string>
     <string name="favorites_menu">Любимые</string>
     <string name="settings">Настройки</string>
+    <string name="films_loading">Загрузка информации о фильмах…</string>
 </resources>

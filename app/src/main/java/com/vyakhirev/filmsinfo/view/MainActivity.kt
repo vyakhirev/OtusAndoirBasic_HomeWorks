@@ -1,29 +1,79 @@
-package com.vyakhirev.filmsinfo
+package com.vyakhirev.filmsinfo.view
 
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.view.Gravity
+import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
+import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.data.favorites
+import com.vyakhirev.filmsinfo.data.films
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_list_movie.*
 
-// const val FILM_INDEX = "film_index"
 const val THEME_SWITCHER = "theme_switcher"
 private var filmClicked: Int = 10000
 private var themesSwitcher = true
 
-class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener {
-
+class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
+    FavoritesListFragment.OnFavorClickListener {
     override fun onFilmClick(ind: Int) {
-        Log.d("Kan", "Kancheg!")
+        super.onFilmClick(ind)
         openFilmDetailed(ind)
     }
 
+    override fun onFavorClick(ind: Int) {
+        super.onFavorClick(ind)
+        showSnack(ind)
+    }
+
+    override fun onFavorToDetails(ind: Int) {
+        super.onFavorToDetails(ind)
+        onFilmClick(ind)
+    }
+
+    private fun showSnack(ind: Int) {
+        val snack =
+            Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
+        val listener = View.OnClickListener {
+            favorites.removeAt(favorites.size - 1)
+            films[ind].isFavorite = false
+            filmsRecyclerView.adapter?.notifyItemChanged(ind)
+        }
+        snack.setAction("Undo", listener)
+        snack.setActionTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.indigo
+            )
+        )
+        val snackView = snack.view
+        val snackTextId = com.google.android.material.R.id.snackbar_text
+        val textView = snackView.findViewById<View>(snackTextId) as TextView
+        textView.setTextColor(ContextCompat.getColor(this, android.R.color.white))
+        snackView.setBackgroundColor(Color.GRAY)
+        val layoutParams = snack.view.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.anchorId = R.id.bottomNav
+        layoutParams.anchorGravity = Gravity.TOP
+        layoutParams.gravity = Gravity.TOP
+        snack.view.layoutParams = layoutParams
+
+        snack.show()
+        coordinatorLayout1.postDelayed({
+            snack.dismiss()
+        }, 3000)
+    }
+
     private fun openFilmDetailed(ind: Int) {
-        Log.d("Kan", "OpenDetail")
         supportFragmentManager
             .beginTransaction()
             .replace(
@@ -41,7 +91,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener 
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
         openFragment(ListMovieFragment())
     }
 
@@ -50,19 +99,22 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener 
             when (it.itemId) {
 
                 R.id.action_list -> {
-                    val firstFragment = ListMovieFragment()
+                    val firstFragment =
+                        ListMovieFragment()
                     openFragment(firstFragment)
                     return@OnNavigationItemSelectedListener true
                 }
 
                 R.id.action_favorites -> {
-                    val secondFragment = FavoritesListFragment()
+                    val secondFragment =
+                        FavoritesListFragment()
                     openFragment(secondFragment)
                     return@OnNavigationItemSelectedListener true
                 }
 
                 R.id.action_settings -> {
-                    val thirdFragment = FavoritesListFragment()
+                    val thirdFragment =
+                        FavoritesListFragment()
                     openFragment(thirdFragment)
                     return@OnNavigationItemSelectedListener true
                 }
