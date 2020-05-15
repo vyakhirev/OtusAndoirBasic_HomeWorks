@@ -3,6 +3,7 @@ package com.vyakhirev.filmsinfo.view
 import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
@@ -24,9 +25,9 @@ import com.vyakhirev.filmsinfo.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_list_movie.*
 
-const val THEME_SWITCHER = "theme_switcher"
-private var filmClicked: Int = 10000
-private var themesSwitcher = true
+//const val THEME_SWITCHER = "theme_switcher"
+//private var filmClicked: Int = 10000
+//private var themesSwitcher = true
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     override fun onFavorToDetails(ind: Int) {
         super.onFavorToDetails(ind)
         onFilmClick(ind)
+        Log.d("Kan","fromFavorToDetail")
     }
 
     private fun showSnack(ind: Int) {
@@ -81,16 +83,17 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     private fun openFilmDetailed() {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                DetailMovieFragment.newInstance(),
-                DetailMovieFragment.TAG
-            )
-            .addToBackStack(null)
-            .commit()
-    }
+
+            supportFragmentManager
+                .beginTransaction()
+                .replace(
+                    R.id.fragmentContainer,
+                    DetailMovieFragment.newInstance(),
+                    DetailMovieFragment.TAG
+                )
+                .addToBackStack(null)
+                .commit()
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,10 +112,21 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             when (it.itemId) {
 
                 R.id.action_list -> {
-                    val firstFragment =
-                        ListMovieFragment()
-                    openFragment(firstFragment)
-                    return@OnNavigationItemSelectedListener true
+//                    val firstFragment =
+//                        ListMovieFragment()
+//                    openFragment(firstFragment)
+                    var fragment=supportFragmentManager.findFragmentByTag(ListMovieFragment.TAG)
+                    if(fragment==null)
+                        fragment=ListMovieFragment()
+                            supportFragmentManager.beginTransaction()
+                                .replace(
+                                    R.id.fragmentContainer,
+                                    fragment,
+                                    ListMovieFragment.TAG
+                                )
+                                .commit()
+                            return@OnNavigationItemSelectedListener true
+//                        }
                 }
 
                 R.id.action_favorites -> {
@@ -124,7 +138,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
                 R.id.action_settings -> {
                     val thirdFragment =
-                        FavoritesListFragment()
+                        SettingsFragment()
                     openFragment(thirdFragment)
                     return@OnNavigationItemSelectedListener true
                 }
@@ -133,14 +147,27 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         }
 
     private fun openFragment(fragment: Fragment) {
+//        var fr=supportFragmentManager.findFragmentByTag(ListMovieFragment.TAG)
+//        if(fr!=null){
+//            supportFragmentManager.popBackStack()
+//            Log.d("Kan1","Kannnnnnn")
+//        }
+//        if(supportFragmentManager.popBackStack(ListMovieFragment.TAG))
+
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragmentContainer, fragment)
+        transaction.replace(R.id.fragmentContainer, fragment,fragment.tag)
+//        transaction.addToBackStack(fragment.tag)
         transaction.commit()
     }
 
     override fun onBackPressed() {
+//        supportFragmentManager.fragments.forEach{
+//            if(it.tag==FavoritesListFragment.TAG)
+//                Log.d("Kan1","Kannnnnnn")
+//        }
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
+
         } else {
             myExitDialog()
         }

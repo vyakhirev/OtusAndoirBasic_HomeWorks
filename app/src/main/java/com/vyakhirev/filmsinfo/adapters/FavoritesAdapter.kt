@@ -14,12 +14,16 @@ import kotlinx.android.synthetic.main.favorite_item.view.*
 
 class FavoritesAdapter(
     private val context: Context,
-    private val favorMovieList: List<Movie>,
+    private var favorMovieList: List<Movie>,
     private val listener: ((ind: Int) -> Unit)?,
     private val listenerDel: ((ind: Int) -> Unit)?
 ) :
     RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
-
+    fun update(data: List<Movie>) {
+//        favorMovieList= listOf()
+        favorMovieList = data
+        notifyDataSetChanged()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritesViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.favorite_item, parent, false)
         return FavoritesViewHolder(view)
@@ -52,9 +56,9 @@ class FavoritesAdapter(
             this.currentFilm = film
             this.currentPosition = pos
             itemView.favTitleTV.text = film.title
-            if (favorites[pos].isViewed) itemView.favTitleTV.setTextColor(Color.BLUE)
+            if (favorMovieList[pos].isViewed) itemView.favTitleTV.setTextColor(Color.BLUE)
             else itemView.favTitleTV.setTextColor(Color.GRAY)
-            itemView.favorPosterIV.loadImage(favorites[pos].posterPath)
+            itemView.favorPosterIV.loadImage(favorMovieList[pos].posterPath)
         }
     }
 }

@@ -44,8 +44,12 @@ class ListMovieFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
+        Log.d("Kan", "ListFragment created(")
     }
 
+//    fun newInstance():ListMovieFragment {
+//        return ListMovieFragment()
+//    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,7 +71,8 @@ class ListMovieFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadFilms()
+        Log.d("Kan","Kanotop")
+        viewModel.refresh()
     }
 
     private fun setupRecyclerView() {
@@ -75,20 +80,14 @@ class ListMovieFragment : Fragment() {
             context!!,
             listOf(),
             listener = {
-//                viewModel.filmClicked.observe(this, Observer { movie->
-//                    viewModel.openDetails(movie)
-//                })
                 viewModel.openDetails(viewModel.movies.value?.get(it))
                 listener?.onFilmClick(it)
             },
             listenerMy = {
+                viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
+                viewModel.movies.value!![it].isFavorite = !viewModel.movies.value!![it].isFavorite
+                adapter.notifyItemChanged(it)
                 listenerMy?.onFavorClick(it)
-                if (!films[it].isFavorite) {
-                    favorites.add(films[it])
-                    indInFavor.add(favorites.size - 1, it)
-                    films[it].isFavorite = true
-                }
-                filmsRecyclerView.adapter?.notifyItemChanged(it)
             })
         filmsRecyclerView.layoutManager = LinearLayoutManager(context)
         filmsRecyclerView.adapter = adapter
@@ -107,13 +106,9 @@ class ListMovieFragment : Fragment() {
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == viewModel.movies.value?.size) {
-                    viewModel.loadFilms()
+                    viewModel.fetchFromRemote()
+//                    viewModel.refresh()
                 }
-//                adapter.notifyItemRangeInserted(
-//                    itemsInPage+1 ,
-//                    itemsInPage
-//                )
-                adapter.notifyDataSetChanged()
             }
         })
     }
@@ -123,7 +118,8 @@ class ListMovieFragment : Fragment() {
             activity!!,
             ViewModelFactory(App.instance!!.repository)
         ).get(FilmListViewModel::class.java)
-        if (films.isEmpty()) viewModel.loadFilms()
+//        if (films.isEmpty()) viewModel.fetchFromRemote()
+        if (films.isEmpty()) viewModel.refresh()
         viewModel.movies.observe(this, renderMovies)
         viewModel.isViewLoading.observe(this, isViewLoadingObserver)
         viewModel.onMessageError.observe(this, onMessageErrorObserver)
@@ -146,11 +142,13 @@ class ListMovieFragment : Fragment() {
         errorTV.text = "Error $it"
         errorTV.visibility = View.VISIBLE
         retryBtn.visibility = View.VISIBLE
+        filmsRecyclerView.visibility=View.GONE
         retryBtn.setOnClickListener {
-            viewModel.loadFilms()
+            viewModel.refresh()
             errorImg.visibility = View.GONE
             errorTV.visibility = View.GONE
             retryBtn.visibility = View.GONE
+            filmsRecyclerView.visibility=View.VISIBLE
         }
     }
 
@@ -197,7 +195,7 @@ class ListMovieFragment : Fragment() {
         refreshLayout.setOnRefreshListener {
             films.clear()
             viewModel.page = 0
-            viewModel.loadFilms()
+            viewModel.fetchFromRemote()
             refreshLayout.isRefreshing = false
             filmsRecyclerView.adapter?.notifyDataSetChanged()
         }
