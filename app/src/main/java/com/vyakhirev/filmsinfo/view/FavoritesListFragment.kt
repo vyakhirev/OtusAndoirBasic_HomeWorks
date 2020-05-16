@@ -11,9 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.adapters.FavoritesAdapter
-import com.vyakhirev.filmsinfo.data.favorites
-import com.vyakhirev.filmsinfo.data.films
-import com.vyakhirev.filmsinfo.data.indInFavor
 import com.vyakhirev.filmsinfo.viewmodel.FavoritesViewModelFactory
 import com.vyakhirev.filmsinfo.viewmodel.ViewModelFavorites
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
@@ -21,7 +18,6 @@ import kotlinx.android.synthetic.main.fragment_favorites_list.*
 class FavoritesListFragment : Fragment() {
     interface OnFavorClickListener {
         fun onFavorToDetails(ind: Int) {
-            favorites[ind].isViewed = true
         }
     }
 
@@ -54,7 +50,16 @@ class FavoritesListFragment : Fragment() {
         adapter = FavoritesAdapter(
             context!!,
             listOf(),
-            listener = { listener?.onFavorToDetails(it) },
+            listener = {
+                val detMovie=favViewModel.favoritesLiveData.value?.get(it)
+                favViewModel.openDetails(detMovie)
+                detMovie?.isViewed=true
+//                viewModel.switchFavorite(detMovie!!.uuid)
+                Log.d("Det","Captured movie= $detMovie  It=$it")
+                adapter.notifyItemChanged(it)
+//                listener?.onFilmClick(it)
+                listener?.onFavorToDetails(it)
+            },
             listenerDel = {
                 favViewModel.switchFavorite(favViewModel.favoritesLiveData.value!![it].uuid)
                 Log.d("Fav", "uuid= ${favViewModel.favoritesLiveData.value!![it].uuid.toString()}")

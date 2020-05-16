@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     override fun onFavorToDetails(ind: Int) {
-        super.onFavorToDetails(ind)
         onFilmClick(ind)
         Log.d("Kan","fromFavorToDetail")
     }
@@ -112,19 +111,21 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             when (it.itemId) {
 
                 R.id.action_list -> {
-//                    val firstFragment =
-//                        ListMovieFragment()
-//                    openFragment(firstFragment)
-                    var fragment=supportFragmentManager.findFragmentByTag(ListMovieFragment.TAG)
-                    if(fragment==null)
-                        fragment=ListMovieFragment()
-                            supportFragmentManager.beginTransaction()
-                                .replace(
-                                    R.id.fragmentContainer,
-                                    fragment,
-                                    ListMovieFragment.TAG
-                                )
-                                .commit()
+                    val firstFragment =
+                        ListMovieFragment()
+                    openFragment(firstFragment)
+//                    var fragment=supportFragmentManager.findFragmentByTag(ListMovieFragment.TAG)
+//                    if(fragment==null) {
+//                        fragment = ListMovieFragment()
+//                        supportFragmentManager.popBackStack()
+//                    }
+//                            supportFragmentManager.beginTransaction()
+//                                .replace(
+//                                    R.id.fragmentContainer,
+//                                    fragment,
+//                                    ListMovieFragment.TAG
+//                                )
+//                                .commit()
                             return@OnNavigationItemSelectedListener true
 //                        }
                 }

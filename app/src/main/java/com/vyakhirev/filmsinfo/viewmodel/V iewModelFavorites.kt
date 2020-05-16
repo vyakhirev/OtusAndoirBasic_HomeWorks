@@ -1,5 +1,6 @@
 package com.vyakhirev.filmsinfo.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vyakhirev.filmsinfo.App
@@ -9,6 +10,9 @@ import java.util.concurrent.Executors
 class ViewModelFavorites() : ViewModel() {
 
     val favoritesLiveData = MutableLiveData<List<Movie>>()
+
+    private val _filmClicked = MutableLiveData<Movie>()
+    val filmClicked: LiveData<Movie> = _filmClicked
 
     fun loadFavorites() {
 
@@ -27,5 +31,9 @@ class ViewModelFavorites() : ViewModel() {
             dao.switchFavoriteStar(film)
             loadFavorites()
         }
+    }
+
+    fun openDetails(movie: Movie?) {
+        _filmClicked.postValue(movie)
     }
 }

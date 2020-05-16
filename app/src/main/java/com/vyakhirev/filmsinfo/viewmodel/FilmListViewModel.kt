@@ -68,6 +68,7 @@ class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
     var page = 0
     fun fetchFromRemote() {
         _isViewLoading.postValue(true)
+//        Thread.sleep(10000L)
         repository.retrieveMovies(page++, object : OperationCallback<Movie> {
             override fun onError(error: String?) {
                 _isViewLoading.postValue(false)

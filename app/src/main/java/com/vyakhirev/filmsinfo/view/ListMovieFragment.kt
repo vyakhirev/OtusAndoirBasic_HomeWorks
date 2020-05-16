@@ -32,12 +32,11 @@ class ListMovieFragment : Fragment() {
     private lateinit var adapter: FilmsAdapter
 
     interface OnFilmClickListener {
-        fun onFilmClick(ind: Int) {
-            films[ind].isViewed = true
+        fun onFilmClick(ind: Int){
 
         }
+        fun onFavorClick(ind: Int){
 
-        fun onFavorClick(ind: Int) {
         }
     }
 
@@ -80,14 +79,19 @@ class ListMovieFragment : Fragment() {
             context!!,
             listOf(),
             listener = {
-                viewModel.openDetails(viewModel.movies.value?.get(it))
+                val detMovie=viewModel.movies.value?.get(it)
+                viewModel.openDetails(detMovie)
+                detMovie?.isViewed=true
+//                viewModel.switchFavorite(detMovie!!.uuid)
+                Log.d("Det","Captured movie= $detMovie  It=$it")
+                adapter.notifyItemChanged(it)
                 listener?.onFilmClick(it)
             },
             listenerMy = {
                 viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
                 viewModel.movies.value!![it].isFavorite = !viewModel.movies.value!![it].isFavorite
                 adapter.notifyItemChanged(it)
-                listenerMy?.onFavorClick(it)
+//                listenerMy?.onFavorClick(it)
             })
         filmsRecyclerView.layoutManager = LinearLayoutManager(context)
         filmsRecyclerView.adapter = adapter
