@@ -12,11 +12,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
+import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
+import com.vyakhirev.filmsinfo.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_list_movie.*
 
@@ -26,9 +30,12 @@ private var themesSwitcher = true
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
+
+    private lateinit var viewModel: FilmListViewModel
+
     override fun onFilmClick(ind: Int) {
         super.onFilmClick(ind)
-        openFilmDetailed(ind)
+        openFilmDetailed()
     }
 
     override fun onFavorClick(ind: Int) {
@@ -73,12 +80,12 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         }, 3000)
     }
 
-    private fun openFilmDetailed(ind: Int) {
+    private fun openFilmDetailed() {
         supportFragmentManager
             .beginTransaction()
             .replace(
                 R.id.fragmentContainer,
-                DetailMovieFragment.newInstance(ind),
+                DetailMovieFragment.newInstance(),
                 DetailMovieFragment.TAG
             )
             .addToBackStack(null)
@@ -88,7 +95,10 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(App.instance!!.repository)
+        ).get(FilmListViewModel::class.java)
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         openFragment(ListMovieFragment())

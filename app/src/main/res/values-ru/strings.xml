@@ -25,4 +25,6 @@
     <string name="favorites_menu">Любимые</string>
     <string name="settings">Настройки</string>
     <string name="films_loading">Загрузка информации о фильмах…</string>
+    <string name="errorMsg">Божечки!</string>
+    <string name="retry">Попробовать ещё</string>
 </resources>

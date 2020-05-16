@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.adapters.FavoritesAdapter
 import com.vyakhirev.filmsinfo.data.favorites
+import com.vyakhirev.filmsinfo.data.films
+import com.vyakhirev.filmsinfo.data.indInFavor
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
 class FavoritesListFragment : Fragment() {
@@ -41,6 +43,8 @@ class FavoritesListFragment : Fragment() {
                 listenerDel = {
                     favorites.removeAt(it)
                     adapter?.notifyDataSetChanged()
+                    films[indInFavor[it]].isFavorite = false
+
 //                    adapter?.notifyItemRangeChanged(
 //                        it,
 //                        favorites.size-1
