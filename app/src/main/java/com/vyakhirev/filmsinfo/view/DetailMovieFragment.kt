@@ -12,29 +12,37 @@ import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
 import com.vyakhirev.filmsinfo.data.loadImage
+import com.vyakhirev.filmsinfo.viewmodel.FavoritesViewModelFactory
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.ViewModelFactory
+import com.vyakhirev.filmsinfo.viewmodel.ViewModelFavorites
 import kotlinx.android.synthetic.main.fragment_detail_movie.*
 
 class DetailMovieFragment : Fragment() {
     private lateinit var viewModel: FilmListViewModel
+    private lateinit var favViewModel: ViewModelFavorites
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("Kan","DetailMovieFragment created(")
+        Log.d(DEBUG_TAG, "DetailMovieFragment created(")
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_detail_movie, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewModel = ViewModelProvider(
             activity!!,
             ViewModelFactory(App.instance!!.repository)
         ).get(FilmListViewModel::class.java)
         viewModel.filmClicked.observe(this, filmDetails)
+
+        favViewModel =
+            ViewModelProvider(activity!!, FavoritesViewModelFactory()).get(ViewModelFavorites::class.java)
+        favViewModel.filmClicked.observe(this, filmDetails)
     }
 
     private val filmDetails = Observer<Movie> { movie ->
@@ -45,10 +53,6 @@ class DetailMovieFragment : Fragment() {
 
     companion object {
         const val TAG = "DetailMovieFragment"
-        private const val FILM_INDEX = "film_index"
-
-        fun newInstance(): DetailMovieFragment {
-            return DetailMovieFragment()
-        }
+        const val DEBUG_TAG = "Deb"
     }
 }

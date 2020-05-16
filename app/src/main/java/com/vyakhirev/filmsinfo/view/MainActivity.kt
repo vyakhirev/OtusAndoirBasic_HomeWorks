@@ -32,6 +32,9 @@ import kotlinx.android.synthetic.main.fragment_list_movie.*
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
+    companion object{
+        const val DEBUG_TAG="Deb"
+    }
     private lateinit var viewModel: FilmListViewModel
 
     override fun onFilmClick(ind: Int) {
@@ -45,17 +48,18 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     override fun onFavorToDetails(ind: Int) {
-        onFilmClick(ind)
-        Log.d("Kan","fromFavorToDetail")
+//        onFilmClick(ind)
+        openFilmDetailed()
+        Log.d(DEBUG_TAG,"fromFavorToDetail")
     }
 
     private fun showSnack(ind: Int) {
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
         val listener = View.OnClickListener {
-            favorites.removeAt(favorites.size - 1)
-            films[ind].isFavorite = false
-            filmsRecyclerView.adapter?.notifyItemChanged(ind)
+//            favorites.removeAt(favorites.size - 1)
+//            films[ind].isFavorite = false
+//            filmsRecyclerView.adapter?.notifyItemChanged(ind)
         }
         snack.setAction("Undo", listener)
         snack.setActionTextColor(
@@ -83,16 +87,16 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     private fun openFilmDetailed() {
 
-            supportFragmentManager
-                .beginTransaction()
-                .replace(
-                    R.id.fragmentContainer,
-                    DetailMovieFragment.newInstance(),
-                    DetailMovieFragment.TAG
-                )
-                .addToBackStack(null)
-                .commit()
-        }
+        supportFragmentManager
+            .beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                DetailMovieFragment(),
+                DetailMovieFragment.TAG
+            )
+            .addToBackStack(null)
+            .commit()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,29 +115,14 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             when (it.itemId) {
 
                 R.id.action_list -> {
-                    val firstFragment =
-                        ListMovieFragment()
-                    openFragment(firstFragment)
-//                    var fragment=supportFragmentManager.findFragmentByTag(ListMovieFragment.TAG)
-//                    if(fragment==null) {
-//                        fragment = ListMovieFragment()
-//                        supportFragmentManager.popBackStack()
-//                    }
-//                            supportFragmentManager.beginTransaction()
-//                                .replace(
-//                                    R.id.fragmentContainer,
-//                                    fragment,
-//                                    ListMovieFragment.TAG
-//                                )
-//                                .commit()
-                            return@OnNavigationItemSelectedListener true
-//                        }
+                    supportFragmentManager.popBackStack()
+                    openFragment(ListMovieFragment())
+                    return@OnNavigationItemSelectedListener true
                 }
 
                 R.id.action_favorites -> {
-                    val secondFragment =
-                        FavoritesListFragment()
-                    openFragment(secondFragment)
+                    supportFragmentManager.popBackStack()
+                    openFragment(FavoritesListFragment())
                     return@OnNavigationItemSelectedListener true
                 }
 
@@ -148,24 +137,12 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         }
 
     private fun openFragment(fragment: Fragment) {
-//        var fr=supportFragmentManager.findFragmentByTag(ListMovieFragment.TAG)
-//        if(fr!=null){
-//            supportFragmentManager.popBackStack()
-//            Log.d("Kan1","Kannnnnnn")
-//        }
-//        if(supportFragmentManager.popBackStack(ListMovieFragment.TAG))
-
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragmentContainer, fragment,fragment.tag)
-//        transaction.addToBackStack(fragment.tag)
+        transaction.replace(R.id.fragmentContainer, fragment, fragment.tag)
         transaction.commit()
     }
 
     override fun onBackPressed() {
-//        supportFragmentManager.fragments.forEach{
-//            if(it.tag==FavoritesListFragment.TAG)
-//                Log.d("Kan1","Kannnnnnn")
-//        }
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
 

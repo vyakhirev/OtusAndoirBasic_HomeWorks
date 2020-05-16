@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
-import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.loadImage
 import kotlinx.android.synthetic.main.favorite_item.view.*
 

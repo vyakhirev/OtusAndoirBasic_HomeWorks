@@ -17,59 +17,62 @@ import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
 class FavoritesListFragment : Fragment() {
     interface OnFavorClickListener {
-        fun onFavorToDetails(ind: Int) {
-        }
+        fun onFavorToDetails(ind: Int)
     }
 
     private var listener: OnFavorClickListener? = null
     private var listenerDel: OnFavorClickListener? = null
     private lateinit var favViewModel: ViewModelFavorites
     private lateinit var adapter: FavoritesAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("Kan", "FavoritListFragment created(")
+        Log.d(DEBUG_TAG, "FavoritesListFragment created(")
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_favorites_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupViewModel()
+        setupRecycler()
+    }
+
+    private fun setupViewModel() {
         favViewModel =
-            ViewModelProvider(this, FavoritesViewModelFactory()).get(ViewModelFavorites::class.java)
+            ViewModelProvider(
+                activity!!,
+                FavoritesViewModelFactory()
+            ).get(ViewModelFavorites::class.java)
         favViewModel.loadFavorites()
         favViewModel.favoritesLiveData.observe(this, Observer {
             adapter.update(it)
         })
-        setupRecycler()
+        favViewModel.filmClicked.observe(this, Observer {
+            favViewModel.openDetails(it)
+        })
     }
 
-    fun setupRecycler() {
+    private fun setupRecycler() {
         adapter = FavoritesAdapter(
             context!!,
             listOf(),
             listener = {
-                val detMovie=favViewModel.favoritesLiveData.value?.get(it)
+                val detMovie = favViewModel.favoritesLiveData.value!![it]
                 favViewModel.openDetails(detMovie)
-                detMovie?.isViewed=true
-//                viewModel.switchFavorite(detMovie!!.uuid)
-                Log.d("Det","Captured movie= $detMovie  It=$it")
-                adapter.notifyItemChanged(it)
-//                listener?.onFilmClick(it)
+//                detMovie?.isViewed = true
                 listener?.onFavorToDetails(it)
             },
             listenerDel = {
                 favViewModel.switchFavorite(favViewModel.favoritesLiveData.value!![it].uuid)
-                Log.d("Fav", "uuid= ${favViewModel.favoritesLiveData.value!![it].uuid.toString()}")
-//                favViewModel.favoritesLiveData.value!![it].isFavorite =!favViewModel.favoritesLiveData.value!![it].isFavorite
+                Log.d(
+                    DEBUG_TAG,
+                    "uuid= ${favViewModel.favoritesLiveData.value!![it].uuid}"
+                )
                 adapter.notifyItemRemoved(it)
-//                    viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
-//                    favViewModel.favoritesLiveData.value[it]
-//                    favorites.removeAt(it)
-//                    adapter?.notifyDataSetChanged()
-//                    films[indInFavor[it]].isFavorite = false
             }
         )
         favoritesRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -89,5 +92,6 @@ class FavoritesListFragment : Fragment() {
 
     companion object {
         const val TAG = "FavoritesListFragment"
+        const val DEBUG_TAG = "Deb"
     }
 }

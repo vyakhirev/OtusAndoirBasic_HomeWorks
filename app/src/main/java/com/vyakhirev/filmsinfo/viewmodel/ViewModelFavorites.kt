@@ -9,7 +9,8 @@ import java.util.concurrent.Executors
 
 class ViewModelFavorites() : ViewModel() {
 
-    val favoritesLiveData = MutableLiveData<List<Movie>>()
+    private val _favoritesLiveData = MutableLiveData<List<Movie>>()
+    val favoritesLiveData: LiveData<List<Movie>> = _favoritesLiveData
 
     private val _filmClicked = MutableLiveData<Movie>()
     val filmClicked: LiveData<Movie> = _filmClicked
@@ -18,14 +19,14 @@ class ViewModelFavorites() : ViewModel() {
 
         Executors.newSingleThreadScheduledExecutor().execute {
             val movie = App.instance!!.movieDB.movieDao().getFavorites(true)
-            favoritesLiveData.postValue(movie)
+            _favoritesLiveData.postValue(movie)
         }
     }
 
     fun switchFavorite(uuid: Int) {
         Executors.newSingleThreadScheduledExecutor().execute {
             val dao = App.instance!!.movieDB.movieDao()
-            var film = dao.getMovie(uuid)
+            val film = dao.getMovie(uuid)
             film.isFavorite = false
 //            film.isFavorite = !film.isFavorite
             dao.switchFavoriteStar(film)

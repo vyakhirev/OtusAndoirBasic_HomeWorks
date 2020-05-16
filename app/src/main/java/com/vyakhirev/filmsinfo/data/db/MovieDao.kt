@@ -19,7 +19,7 @@ interface MovieDao {
 
     @Query("SELECT * FROM movie WHERE isFavorite=:isFavorite")
     // @Query("SELECT * FROM movie WHERE isFavorite=:isFavorite")
-    fun getFavorites(isFavorite:Boolean): List<Movie>
+    fun getFavorites(isFavorite: Boolean): List<Movie>
 
     @Query("DELETE FROM movie")
     fun deleteAllMovies()

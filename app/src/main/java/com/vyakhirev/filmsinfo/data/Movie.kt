@@ -9,8 +9,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.gson.annotations.SerializedName
 import com.vyakhirev.filmsinfo.R
 
-//@Entity
-//class Movie(
+// @Entity
+// class Movie(
 //    posterPath: String,
 //    @SerializedName("adult")
 //    var isAdult: Boolean,
@@ -39,11 +39,11 @@ import com.vyakhirev.filmsinfo.R
 //    var voteAverage: Double?,
 //    var isViewed: Boolean = false,
 //    var isFavorite: Boolean = false
-//) {
+// ) {
 //    @SerializedName("poster_path")
 //    var posterPath: String? = null
 //        get() = "https://image.tmdb.org/t/p/w500$field"
-//}
+// }
 
 @Entity
 data class Movie(
@@ -69,7 +69,7 @@ data class Movie(
     var uuid: Int = 0
 }
 
-const val POSTER_BASE_URL="https://image.tmdb.org/t/p/w500"
+const val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
 var films: ArrayList<Movie> = ArrayList()
 var favorites: ArrayList<Movie> = ArrayList()
 val indInFavor: MutableList<Int> = mutableListOf()
@@ -78,6 +78,6 @@ fun ImageView.loadImage(uri: String?) {
         .error(R.mipmap.ic_launcher_round)
     Glide.with(this.context)
         .setDefaultRequestOptions(options)
-        .load(POSTER_BASE_URL+uri)
+        .load(POSTER_BASE_URL + uri)
         .into(this)
 }

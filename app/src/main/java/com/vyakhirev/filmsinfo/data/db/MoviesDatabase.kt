@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.vyakhirev.filmsinfo.data.Movie
 
-
 @Database(entities = arrayOf(Movie::class), version = 1)
 abstract class MoviesDatabase : RoomDatabase() {
     abstract fun movieDao(): MovieDao
