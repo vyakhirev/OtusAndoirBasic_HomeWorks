@@ -18,6 +18,17 @@
         tools:srcCompat="@android:drawable/btn_star_big_off" />
 
     <ImageView
+        android:id="@+id/watchLaterImgView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="37dp"
+        android:contentDescription="@string/watch_later_desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/ic_live_tv_yellow_24dp" />
+
+    <ImageView
         android:id="@+id/posterImgView"
         android:layout_width="100sp"
         android:layout_height="103dp"

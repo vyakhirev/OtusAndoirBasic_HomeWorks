@@ -3,7 +3,7 @@ package com.vyakhirev.filmsinfo
 import android.app.Application
 import android.util.Log
 import com.vyakhirev.filmsinfo.data.MoviesRepository
-import com.vyakhirev.filmsinfo.data.SharedPreferencesHelper
+import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import com.vyakhirev.filmsinfo.data.db.MoviesDatabase
 import com.vyakhirev.filmsinfo.network.MovieApiClient
 import java.util.concurrent.Executors

@@ -15,7 +15,8 @@ class FilmsAdapter(
     private val context: Context,
     private var films: List<Movie>,
     private val listener: ((ind: Int) -> Unit)?,
-    private val listenerMy: ((ind: Int) -> Unit)?
+    private val listenerMy: ((ind: Int) -> Unit)?,
+    private val listenerWl:((ind:Int)->Unit)?
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -68,6 +69,9 @@ class FilmsAdapter(
             }
             itemView.favoritesImgView.setOnClickListener {
                 listenerMy?.invoke(currentPosition)
+            }
+            itemView.watchLaterImgView.setOnClickListener {
+                listenerWl?.invoke(currentPosition)
             }
         }
 

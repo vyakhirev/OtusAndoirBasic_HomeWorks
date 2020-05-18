@@ -7,7 +7,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MoviesRepository(val api: MovieApiClient) : MovieDataSource {
+class MoviesRepository(private val api: MovieApiClient) : MovieDataSource {
 
     private var call: Call<MovieResponse>? = null
 

@@ -1,6 +1,10 @@
 package com.vyakhirev.filmsinfo.view
 
 import android.app.Dialog
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -18,12 +22,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.data.favorites
-import com.vyakhirev.filmsinfo.data.films
+import com.vyakhirev.filmsinfo.data.Movie
+import com.vyakhirev.filmsinfo.util.MovieJobService
+import com.vyakhirev.filmsinfo.util.NotificationHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
-import com.vyakhirev.filmsinfo.viewmodel.ViewModelFactory
+import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_list_movie.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 //const val THEME_SWITCHER = "theme_switcher"
 //private var filmClicked: Int = 10000
@@ -32,10 +38,13 @@ import kotlinx.android.synthetic.main.fragment_list_movie.*
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
-    companion object{
-        const val DEBUG_TAG="Deb"
-    }
     private lateinit var viewModel: FilmListViewModel
+
+    companion object {
+        const val DEBUG_TAG = "Deb"
+        var sJobId = 0
+        const val TAG_SCH = "MovieSch"
+    }
 
     override fun onFilmClick(ind: Int) {
         super.onFilmClick(ind)
@@ -50,7 +59,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     override fun onFavorToDetails(ind: Int) {
 //        onFilmClick(ind)
         openFilmDetailed()
-        Log.d(DEBUG_TAG,"fromFavorToDetail")
+        Log.d(DEBUG_TAG, "fromFavorToDetail")
     }
 
     private fun showSnack(ind: Int) {
@@ -85,6 +94,41 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         }, 3000)
     }
 
+    private fun scheduleJob(context: Context) {
+        val jobService = ComponentName(context, MovieJobService::class.java)
+        val jobBuilder = JobInfo.Builder(sJobId++, jobService)
+        jobBuilder.setMinimumLatency(10000)
+        jobBuilder.setOverrideDeadline(15000)
+        jobBuilder.setRequiresCharging(false)
+        jobBuilder.setBackoffCriteria(
+            TimeUnit.SECONDS.toMillis(10),
+            JobInfo.BACKOFF_POLICY_LINEAR
+        )
+        Log.i(TAG_SCH, "scheduleJob: adding job to scheduler")
+        val jobScheduler =
+            context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        jobScheduler.schedule(jobBuilder.build())
+
+    }
+
+//    fun setupAlarm() {
+//        Log.d(DEBUG_TAG, "setupAlarm")
+//        val intent = Intent(this, MainActivity::class.java)
+//        val requestCode = 123456 //any code
+//        val pendIntent = PendingIntent.getActivity(
+//            this,
+//            requestCode,
+//            intent,
+//            PendingIntent.FLAG_CANCEL_CURRENT
+//        )
+//
+//        val mgr = this.applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, pendIntent)
+//        NotificationHelper(App.instance!!.baseContext).createNotification()
+////        finish()
+//    }
+
+
     private fun openFilmDetailed() {
 
         supportFragmentManager
@@ -100,14 +144,32 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        if(savedInstanceState!=null){
+
         setContentView(R.layout.activity_main)
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(App.instance!!.repository)
-        ).get(FilmListViewModel::class.java)
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         openFragment(ListMovieFragment())
+        scheduleJob(this)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        var movieUuid = intent.getIntExtra(NotificationHelper.MOVIE_UUID, 0)
+        if (movieUuid != 0) {
+            viewModel = ViewModelProvider(
+                this,
+                ViewModelFactory(App.instance!!.repository)
+            ).get(FilmListViewModel::class.java)
+            var movie: Movie
+            Executors.newSingleThreadScheduledExecutor().execute {
+                val dao = App.instance!!.movieDB.movieDao()
+                movie = dao.getMovie(movieUuid)
+                viewModel.openDetails(movie)
+                openFilmDetailed()
+            }
+        }
     }
 
     private val mOnNavigationItemSelectedListener =
@@ -125,7 +187,11 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
                     openFragment(FavoritesListFragment())
                     return@OnNavigationItemSelectedListener true
                 }
-
+                R.id.action_watch_later -> {
+                    supportFragmentManager.popBackStack()
+                    openFragment(WatchLaterFragment())
+                    return@OnNavigationItemSelectedListener true
+                }
                 R.id.action_settings -> {
                     val thirdFragment =
                         SettingsFragment()

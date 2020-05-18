@@ -1,7 +1,8 @@
-package com.vyakhirev.filmsinfo.viewmodel
+package com.vyakhirev.filmsinfo.viewmodel.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.vyakhirev.filmsinfo.viewmodel.ViewModelFavorites
 
 class FavoritesViewModelFactory() : ViewModelProvider.Factory {
 
