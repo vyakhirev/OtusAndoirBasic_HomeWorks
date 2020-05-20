@@ -43,6 +43,10 @@ class FilmsAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+//        if (position==0){
+//            holder.itemView.visibility=View.INVISIBLE
+//        }
+
         if (holder is FilmsViewHolder) {
             val film = films[position]
             holder.setData(film, position)

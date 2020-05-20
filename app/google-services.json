@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "391181795355",
+    "firebase_url": "https://filmsinfo-144c0.firebaseio.com",
+    "project_id": "filmsinfo-144c0",
+    "storage_bucket": "filmsinfo-144c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391181795355:android:a09534244a24b5f0b678be",
+        "android_client_info": {
+          "package_name": "com.vyakhirev.filmsinfo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391181795355-irj7rp0or6kq7l9bjl8nt7u5c6tlfd5t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqDHkw92h_kKmgo327jwT1W8qvfmcVuVo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391181795355-irj7rp0or6kq7l9bjl8nt7u5c6tlfd5t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

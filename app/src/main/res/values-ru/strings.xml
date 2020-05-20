@@ -29,4 +29,6 @@
     <string name="retry">Попробовать ещё</string>
     <string name="watch_later">Посмотреть позже</string>
     <string name="watch_later_desc">Watch later</string>
+    <string name="fcm_message">Сообщение FCM</string>
+    <string name="default_notification_channel_name" translatable="false">Справочник фильмов</string>
 </resources>

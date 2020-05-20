@@ -28,4 +28,8 @@
     <string name="retry">Retry</string>
     <string name="watch_later">Watch later</string>
     <string name="watch_later_desc">Watch later</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="fcm_message">FCM Message</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="default_notification_channel_name">FilmsInfo</string>
 </resources>
