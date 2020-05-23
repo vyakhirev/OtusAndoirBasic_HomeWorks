@@ -10,7 +10,7 @@ data class MovieResponse(
     @SerializedName("total_pages")
     var totalPages: Int,
     val status: Int?,
-    val msg: String = "Kan!"
+    val msg: String = "Error!"
 ) {
     fun isSuccess(): Boolean = results.isNotEmpty() // (status==200)
 }

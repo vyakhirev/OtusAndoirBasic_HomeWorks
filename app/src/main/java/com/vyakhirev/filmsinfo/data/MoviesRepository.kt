@@ -1,8 +1,8 @@
 package com.vyakhirev.filmsinfo.data
 
 import com.vyakhirev.filmsinfo.BuildConfig
-import com.vyakhirev.filmsinfo.network.MovieApiClient
-import com.vyakhirev.filmsinfo.network.OperationCallback
+import com.vyakhirev.filmsinfo.data.network.MovieApiClient
+import com.vyakhirev.filmsinfo.data.network.OperationCallback
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

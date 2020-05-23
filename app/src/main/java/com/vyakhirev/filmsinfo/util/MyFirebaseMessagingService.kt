@@ -25,6 +25,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         remoteMessage.data.isNotEmpty().let {
             Log.d(TAG, "Message data payload: " + remoteMessage.data)
+            sendNotification(remoteMessage.notification?.body!!)
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
@@ -68,7 +69,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // [START dispatch_job]
         val work = OneTimeWorkRequest.Builder(MyWorker::class.java).build()
         WorkManager.getInstance().beginWith(work).enqueue()
-        sendNotification("Посмотрите побег из Шоушенга")
+//        sendNotification("Посмотрите побег из Шоушенка")
         // [END dispatch_job]
     }
 

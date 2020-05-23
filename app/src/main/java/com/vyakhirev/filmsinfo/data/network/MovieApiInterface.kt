@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.network
+package com.vyakhirev.filmsinfo.data.network
 
 import com.vyakhirev.filmsinfo.data.MovieResponse
 import retrofit2.Call

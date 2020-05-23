@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.network
+package com.vyakhirev.filmsinfo.data.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

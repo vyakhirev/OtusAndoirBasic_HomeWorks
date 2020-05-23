@@ -7,7 +7,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.vyakhirev.filmsinfo.data.MoviesRepository
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import com.vyakhirev.filmsinfo.data.db.MoviesDatabase
-import com.vyakhirev.filmsinfo.network.MovieApiClient
+import com.vyakhirev.filmsinfo.data.network.MovieApiClient
 import java.util.concurrent.Executors
 
 class App : Application() {

@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.network
+package com.vyakhirev.filmsinfo.data.network
 
 interface OperationCallback<T> {
     fun onSuccess(data: List<T>?)

@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     override fun onResume() {
         super.onResume()
-        var movieUuid = intent.getIntExtra(NotificationHelper.MOVIE_UUID, 0)
+        val movieUuid = intent.getIntExtra(NotificationHelper.MOVIE_UUID, 0)
         if (movieUuid != 0) {
             viewModel = ViewModelProvider(
                 this,
