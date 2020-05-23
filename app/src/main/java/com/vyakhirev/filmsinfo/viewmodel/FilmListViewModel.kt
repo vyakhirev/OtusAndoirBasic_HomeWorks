@@ -5,16 +5,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vyakhirev.filmsinfo.App
-import com.vyakhirev.filmsinfo.data.Movie
-import com.vyakhirev.filmsinfo.data.MovieDataSource
-import com.vyakhirev.filmsinfo.network.OperationCallback
-import com.vyakhirev.filmsinfo.util.NotificationHelper
-import java.util.concurrent.Executors
+import com.vyakhirev.filmsinfo.BuildConfig
+import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.model.MovieResponse
+import com.vyakhirev.filmsinfo.model.network.MovieApiClient
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.schedulers.Schedulers
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
+class FilmListViewModel() : ViewModel(), CoroutineScope {
     companion object {
-        const val DEBUG_TAG = "Deb"
+        const val DEBUG_TAG = "deb"
     }
+
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies
 
@@ -30,19 +40,19 @@ class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
     private val prefHelper = App.instance!!.prefHelper
     private var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
 
+    private val disposable = CompositeDisposable()
+    private val moviesService = MovieApiClient
+
     fun refresh() {
         checkCacheDuration()
         val updateTime = prefHelper.getUpdateTime()
         if (updateTime != null && updateTime != 0L && System.nanoTime() - updateTime < refreshTime) {
-        fetchFromDatabase()
+            fetchFromDatabase()
         } else {
             fetchFromRemote()
         }
     }
 
-//    fun clearListMovie(){
-//        _movies.postValue(null)
-//    }
     private fun checkCacheDuration() {
         val cachePreference = prefHelper.getCacheDuration()
         try {
@@ -55,62 +65,88 @@ class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
 
     private fun fetchFromDatabase() {
         Log.d(DEBUG_TAG, "fetchFromDatabase()")
-        _isViewLoading.postValue(true)
-        Executors.newSingleThreadScheduledExecutor().execute {
-            val movie = App.instance!!.movieDB.movieDao().getAllMovie()
-            _movies.postValue(movie)
-            moviesRetrieved(movie)
-        }
+        _isViewLoading.value = true
+        disposable.add(
+            App.instance!!.movieDB.movieDao().getAllMovie()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    _movies.value = it
+                })
     }
 
-    var page = 0
+    var page = 1
     fun fetchFromRemote() {
-        _isViewLoading.postValue(true)
-        repository.retrieveMovies(page++, object : OperationCallback<Movie> {
-            override fun onError(error: String?) {
-                _isViewLoading.postValue(false)
-                _onMessageError.postValue(error)
-                page--
-            }
+        _isViewLoading.value = true
+        disposable.add(
+            moviesService.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<MovieResponse>() {
 
-            override fun onSuccess(data: List<Movie>?) {
-                Log.d(DEBUG_TAG, "fetchFromRemote()")
-                _isViewLoading.postValue(false)
-                if (data != null) {
-                    _movies.value=data
-                    storeLocally(data)
-                }
-            }
-        })
+                    override fun onSuccess(movieList: MovieResponse) {
+                        _isViewLoading.value = false
+                        _movies.postValue(movieList.results)
+                        Log.d(DEBUG_TAG, "fetchFromRemote()")
+                        storeLocally(movieList.results)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        _isViewLoading.value = false
+                        _onMessageError.postValue(e.printStackTrace())
+                    }
+                })
+        )
     }
 
     fun storeLocally(list: List<Movie>) {
-        Executors.newSingleThreadScheduledExecutor().execute {
-            val dao = App.instance!!.movieDB.movieDao()
-            val result = dao.insertAll(*list.toTypedArray())
-            var i = 0
-            while (i < list.size) {
-                list[i].uuid = result[i].toInt()
-                ++i
+        launch {
+            withContext(Dispatchers.IO) {
+                val dao = App.instance!!.movieDB.movieDao()
+                dao.deleteAllMovies()
+                val result = dao.insertAll(*list.toTypedArray())
+                var i = 0
+                while (i < list.size) {
+                    list[i].uuid = result[i].toInt()
+                    ++i
+                }
             }
-            moviesRetrieved(list)
+            prefHelper.saveUpdateTime(System.nanoTime())
         }
-        prefHelper.saveUpdateTime(System.nanoTime())
     }
-    private fun moviesRetrieved(movies: List<Movie>) {
-        _movies.value = movies
-        _isViewLoading.postValue(false)
-    }
+
     fun openDetails(movie: Movie?) {
         _filmClicked.postValue(movie)
     }
 
     fun switchFavorite(uuid: Int) {
-        Executors.newSingleThreadScheduledExecutor().execute {
-            val dao = App.instance!!.movieDB.movieDao()
-            val film = dao.getMovie(uuid)
-            film.isFavorite = !film.isFavorite
-            dao.switchFavoriteStar(film)
+        launch {
+            withContext(Dispatchers.IO) {
+                val dao = App.instance!!.movieDB.movieDao()
+                val film = dao.getMovie(uuid)
+                film.isFavorite = !film.isFavorite
+                dao.switchFavoriteStar(film)
+            }
         }
     }
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
+    override fun onCleared() {
+        super.onCleared()
+        job.cancel()
+        disposable.clear()
+    }
 }
+// private fun moviesRetrieved(movies: List<Movie>) {
+//     _movies.value = movies
+//     _isViewLoading.value = false
+//     _onMessageError.value = false
+// }
+
+// override fun onCleared() {
+//     super.onCleared()
+//    disposable.clear()
+// }

@@ -32,7 +32,6 @@ class NotificationHelper(val context: Context) {
         val pendingIntent =
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_live_tv_yellow_24dp)
             .setContentTitle("Movie!")

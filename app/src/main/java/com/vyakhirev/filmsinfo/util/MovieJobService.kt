@@ -19,9 +19,8 @@ class MovieJobService : JobService() {
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.i(TAG_SCH, "onStartJob: starting job with id: " + params?.jobId)
         val startIntentService = Intent(this, MovieIntentService::class.java)
-        ContextCompat.startForegroundService(this,startIntentService)
+        ContextCompat.startForegroundService(this, startIntentService)
 //        startService(startIntentService)
         return true
     }
-
 }

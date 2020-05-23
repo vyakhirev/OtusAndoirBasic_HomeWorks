@@ -38,9 +38,9 @@ class MovieIntentService : IntentService(TAG_SCH) {
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
-        val dayX= "$year-${month+1}-$day"
-        if (prefHelper.getWatchLaterData()==dayX) {
-            Log.d("Kan","DayX=$dayX")
+        val dayX = "$year-${month + 1}-$day"
+        if (prefHelper.getWatchLaterData() == dayX) {
+            Log.d("Kan", "DayX=$dayX")
             NotificationHelper(App.instance!!.baseContext).createNotification()
         }
         return super.onStartCommand(intent, flags, startId)
@@ -50,8 +50,8 @@ class MovieIntentService : IntentService(TAG_SCH) {
         Log.d(TAG_SCH, "onDestroy")
         super.onDestroy()
     }
-companion object{
-    const val TAG_SCH="MovieSch"
+companion object {
+    const val TAG_SCH = "MovieSch"
 }
     /**
      * A constructor is required, and must call the super IntentService(String)

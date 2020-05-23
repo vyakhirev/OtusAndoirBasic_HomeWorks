@@ -10,9 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.adapters.FavoritesAdapter
-import com.vyakhirev.filmsinfo.viewmodel.factories.FavoritesViewModelFactory
+import com.vyakhirev.filmsinfo.view.adapters.FavoritesAdapter
 import com.vyakhirev.filmsinfo.viewmodel.ViewModelFavorites
+import com.vyakhirev.filmsinfo.viewmodel.factories.FavoritesViewModelFactory
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
 class FavoritesListFragment : Fragment() {
@@ -44,7 +44,7 @@ class FavoritesListFragment : Fragment() {
     private fun setupViewModel() {
         favViewModel =
             ViewModelProvider(
-                activity!!,
+                requireActivity(),
                 FavoritesViewModelFactory()
             ).get(ViewModelFavorites::class.java)
         favViewModel.loadFavorites()
@@ -58,20 +58,17 @@ class FavoritesListFragment : Fragment() {
 
     private fun setupRecycler() {
         adapter = FavoritesAdapter(
-            context!!,
+            requireContext(),
             listOf(),
             listener = {
                 val detMovie = favViewModel.favoritesLiveData.value!![it]
                 favViewModel.openDetails(detMovie)
-//                detMovie?.isViewed = true
                 listener?.onFavorToDetails(it)
             },
             listenerDel = {
                 favViewModel.switchFavorite(favViewModel.favoritesLiveData.value!![it].uuid)
-                Log.d(
-                    DEBUG_TAG,
-                    "uuid= ${favViewModel.favoritesLiveData.value!![it].uuid}"
-                )
+                favViewModel.favoritesLiveData.value!![it].isFavorite =
+                    !favViewModel.favoritesLiveData.value!![it].isFavorite
                 adapter.notifyItemRemoved(it)
             }
         )

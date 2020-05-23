@@ -4,16 +4,13 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Rect
-import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
-import android.icu.util.LocaleData
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -23,15 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.adapters.FilmsAdapter
-import com.vyakhirev.filmsinfo.data.Movie
-import com.vyakhirev.filmsinfo.data.films
+import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.view.adapters.FilmsAdapter
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_list_movie.*
-import java.time.LocalDate.parse
-import java.util.*
-import java.util.logging.Level.parse
 
 class ListMovieFragment : Fragment() {
     private var listener: OnFilmClickListener? = null
@@ -75,7 +68,7 @@ class ListMovieFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = FilmsAdapter(
-            context!!,
+            requireContext(),
             listOf(),
             listener = {
                 val detMovie = viewModel.movies.value?.get(it)
@@ -92,27 +85,24 @@ class ListMovieFragment : Fragment() {
                 listenerMy?.onFavorClick(it)
             },
             listenerWl = {
-//                Toast.makeText(context, "Watch later! Number=$it", Toast.LENGTH_SHORT).show()
                 dataPicker()
                 prefHelper.saveWatchLaterUuid(viewModel.movies.value!![it].uuid)
             })
+
         filmsRecyclerView.layoutManager = LinearLayoutManager(context)
         filmsRecyclerView.adapter = adapter
 
-        val itemDecor =
-            CustomItemDecoration(
-                context!!,
-                DividerItemDecoration.VERTICAL
-            )
-        ContextCompat.getDrawable(
-            context!!,
-            R.drawable.my_divider
-        )
+        val itemDecor = CustomItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+        ContextCompat.getDrawable(requireContext(), R.drawable.my_divider)
             ?.let { itemDecor.setDrawable(it) }
+        if (filmsRecyclerView.adapter!!.itemCount == 1) {
+            filmsRecyclerView.removeItemDecoration(itemDecor)
+        }
         filmsRecyclerView.addItemDecoration(itemDecor)
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == viewModel.movies.value?.size) {
+                    viewModel.page++
                     viewModel.fetchFromRemote()
                 }
             }
@@ -132,10 +122,9 @@ class ListMovieFragment : Fragment() {
             val month = c.get(Calendar.MONTH)
             val day = c.get(Calendar.DAY_OF_MONTH)
             val dpd = DatePickerDialog(
-                context!!,
+                requireContext(),
                 DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                     var date = """$year-${monthOfYear + 1}-$dayOfMonth"""
-//                    Log.d(DEBUG_TAG, "Date=$date")
                     prefHelper.saveWatchLaterData(date)
                 },
                 year,
@@ -144,15 +133,14 @@ class ListMovieFragment : Fragment() {
             )
             dpd.show()
         }
-//        return date
     }
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(
-            activity!!,
-            ViewModelFactory(App.instance!!.repository)
+            requireActivity(),
+            ViewModelFactory()
         ).get(FilmListViewModel::class.java)
-        if (films.isEmpty()) viewModel.refresh()
+        // if (films.isEmpty()) viewModel.refresh()
         viewModel.movies.observe(viewLifecycleOwner, renderMovies)
         viewModel.isViewLoading.observe(viewLifecycleOwner, isViewLoadingObserver)
         viewModel.onMessageError.observe(viewLifecycleOwner, onMessageErrorObserver)
@@ -164,6 +152,7 @@ class ListMovieFragment : Fragment() {
     }
 
     private val renderMovies = Observer<List<Movie>> {
+        Log.d(DEBUG_TAG, "renderMovies")
         progressBar.visibility = View.GONE
         loadingTV.visibility = View.GONE
         if (it == null) filmsRecyclerView.visibility = View.GONE
@@ -193,6 +182,9 @@ class ListMovieFragment : Fragment() {
         val visibility = if (it) View.VISIBLE else View.GONE
         progressBar.visibility = visibility
         loadingTV.visibility = visibility
+        if (it) {
+            filmsRecyclerView.visibility = View.GONE
+        } else filmsRecyclerView.visibility = View.VISIBLE
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -210,7 +202,7 @@ class ListMovieFragment : Fragment() {
 
     companion object {
         const val TAG = "ListMovieFragment"
-        const val DEBUG_TAG = "Deb"
+        const val DEBUG_TAG = "deb+$TAG"
     }
 
     class CustomItemDecoration(context: Context, orientation: Int) :

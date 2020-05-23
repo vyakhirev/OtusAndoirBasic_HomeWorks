@@ -19,7 +19,8 @@ class WatchLaterFragment : Fragment() {
     private lateinit var watchLaterViewModel: WatchLaterViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.watch_later_fragment, container, false)
@@ -31,10 +32,9 @@ class WatchLaterFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-       watchLaterViewModel  = ViewModelProvider(
-            activity!!,
+       watchLaterViewModel = ViewModelProvider(
+            requireActivity(),
             WatchLaterViewModelFactory()
         ).get(WatchLaterViewModel::class.java)
     }
-
 }

@@ -6,7 +6,6 @@ import com.vyakhirev.filmsinfo.viewmodel.WatchLaterViewModel
 
 class WatchLaterViewModelFactory() : ViewModelProvider.Factory {
 
-
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return WatchLaterViewModel() as T
     }

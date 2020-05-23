@@ -12,7 +12,7 @@ class SharedPreferencesHelper {
 
         private const val PREF_TIME = "Pref time"
         private const val PREF_DATE = "Pref date"
-        private const val PREF_UUID="Pref uuid"
+        private const val PREF_UUID = "Pref uuid"
         private var prefs: SharedPreferences? = null
 
         @Volatile
@@ -38,25 +38,25 @@ class SharedPreferencesHelper {
         }
     }
 
-    //Date_
-    fun saveWatchLaterData(date:String){
-        Log.d("Kan","date=$date")
+    // Date_
+    fun saveWatchLaterData(date: String) {
+        Log.d("Kan", "date=$date")
         prefs?.edit(commit = true) { putString(
             PREF_DATE, date) }
     }
 
-    fun getWatchLaterData()= prefs?.getString(PREF_DATE,"")
+    fun getWatchLaterData() = prefs?.getString(PREF_DATE, "")
 
-    //UUID
-    fun saveWatchLaterUuid(uuid:Int){
-        Log.d("Kan","uuid=$uuid")
+    // UUID
+    fun saveWatchLaterUuid(uuid: Int) {
+        Log.d("Kan", "uuid=$uuid")
         prefs?.edit(commit = true) { putInt(
             PREF_UUID, uuid) }
     }
 
-    fun getWatchLaterUuid()= prefs?.getInt(PREF_UUID,0)
+    fun getWatchLaterUuid() = prefs?.getInt(PREF_UUID, 0)
 
-    //For cache duration
+    // For cache duration
     fun saveUpdateTime(time: Long) {
         prefs?.edit(commit = true) { putLong(
             PREF_TIME, time) }

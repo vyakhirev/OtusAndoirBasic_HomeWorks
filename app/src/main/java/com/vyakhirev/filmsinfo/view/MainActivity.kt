@@ -16,41 +16,37 @@ import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.iid.FirebaseInstanceId
-import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.data.Movie
 import com.vyakhirev.filmsinfo.util.MovieJobService
 import com.vyakhirev.filmsinfo.util.NotificationHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
-import kotlinx.android.synthetic.main.activity_main.*
-import java.util.concurrent.Executors
+import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
+import kotlinx.android.synthetic.main.activity_main.*
 
-//const val THEME_SWITCHER = "theme_switcher"
-//private var filmClicked: Int = 10000
-//private var themesSwitcher = true
+// const val THEME_SWITCHER = "theme_switcher"
+// private var filmClicked: Int = 10000
+// private var themesSwitcher = true
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
     private lateinit var viewModel: FilmListViewModel
+    private val disposable = CompositeDisposable()
 
     companion object {
         const val DEBUG_TAG = "Deb"
         var sJobId = 0
         const val TAG_SCH = "MovieSch"
-        const val TAG="MainActivity"
+        const val TAG = "MainActivity"
     }
 
     override fun onFilmClick(ind: Int) {
@@ -68,17 +64,15 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         Log.d(DEBUG_TAG, "fromFavorToDetail")
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupNavigation()
         setupNotification()
-
     }
 
-    private fun setupNotification(){
-        scheduleJob(this)
+    private fun setupNotification() {
+//        scheduleJob(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             val channelId = getString(R.string.default_notification_channel_id)
@@ -91,7 +85,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         }
     }
 
-    private fun setupNavigation(){
+    private fun setupNavigation() {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         openFragment(ListMovieFragment())
@@ -143,7 +137,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         val jobScheduler =
             context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         jobScheduler.schedule(jobBuilder.build())
-
     }
 
     private fun openFilmDetailed() {
@@ -159,22 +152,30 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             .commit()
     }
 
-
     override fun onResume() {
         super.onResume()
-        var movieUuid = intent.getIntExtra(NotificationHelper.MOVIE_UUID, 0)
+        val movieUuid = intent.getIntExtra(NotificationHelper.MOVIE_UUID, 0)
         if (movieUuid != 0) {
             viewModel = ViewModelProvider(
                 this,
-                ViewModelFactory(App.instance!!.repository)
+                ViewModelFactory()
             ).get(FilmListViewModel::class.java)
-            var movie: Movie
-            Executors.newSingleThreadScheduledExecutor().execute {
-                val dao = App.instance!!.movieDB.movieDao()
-                movie = dao.getMovie(movieUuid)
-                viewModel.openDetails(movie)
-                openFilmDetailed()
-            }
+            // var movie: Movie
+            // Executors.newSingleThreadScheduledExecutor().execute {
+            //     val dao = App.instance!!.movieDB.movieDao()
+            //     movie = dao.getMovie(movieUuid)
+            //     viewModel.openDetails(movie)
+            //     openFilmDetailed()
+            // }
+            // var movie:Movie
+            // disposable.add(
+            //     App.instance!!.movieDB.movieDao().getMovie(movieUuid)
+            //         .subscribeOn(Schedulers.io())
+            //         .observeOn(AndroidSchedulers.mainThread())
+            //         .subscribe(){
+            //             movie=it
+            //            viewModel.openDetails(it)
+            //         })
         }
     }
 
@@ -217,7 +218,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
-
         } else {
             myExitDialog()
         }

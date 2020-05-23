@@ -13,7 +13,6 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.view.MainActivity
 
@@ -25,6 +24,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         remoteMessage.data.isNotEmpty().let {
             Log.d(TAG, "Message data payload: " + remoteMessage.data)
+            sendNotification(remoteMessage.notification?.body!!)
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
@@ -37,7 +37,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
-
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -68,7 +67,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // [START dispatch_job]
         val work = OneTimeWorkRequest.Builder(MyWorker::class.java).build()
         WorkManager.getInstance().beginWith(work).enqueue()
-        sendNotification("Посмотрите побег из Шоушенга")
+//        sendNotification("Посмотрите побег из Шоушенка")
         // [END dispatch_job]
     }
 
@@ -97,7 +96,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
      *
      * @param messageBody FCM message body received.
      */
-
 
     private fun sendNotification(messageBody: String) {
         val intent = Intent(this, MainActivity::class.java)
