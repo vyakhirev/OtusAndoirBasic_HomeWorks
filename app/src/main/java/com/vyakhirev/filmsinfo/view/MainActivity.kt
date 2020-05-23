@@ -160,22 +160,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
                 this,
                 ViewModelFactory()
             ).get(FilmListViewModel::class.java)
-            // var movie: Movie
-            // Executors.newSingleThreadScheduledExecutor().execute {
-            //     val dao = App.instance!!.movieDB.movieDao()
-            //     movie = dao.getMovie(movieUuid)
-            //     viewModel.openDetails(movie)
-            //     openFilmDetailed()
-            // }
-            // var movie:Movie
-            // disposable.add(
-            //     App.instance!!.movieDB.movieDao().getMovie(movieUuid)
-            //         .subscribeOn(Schedulers.io())
-            //         .observeOn(AndroidSchedulers.mainThread())
-            //         .subscribe(){
-            //             movie=it
-            //            viewModel.openDetails(it)
-            //         })
         }
     }
 
