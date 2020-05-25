@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.adapters.FavoritesAdapter
-import com.vyakhirev.filmsinfo.viewmodel.FavoritesViewModelFactory
+import com.vyakhirev.filmsinfo.viewmodel.factories.FavoritesViewModelFactory
 import com.vyakhirev.filmsinfo.viewmodel.ViewModelFavorites
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
@@ -48,10 +48,10 @@ class FavoritesListFragment : Fragment() {
                 FavoritesViewModelFactory()
             ).get(ViewModelFavorites::class.java)
         favViewModel.loadFavorites()
-        favViewModel.favoritesLiveData.observe(this, Observer {
+        favViewModel.favoritesLiveData.observe(viewLifecycleOwner, Observer {
             adapter.update(it)
         })
-        favViewModel.filmClicked.observe(this, Observer {
+        favViewModel.filmClicked.observe(viewLifecycleOwner, Observer {
             favViewModel.openDetails(it)
         })
     }

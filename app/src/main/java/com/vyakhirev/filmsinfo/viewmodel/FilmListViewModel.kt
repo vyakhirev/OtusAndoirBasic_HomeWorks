@@ -8,6 +8,7 @@ import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.data.Movie
 import com.vyakhirev.filmsinfo.data.MovieDataSource
 import com.vyakhirev.filmsinfo.network.OperationCallback
+import com.vyakhirev.filmsinfo.util.NotificationHelper
 import java.util.concurrent.Executors
 
 class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
@@ -39,9 +40,9 @@ class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
         }
     }
 
-    fun clearListMovie(){
-        _movies.postValue(null)
-    }
+//    fun clearListMovie(){
+//        _movies.postValue(null)
+//    }
     private fun checkCacheDuration() {
         val cachePreference = prefHelper.getCacheDuration()
         try {

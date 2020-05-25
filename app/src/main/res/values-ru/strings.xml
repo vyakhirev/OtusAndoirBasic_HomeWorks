@@ -27,4 +27,6 @@
     <string name="films_loading">Загрузка информации о фильмах…</string>
     <string name="errorMsg">Божечки!</string>
     <string name="retry">Попробовать ещё</string>
+    <string name="watch_later">Посмотреть позже</string>
+    <string name="watch_later_desc">Watch later</string>
 </resources>

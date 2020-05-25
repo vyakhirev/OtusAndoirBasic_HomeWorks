@@ -12,9 +12,9 @@ import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
 import com.vyakhirev.filmsinfo.data.loadImage
-import com.vyakhirev.filmsinfo.viewmodel.FavoritesViewModelFactory
+import com.vyakhirev.filmsinfo.viewmodel.factories.FavoritesViewModelFactory
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
-import com.vyakhirev.filmsinfo.viewmodel.ViewModelFactory
+import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
 import com.vyakhirev.filmsinfo.viewmodel.ViewModelFavorites
 import kotlinx.android.synthetic.main.fragment_detail_movie.*
 
@@ -38,11 +38,13 @@ class DetailMovieFragment : Fragment() {
             activity!!,
             ViewModelFactory(App.instance!!.repository)
         ).get(FilmListViewModel::class.java)
-        viewModel.filmClicked.observe(this, filmDetails)
+        viewModel.filmClicked.observe(viewLifecycleOwner, filmDetails)
 
         favViewModel =
-            ViewModelProvider(activity!!, FavoritesViewModelFactory()).get(ViewModelFavorites::class.java)
-        favViewModel.filmClicked.observe(this, filmDetails)
+            ViewModelProvider(activity!!,
+                FavoritesViewModelFactory()
+            ).get(ViewModelFavorites::class.java)
+        favViewModel.filmClicked.observe(viewLifecycleOwner, filmDetails)
     }
 
     private val filmDetails = Observer<Movie> { movie ->

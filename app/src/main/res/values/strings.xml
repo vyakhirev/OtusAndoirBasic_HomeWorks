@@ -26,4 +26,6 @@
     <string name="films_loading">Films loading…</string>
     <string name="errorMsg">Omg! :-(</string>
     <string name="retry">Retry</string>
+    <string name="watch_later">Watch later</string>
+    <string name="watch_later_desc">Watch later</string>
 </resources>
