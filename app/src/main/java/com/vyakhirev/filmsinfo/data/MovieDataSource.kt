@@ -1,6 +1,6 @@
 package com.vyakhirev.filmsinfo.data
 
-import com.vyakhirev.filmsinfo.network.OperationCallback
+import com.vyakhirev.filmsinfo.data.network.OperationCallback
 
 interface MovieDataSource {
 

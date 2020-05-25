@@ -1,11 +1,14 @@
 package com.vyakhirev.filmsinfo.view
 
 import android.app.Dialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -13,13 +16,16 @@ import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.iid.FirebaseInstanceId
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.data.Movie
@@ -44,6 +50,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         const val DEBUG_TAG = "Deb"
         var sJobId = 0
         const val TAG_SCH = "MovieSch"
+        const val TAG="MainActivity"
     }
 
     override fun onFilmClick(ind: Int) {
@@ -57,9 +64,37 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     override fun onFavorToDetails(ind: Int) {
-//        onFilmClick(ind)
         openFilmDetailed()
         Log.d(DEBUG_TAG, "fromFavorToDetail")
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        setupNavigation()
+        setupNotification()
+
+    }
+
+    private fun setupNotification(){
+        scheduleJob(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create channel to show notifications.
+            val channelId = getString(R.string.default_notification_channel_id)
+            val channelName = getString(R.string.default_notification_channel_name)
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager?.createNotificationChannel(
+                NotificationChannel(channelId,
+                    channelName, NotificationManager.IMPORTANCE_LOW)
+            )
+        }
+    }
+
+    private fun setupNavigation(){
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        openFragment(ListMovieFragment())
     }
 
     private fun showSnack(ind: Int) {
@@ -111,24 +146,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     }
 
-//    fun setupAlarm() {
-//        Log.d(DEBUG_TAG, "setupAlarm")
-//        val intent = Intent(this, MainActivity::class.java)
-//        val requestCode = 123456 //any code
-//        val pendIntent = PendingIntent.getActivity(
-//            this,
-//            requestCode,
-//            intent,
-//            PendingIntent.FLAG_CANCEL_CURRENT
-//        )
-//
-//        val mgr = this.applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, pendIntent)
-//        NotificationHelper(App.instance!!.baseContext).createNotification()
-////        finish()
-//    }
-
-
     private fun openFilmDetailed() {
 
         supportFragmentManager
@@ -142,21 +159,10 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             .commit()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        if(savedInstanceState!=null){
-
-        setContentView(R.layout.activity_main)
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
-        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        openFragment(ListMovieFragment())
-        scheduleJob(this)
-
-    }
 
     override fun onResume() {
         super.onResume()
-        var movieUuid = intent.getIntExtra(NotificationHelper.MOVIE_UUID, 0)
+        val movieUuid = intent.getIntExtra(NotificationHelper.MOVIE_UUID, 0)
         if (movieUuid != 0) {
             viewModel = ViewModelProvider(
                 this,

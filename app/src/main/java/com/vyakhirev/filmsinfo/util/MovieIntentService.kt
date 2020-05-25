@@ -6,7 +6,9 @@ import android.icu.util.Calendar
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import com.vyakhirev.filmsinfo.App
+import com.vyakhirev.filmsinfo.R
 
 class MovieIntentService : IntentService(TAG_SCH) {
     private val prefHelper = App.instance!!.prefHelper
@@ -27,6 +29,18 @@ class MovieIntentService : IntentService(TAG_SCH) {
 
     override fun onCreate() {
         Log.d(TAG_SCH, "onCreate+ ${prefHelper.getWatchLaterData()}")
+        val notification = NotificationCompat.Builder(this, NotificationHelper.CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_live_tv_yellow_24dp)
+            .setContentTitle("Movie!")
+//            .setContentText("Need to watch this movie today: $movieUuid")
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+            )
+//            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+            .build()
+        startForeground(123,notification)
 //        NotificationHelper(App.instance!!.baseContext).createNotification()
         super.onCreate()
     }
@@ -42,6 +56,7 @@ class MovieIntentService : IntentService(TAG_SCH) {
         if (prefHelper.getWatchLaterData()==dayX) {
             Log.d("Kan","DayX=$dayX")
             NotificationHelper(App.instance!!.baseContext).createNotification()
+
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -49,6 +64,7 @@ class MovieIntentService : IntentService(TAG_SCH) {
     override fun onDestroy() {
         Log.d(TAG_SCH, "onDestroy")
         super.onDestroy()
+
     }
 companion object{
     const val TAG_SCH="MovieSch"

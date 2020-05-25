@@ -7,8 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.data.Movie
 import com.vyakhirev.filmsinfo.data.MovieDataSource
-import com.vyakhirev.filmsinfo.network.OperationCallback
-import com.vyakhirev.filmsinfo.util.NotificationHelper
+import com.vyakhirev.filmsinfo.data.network.OperationCallback
 import java.util.concurrent.Executors
 
 class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
@@ -66,6 +65,7 @@ class FilmListViewModel(private val repository: MovieDataSource) : ViewModel() {
     var page = 0
     fun fetchFromRemote() {
         _isViewLoading.postValue(true)
+
         repository.retrieveMovies(page++, object : OperationCallback<Movie> {
             override fun onError(error: String?) {
                 _isViewLoading.postValue(false)

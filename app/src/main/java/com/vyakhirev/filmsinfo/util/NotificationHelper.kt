@@ -8,17 +8,13 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.ViewModelProvider
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.view.MainActivity
-import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
-import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
 
 class NotificationHelper(val context: Context) {
 
     var movieUuid = App.instance!!.prefHelper.getWatchLaterUuid()
-    private lateinit var viewModel: FilmListViewModel
 
     companion object {
         const val CHANNEL_ID = "Movies channel id"
@@ -46,6 +42,7 @@ class NotificationHelper(val context: Context) {
             )
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
             .build()
 
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)

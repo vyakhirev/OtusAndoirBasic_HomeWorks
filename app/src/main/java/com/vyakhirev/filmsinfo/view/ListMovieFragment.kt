@@ -4,16 +4,13 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Rect
-import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
-import android.icu.util.LocaleData
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -29,9 +26,6 @@ import com.vyakhirev.filmsinfo.data.films
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_list_movie.*
-import java.time.LocalDate.parse
-import java.util.*
-import java.util.logging.Level.parse
 
 class ListMovieFragment : Fragment() {
     private var listener: OnFilmClickListener? = null
@@ -75,7 +69,7 @@ class ListMovieFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = FilmsAdapter(
-            context!!,
+            requireContext(),
             listOf(),
             listener = {
                 val detMovie = viewModel.movies.value?.get(it)
@@ -95,17 +89,19 @@ class ListMovieFragment : Fragment() {
 //                Toast.makeText(context, "Watch later! Number=$it", Toast.LENGTH_SHORT).show()
                 dataPicker()
                 prefHelper.saveWatchLaterUuid(viewModel.movies.value!![it].uuid)
+
             })
+
         filmsRecyclerView.layoutManager = LinearLayoutManager(context)
         filmsRecyclerView.adapter = adapter
 
         val itemDecor =
             CustomItemDecoration(
-                context!!,
+                requireContext(),
                 DividerItemDecoration.VERTICAL
             )
         ContextCompat.getDrawable(
-            context!!,
+            requireContext(),
             R.drawable.my_divider
         )
             ?.let { itemDecor.setDrawable(it) }
@@ -132,7 +128,7 @@ class ListMovieFragment : Fragment() {
             val month = c.get(Calendar.MONTH)
             val day = c.get(Calendar.DAY_OF_MONTH)
             val dpd = DatePickerDialog(
-                context!!,
+                requireContext(),
                 DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                     var date = """$year-${monthOfYear + 1}-$dayOfMonth"""
 //                    Log.d(DEBUG_TAG, "Date=$date")
@@ -149,7 +145,7 @@ class ListMovieFragment : Fragment() {
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(
-            activity!!,
+            requireActivity(),
             ViewModelFactory(App.instance!!.repository)
         ).get(FilmListViewModel::class.java)
         if (films.isEmpty()) viewModel.refresh()
