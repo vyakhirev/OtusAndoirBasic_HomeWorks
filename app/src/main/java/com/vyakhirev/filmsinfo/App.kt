@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import com.vyakhirev.filmsinfo.di.DaggerApiComponent
 import com.vyakhirev.filmsinfo.model.db.MoviesDatabase
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
@@ -11,15 +12,20 @@ import java.util.concurrent.Executors
 
 class App : Application() {
 
-    private lateinit var moviesApiClient: MovieApiClient
+    lateinit var moviesApiClient: MovieApiClient
 
     // lateinit var repository: MoviesRepository
     lateinit var movieDB: MoviesDatabase
     lateinit var prefHelper: SharedPreferencesHelper
+
     override fun onCreate() {
         Log.d("App", "App onCreate")
         super.onCreate()
         instance = this
+
+        // val component = DaggerApiComponent.builder().build()
+        // component.inject(moviesApiClient)
+        moviesApiClient=MovieApiClient()
         // initRepos()
         initRoom()
         initSharePref()

@@ -138,7 +138,7 @@ class ListMovieFragment : Fragment() {
     private fun setupViewModel() {
         viewModel = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory()
+            ViewModelFactory(App.instance!!.moviesApiClient)
         ).get(FilmListViewModel::class.java)
         // if (films.isEmpty()) viewModel.refresh()
         viewModel.movies.observe(viewLifecycleOwner, renderMovies)

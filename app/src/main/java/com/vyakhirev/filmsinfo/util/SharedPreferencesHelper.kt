@@ -32,7 +32,6 @@ class SharedPreferencesHelper {
             }
 
         private fun buildHelper(context: Context): SharedPreferencesHelper {
-//            prefs = PreferenceManager.getDefaultSharedPreferences(context)
             prefs = PreferenceManager.getDefaultSharedPreferences(context)
             return SharedPreferencesHelper()
         }

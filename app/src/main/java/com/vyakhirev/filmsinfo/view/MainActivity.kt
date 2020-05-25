@@ -39,8 +39,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
-    private lateinit var viewModel: FilmListViewModel
-    private val disposable = CompositeDisposable()
+    // private lateinit var viewModel: FilmListViewModel
 
     companion object {
         const val DEBUG_TAG = "Deb"
@@ -152,16 +151,16 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             .commit()
     }
 
-    override fun onResume() {
-        super.onResume()
-        val movieUuid = intent.getIntExtra(NotificationHelper.MOVIE_UUID, 0)
-        if (movieUuid != 0) {
-            viewModel = ViewModelProvider(
-                this,
-                ViewModelFactory()
-            ).get(FilmListViewModel::class.java)
-        }
-    }
+    // override fun onResume() {
+    //     super.onResume()
+        // val movieUuid = intent.getIntExtra(NotificationHelper.MOVIE_UUID, 0)
+        // if (movieUuid != 0) {
+        //     viewModel = ViewModelProvider(
+        //         this,
+        //         ViewModelFactory()
+        //     ).get(FilmListViewModel::class.java)
+        // }
+    // }
 
     private val mOnNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener {
