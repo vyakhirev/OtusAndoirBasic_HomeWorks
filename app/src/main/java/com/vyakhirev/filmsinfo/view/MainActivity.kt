@@ -3,6 +3,7 @@ package com.vyakhirev.filmsinfo.view
 import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
@@ -24,13 +25,16 @@ import com.vyakhirev.filmsinfo.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_list_movie.*
 
-const val THEME_SWITCHER = "theme_switcher"
-private var filmClicked: Int = 10000
-private var themesSwitcher = true
+//const val THEME_SWITCHER = "theme_switcher"
+//private var filmClicked: Int = 10000
+//private var themesSwitcher = true
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
+    companion object{
+        const val DEBUG_TAG="Deb"
+    }
     private lateinit var viewModel: FilmListViewModel
 
     override fun onFilmClick(ind: Int) {
@@ -44,17 +48,18 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     override fun onFavorToDetails(ind: Int) {
-        super.onFavorToDetails(ind)
-        onFilmClick(ind)
+//        onFilmClick(ind)
+        openFilmDetailed()
+        Log.d(DEBUG_TAG,"fromFavorToDetail")
     }
 
     private fun showSnack(ind: Int) {
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
         val listener = View.OnClickListener {
-            favorites.removeAt(favorites.size - 1)
-            films[ind].isFavorite = false
-            filmsRecyclerView.adapter?.notifyItemChanged(ind)
+//            favorites.removeAt(favorites.size - 1)
+//            films[ind].isFavorite = false
+//            filmsRecyclerView.adapter?.notifyItemChanged(ind)
         }
         snack.setAction("Undo", listener)
         snack.setActionTextColor(
@@ -81,11 +86,12 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     private fun openFilmDetailed() {
+
         supportFragmentManager
             .beginTransaction()
             .replace(
                 R.id.fragmentContainer,
-                DetailMovieFragment.newInstance(),
+                DetailMovieFragment(),
                 DetailMovieFragment.TAG
             )
             .addToBackStack(null)
@@ -109,22 +115,20 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             when (it.itemId) {
 
                 R.id.action_list -> {
-                    val firstFragment =
-                        ListMovieFragment()
-                    openFragment(firstFragment)
+                    supportFragmentManager.popBackStack()
+                    openFragment(ListMovieFragment())
                     return@OnNavigationItemSelectedListener true
                 }
 
                 R.id.action_favorites -> {
-                    val secondFragment =
-                        FavoritesListFragment()
-                    openFragment(secondFragment)
+                    supportFragmentManager.popBackStack()
+                    openFragment(FavoritesListFragment())
                     return@OnNavigationItemSelectedListener true
                 }
 
                 R.id.action_settings -> {
                     val thirdFragment =
-                        FavoritesListFragment()
+                        SettingsFragment()
                     openFragment(thirdFragment)
                     return@OnNavigationItemSelectedListener true
                 }
@@ -134,13 +138,14 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     private fun openFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragmentContainer, fragment)
+        transaction.replace(R.id.fragmentContainer, fragment, fragment.tag)
         transaction.commit()
     }
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
+
         } else {
             myExitDialog()
         }

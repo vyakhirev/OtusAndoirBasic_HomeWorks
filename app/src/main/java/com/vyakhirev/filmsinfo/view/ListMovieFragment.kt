@@ -1,5 +1,6 @@
 package com.vyakhirev.filmsinfo.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
@@ -18,9 +19,7 @@ import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.adapters.FilmsAdapter
 import com.vyakhirev.filmsinfo.data.Movie
-import com.vyakhirev.filmsinfo.data.favorites
 import com.vyakhirev.filmsinfo.data.films
-import com.vyakhirev.filmsinfo.data.indInFavor
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_list_movie.*
@@ -33,8 +32,6 @@ class ListMovieFragment : Fragment() {
 
     interface OnFilmClickListener {
         fun onFilmClick(ind: Int) {
-            films[ind].isViewed = true
-
         }
 
         fun onFavorClick(ind: Int) {
@@ -44,6 +41,7 @@ class ListMovieFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
+        Log.d(DEBUG_TAG, "$TAG created(")
     }
 
     override fun onCreateView(
@@ -65,30 +63,23 @@ class ListMovieFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadFilms()
-    }
-
     private fun setupRecyclerView() {
         adapter = FilmsAdapter(
             context!!,
             listOf(),
             listener = {
-//                viewModel.filmClicked.observe(this, Observer { movie->
-//                    viewModel.openDetails(movie)
-//                })
-                viewModel.openDetails(viewModel.movies.value?.get(it))
+                val detMovie = viewModel.movies.value?.get(it)
+                viewModel.openDetails(detMovie)
+                detMovie?.isViewed = true
+                Log.d(DEBUG_TAG, "Captured movie= $detMovie  It=$it")
+                adapter.notifyItemChanged(it)
                 listener?.onFilmClick(it)
             },
             listenerMy = {
+                viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
+                viewModel.movies.value!![it].isFavorite = !viewModel.movies.value!![it].isFavorite
+                adapter.notifyItemChanged(it)
                 listenerMy?.onFavorClick(it)
-                if (!films[it].isFavorite) {
-                    favorites.add(films[it])
-                    indInFavor.add(favorites.size - 1, it)
-                    films[it].isFavorite = true
-                }
-                filmsRecyclerView.adapter?.notifyItemChanged(it)
             })
         filmsRecyclerView.layoutManager = LinearLayoutManager(context)
         filmsRecyclerView.adapter = adapter
@@ -107,15 +98,16 @@ class ListMovieFragment : Fragment() {
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == viewModel.movies.value?.size) {
-                    viewModel.loadFilms()
+                    viewModel.fetchFromRemote()
                 }
-//                adapter.notifyItemRangeInserted(
-//                    itemsInPage+1 ,
-//                    itemsInPage
-//                )
-                adapter.notifyDataSetChanged()
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(DEBUG_TAG, "ListFragment resume")
+        viewModel.refresh()
     }
 
     private fun setupViewModel() {
@@ -123,7 +115,7 @@ class ListMovieFragment : Fragment() {
             activity!!,
             ViewModelFactory(App.instance!!.repository)
         ).get(FilmListViewModel::class.java)
-        if (films.isEmpty()) viewModel.loadFilms()
+        if (films.isEmpty()) viewModel.refresh()
         viewModel.movies.observe(this, renderMovies)
         viewModel.isViewLoading.observe(this, isViewLoadingObserver)
         viewModel.onMessageError.observe(this, onMessageErrorObserver)
@@ -137,25 +129,30 @@ class ListMovieFragment : Fragment() {
     private val renderMovies = Observer<List<Movie>> {
         progressBar.visibility = View.GONE
         loadingTV.visibility = View.GONE
+        if (it == null) filmsRecyclerView.visibility = View.GONE
+        else filmsRecyclerView.visibility = View.VISIBLE
         adapter.update(it)
     }
 
+    @SuppressLint("SetTextI18n")
     private val onMessageErrorObserver = Observer<Any> {
-        Log.v(TAG, "onMessageError $it")
+        Log.v(DEBUG_TAG, "onMessageError $it")
         errorImg.visibility = View.VISIBLE
         errorTV.text = "Error $it"
         errorTV.visibility = View.VISIBLE
         retryBtn.visibility = View.VISIBLE
+        filmsRecyclerView.visibility = View.GONE
         retryBtn.setOnClickListener {
-            viewModel.loadFilms()
+            viewModel.refresh()
             errorImg.visibility = View.GONE
             errorTV.visibility = View.GONE
             retryBtn.visibility = View.GONE
+            filmsRecyclerView.visibility = View.VISIBLE
         }
     }
 
     private val isViewLoadingObserver = Observer<Boolean> {
-        Log.v(TAG, "isViewLoading $it")
+        Log.v(DEBUG_TAG, "isViewLoading $it")
         val visibility = if (it) View.VISIBLE else View.GONE
         progressBar.visibility = visibility
         loadingTV.visibility = visibility
@@ -171,12 +168,12 @@ class ListMovieFragment : Fragment() {
             throw Exception("Activity must implement OnNewsClickListener")
         }
 
-        Log.d(TAG, "onActivityCreated")
+        Log.d(DEBUG_TAG, "onActivityCreated")
     }
 
     companion object {
         const val TAG = "ListMovieFragment"
-        const val itemsInPage = 20
+        const val DEBUG_TAG = "Deb"
     }
 
     class CustomItemDecoration(context: Context, orientation: Int) :
@@ -195,9 +192,8 @@ class ListMovieFragment : Fragment() {
 
     private fun setupRefreshLayout() {
         refreshLayout.setOnRefreshListener {
-            films.clear()
             viewModel.page = 0
-            viewModel.loadFilms()
+            viewModel.refresh()
             refreshLayout.isRefreshing = false
             filmsRecyclerView.adapter?.notifyDataSetChanged()
         }
