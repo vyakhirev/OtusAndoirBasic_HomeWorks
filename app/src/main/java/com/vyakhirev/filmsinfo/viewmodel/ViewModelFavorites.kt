@@ -1,5 +1,6 @@
 package com.vyakhirev.filmsinfo.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,14 +9,8 @@ import com.vyakhirev.filmsinfo.model.Movie
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class ViewModelFavorites() : ViewModel(), CoroutineScope {
+class ViewModelFavorites() : ViewModel(){
 
     private val _favoritesLiveData = MutableLiveData<List<Movie>>()
     val favoritesLiveData: LiveData<List<Movie>> = _favoritesLiveData
@@ -36,29 +31,26 @@ class ViewModelFavorites() : ViewModel(), CoroutineScope {
     }
 
     fun switchFavorite(uuid: Int) {
-        launch {
-            withContext(Dispatchers.IO) {
-                val dao = App.instance!!.movieDB.movieDao()
-                val film = dao.getMovie(uuid)
-                film.isFavorite = false
-                // film.isFavorite = !film.isFavorite
+        val dao = App.instance!!.movieDB.movieDao()
+        disposable.add(dao.getMovie(uuid)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { film->
+                Log.d("uuu",film.overview)
+                film.isFavorite=!film.isFavorite
                 dao.switchFavoriteStar(film)
-                loadFavorites()
-            }
-        }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe()
+            })
     }
 
     fun openDetails(movie: Movie?) {
         _filmClicked.postValue(movie)
     }
 
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
-
     override fun onCleared() {
         super.onCleared()
-        job.cancel()
         disposable.clear()
     }
 }

@@ -14,10 +14,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
-class FilmListViewModel() : ViewModel(), CoroutineScope {
+class FilmListViewModel() : ViewModel() {
     companion object {
         const val DEBUG_TAG = "deb"
     }
@@ -85,7 +83,12 @@ class FilmListViewModel() : ViewModel(), CoroutineScope {
                         _isViewLoading.value = false
                         _movies.postValue(movieList.results)
                         Log.d(DEBUG_TAG, "fetchFromRemote()")
-                        storeLocally(movieList.results)
+                        disposable.add(
+                            storeLocally(movieList.results)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe()
+                        )
                     }
 
                     override fun onError(e: Throwable) {
@@ -99,7 +102,13 @@ class FilmListViewModel() : ViewModel(), CoroutineScope {
     fun storeLocally(list: List<Movie>): Completable {
         prefHelper.saveUpdateTime(System.nanoTime())
         val dao = App.instance!!.movieDB.movieDao()
+        clearDb()
         return dao.insertAll(list)
+    }
+
+    private fun clearDb(): Completable {
+        val dao = App.instance!!.movieDB.movieDao()
+        return dao.deleteAllMovies()
     }
 
     fun openDetails(movie: Movie?) {
@@ -107,23 +116,23 @@ class FilmListViewModel() : ViewModel(), CoroutineScope {
     }
 
     fun switchFavorite(uuid: Int) {
-        launch {
-            withContext(Dispatchers.IO) {
-                val dao = App.instance!!.movieDB.movieDao()
-                val film = dao.getMovie(uuid)
-                film.isFavorite = !film.isFavorite
-                dao.switchFavoriteStar(film)
-            }
-        }
+        val dao = App.instance!!.movieDB.movieDao()
+        disposable.add(dao.getMovie(uuid)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { film->
+                Log.d("uuu",film.overview)
+                film.isFavorite=!film.isFavorite
+               dao.switchFavoriteStar(film)
+                   .subscribeOn(Schedulers.io())
+                   .observeOn(AndroidSchedulers.mainThread())
+                   .subscribe()
+            })
     }
 
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
 
     override fun onCleared() {
         super.onCleared()
-        job.cancel()
         disposable.clear()
     }
 }
