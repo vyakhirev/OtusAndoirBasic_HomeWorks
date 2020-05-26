@@ -9,16 +9,13 @@ import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.MovieResponse
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class FilmListViewModel() : ViewModel(), CoroutineScope {
     companion object {
@@ -99,20 +96,10 @@ class FilmListViewModel() : ViewModel(), CoroutineScope {
         )
     }
 
-    fun storeLocally(list: List<Movie>) {
-        launch {
-            withContext(Dispatchers.IO) {
-                val dao = App.instance!!.movieDB.movieDao()
-                dao.deleteAllMovies()
-                val result = dao.insertAll(*list.toTypedArray())
-                var i = 0
-                while (i < list.size) {
-                    list[i].uuid = result[i].toInt()
-                    ++i
-                }
-            }
-            prefHelper.saveUpdateTime(System.nanoTime())
-        }
+    fun storeLocally(list: List<Movie>): Completable {
+        prefHelper.saveUpdateTime(System.nanoTime())
+        val dao = App.instance!!.movieDB.movieDao()
+        return dao.insertAll(list)
     }
 
     fun openDetails(movie: Movie?) {
