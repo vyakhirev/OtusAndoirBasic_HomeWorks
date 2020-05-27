@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.loadImage
@@ -35,7 +36,7 @@ class DetailMovieFragment : Fragment() {
 
         viewModel = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory()
+            ViewModelFactory(App.instance!!.moviesApiClient)
         ).get(FilmListViewModel::class.java)
         viewModel.filmClicked.observe(viewLifecycleOwner, filmDetails)
 

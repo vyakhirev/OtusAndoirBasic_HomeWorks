@@ -6,16 +6,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.BuildConfig
+import com.vyakhirev.filmsinfo.di.AppModule
+import com.vyakhirev.filmsinfo.di.CONTEXT_APP
+import com.vyakhirev.filmsinfo.di.DaggerViewModelComponent
+import com.vyakhirev.filmsinfo.di.TypeOfContext
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.MovieResponse
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
+import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class FilmListViewModel() : ViewModel() {
+class FilmListViewModel(private val moviesService: MovieApiClient) : ViewModel() {
     companion object {
         const val DEBUG_TAG = "deb"
     }
@@ -32,11 +38,35 @@ class FilmListViewModel() : ViewModel() {
     private val _filmClicked = MutableLiveData<Movie>()
     val filmClicked: LiveData<Movie> = _filmClicked
 
-    private val prefHelper = App.instance!!.prefHelper
+    @Inject
+    @field:TypeOfContext(CONTEXT_APP)
+    lateinit var prefHelper: SharedPreferencesHelper
     private var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
 
     private val disposable = CompositeDisposable()
-    private val moviesService = MovieApiClient
+//    private val moviesService = MovieApiClient
+
+
+    init {
+        DaggerViewModelComponent.builder()
+            .appModule(AppModule(App.instance!!))
+            .build()
+            .inject(this)
+    }
+
+//    init {
+//        DaggerViewModelComponent.builder()
+//            .appModule(AppModule(App.instance!!))
+//            .build()
+//            .providesRoomDatabase()
+//    }
+//
+//    init {
+//        DaggerViewModelComponent.builder()
+//            .appModule(AppModule(App.instance!!))
+//            .build()
+//            .providesmovieDao()
+//    }
 
     fun refresh() {
         checkCacheDuration()
@@ -74,7 +104,7 @@ class FilmListViewModel() : ViewModel() {
     fun fetchFromRemote() {
         _isViewLoading.value = true
         disposable.add(
-            moviesService.apiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
+            moviesService.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<MovieResponse>() {
@@ -129,7 +159,6 @@ class FilmListViewModel() : ViewModel() {
                    .subscribe()
             })
     }
-
 
     override fun onCleared() {
         super.onCleared()

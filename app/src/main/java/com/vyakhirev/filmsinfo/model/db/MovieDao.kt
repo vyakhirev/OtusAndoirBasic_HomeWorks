@@ -4,7 +4,6 @@ import androidx.room.*
 import com.vyakhirev.filmsinfo.model.Movie
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.Single
 
 @Dao

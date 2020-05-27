@@ -11,7 +11,7 @@ import java.util.concurrent.Executors
 
 class App : Application() {
 
-    private lateinit var moviesApiClient: MovieApiClient
+    lateinit var moviesApiClient: MovieApiClient
 
     // lateinit var repository: MoviesRepository
     lateinit var movieDB: MoviesDatabase
@@ -20,6 +20,7 @@ class App : Application() {
         Log.d("App", "App onCreate")
         super.onCreate()
         instance = this
+        moviesApiClient=MovieApiClient()
         // initRepos()
         initRoom()
         initSharePref()

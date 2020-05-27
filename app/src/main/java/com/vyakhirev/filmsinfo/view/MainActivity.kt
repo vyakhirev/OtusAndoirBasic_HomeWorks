@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.util.MovieJobService
 import com.vyakhirev.filmsinfo.util.NotificationHelper
@@ -158,7 +159,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         if (movieUuid != 0) {
             viewModel = ViewModelProvider(
                 this,
-                ViewModelFactory()
+                ViewModelFactory(App.instance!!.moviesApiClient)
             ).get(FilmListViewModel::class.java)
         }
     }
