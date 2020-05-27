@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class MovieResponse(
     var page: Int,
-    var results: ArrayList<Movie>,
+    var results: List<Movie>,
     @SerializedName("total_results")
     var totalResults: Int,
     @SerializedName("total_pages")

@@ -1,5 +1,6 @@
 package com.vyakhirev.filmsinfo.viewmodel
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,11 +22,17 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class FilmListViewModel(private val moviesService: MovieApiClient) : ViewModel() {
+class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel() {
+
+    constructor(moviesApiClient: MovieApiClient,test: Boolean = true): this(moviesApiClient) {
+        injected = true
+    }
+
     companion object {
         const val DEBUG_TAG = "deb"
     }
 
+    private var injected = false
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies
 
@@ -47,28 +54,17 @@ class FilmListViewModel(private val moviesService: MovieApiClient) : ViewModel()
 //    private val moviesService = MovieApiClient
 
 
-    init {
-        DaggerViewModelComponent.builder()
-            .appModule(AppModule(App.instance!!))
-            .build()
-            .inject(this)
+    fun inject() {
+        if (!injected) {
+            DaggerViewModelComponent.builder()
+                .appModule(AppModule(App.instance!!))
+                .build()
+                .inject(this)
+        }
     }
 
-//    init {
-//        DaggerViewModelComponent.builder()
-//            .appModule(AppModule(App.instance!!))
-//            .build()
-//            .providesRoomDatabase()
-//    }
-//
-//    init {
-//        DaggerViewModelComponent.builder()
-//            .appModule(AppModule(App.instance!!))
-//            .build()
-//            .providesmovieDao()
-//    }
-
     fun refresh() {
+        inject()
         checkCacheDuration()
         val updateTime = prefHelper.getUpdateTime()
         if (updateTime != null && updateTime != 0L && System.nanoTime() - updateTime < refreshTime) {
@@ -104,7 +100,7 @@ class FilmListViewModel(private val moviesService: MovieApiClient) : ViewModel()
     fun fetchFromRemote() {
         _isViewLoading.value = true
         disposable.add(
-            moviesService.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
+            moviesApiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<MovieResponse>() {

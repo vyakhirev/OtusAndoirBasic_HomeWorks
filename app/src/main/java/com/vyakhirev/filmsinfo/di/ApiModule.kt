@@ -23,7 +23,7 @@ open class ApiModule {
     }
 
     @Provides
-    fun apiClient(): MovieApiClient {
+    open fun apiClient(): MovieApiClient {
         return MovieApiClient()
     }
 }
