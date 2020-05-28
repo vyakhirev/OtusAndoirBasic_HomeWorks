@@ -51,7 +51,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     private var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
 
     private val disposable = CompositeDisposable()
-//    private val moviesService = MovieApiClient
 
 
     fun inject() {
@@ -129,6 +128,9 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
         prefHelper.saveUpdateTime(System.nanoTime())
         val dao = App.instance!!.movieDB.movieDao()
         clearDb()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
         return dao.insertAll(list)
     }
 
@@ -143,17 +145,16 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
     fun switchFavorite(uuid: Int) {
         val dao = App.instance!!.movieDB.movieDao()
+        Log.d("lll","uuid=${uuid}")
         disposable.add(dao.getMovie(uuid)
+            .flatMap {
+                it.isFavorite=!it.isFavorite
+                dao.switchFavoriteStar(it)
+            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { film->
-                Log.d("uuu",film.overview)
-                film.isFavorite=!film.isFavorite
-               dao.switchFavoriteStar(film)
-                   .subscribeOn(Schedulers.io())
-                   .observeOn(AndroidSchedulers.mainThread())
-                   .subscribe()
-            })
+            .subscribe()
+        )
     }
 
     override fun onCleared() {

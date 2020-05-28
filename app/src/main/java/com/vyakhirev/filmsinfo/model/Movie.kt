@@ -13,13 +13,13 @@ import com.vyakhirev.filmsinfo.R
 data class Movie(
     @ColumnInfo(name = "id")
     @SerializedName("id")
-    var id: Int?,
+    var id: Int,
     @ColumnInfo(name = "title")
     @SerializedName("title")
-    var title: String?,
+    var title: String,
     @ColumnInfo(name = "overview")
     @SerializedName("overview")
-    var overview: String?,
+    var overview: String,
     @ColumnInfo(name = "isViewed")
     var isViewed: Boolean = false,
     @ColumnInfo(name = "isFavorite")

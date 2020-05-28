@@ -27,4 +27,5 @@ interface MovieDao {
 
     @Update
     fun switchFavoriteStar(movie: Movie): Single<Int>
+//    fun switchFavoriteStar(movie: Movie):Completable
 }
