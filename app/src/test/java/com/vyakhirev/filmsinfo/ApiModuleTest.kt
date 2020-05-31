@@ -8,8 +8,3 @@ class ApiModuleTest(private val mockClient: MovieApiClient) : ApiModule() {
         return mockClient
     }
 }
-//class ApiModuleTest(val mockService: AnimalApiService): ApiModule() {
-//    override fun provideAnimalApiService(): AnimalApiService {
-//        return mockService
-//    }
-//}

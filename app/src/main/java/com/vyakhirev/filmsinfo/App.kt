@@ -20,11 +20,11 @@ class App : Application() {
         Log.d("App", "App onCreate")
         super.onCreate()
         instance = this
-        moviesApiClient=MovieApiClient()
+        moviesApiClient = MovieApiClient()
         // initRepos()
         initRoom()
         initSharePref()
-        initFcm()
+//        initFcm()
     }
 
     private fun initFcm() {

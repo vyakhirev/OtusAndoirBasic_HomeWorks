@@ -10,7 +10,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class ViewModelFavorites() : ViewModel(){
+class ViewModelFavorites() : ViewModel() {
 
     private val _favoritesLiveData = MutableLiveData<List<Movie>>()
     val favoritesLiveData: LiveData<List<Movie>> = _favoritesLiveData
@@ -35,9 +35,9 @@ class ViewModelFavorites() : ViewModel(){
         disposable.add(dao.getMovie(uuid)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { film->
-                Log.d("uuu",film.overview)
-                film.isFavorite=!film.isFavorite
+            .subscribe { film ->
+                Log.d("uuu", film.overview)
+                film.isFavorite = !film.isFavorite
                 dao.switchFavoriteStar(film)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

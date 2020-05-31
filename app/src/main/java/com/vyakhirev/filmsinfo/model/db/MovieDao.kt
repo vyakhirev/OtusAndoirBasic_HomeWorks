@@ -23,7 +23,7 @@ interface MovieDao {
 //    fun getFavorites(isFavorite: Boolean): List<Movie>
 
     @Query("DELETE FROM movie")
-    fun deleteAllMovies():Completable
+    fun deleteAllMovies(): Completable
 
     @Update
     fun switchFavoriteStar(movie: Movie): Single<Int>

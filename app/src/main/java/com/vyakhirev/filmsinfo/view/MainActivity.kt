@@ -29,19 +29,13 @@ import com.vyakhirev.filmsinfo.util.MovieJobService
 import com.vyakhirev.filmsinfo.util.NotificationHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
-import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 import kotlinx.android.synthetic.main.activity_main.*
-
-// const val THEME_SWITCHER = "theme_switcher"
-// private var filmClicked: Int = 10000
-// private var themesSwitcher = true
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
     private lateinit var viewModel: FilmListViewModel
-    private val disposable = CompositeDisposable()
 
     companion object {
         const val DEBUG_TAG = "Deb"
@@ -80,8 +74,10 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             val channelName = getString(R.string.default_notification_channel_name)
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager?.createNotificationChannel(
-                NotificationChannel(channelId,
-                    channelName, NotificationManager.IMPORTANCE_LOW)
+                NotificationChannel(
+                    channelId,
+                    channelName, NotificationManager.IMPORTANCE_LOW
+                )
             )
         }
     }

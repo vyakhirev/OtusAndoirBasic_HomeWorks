@@ -1,6 +1,5 @@
 package com.vyakhirev.filmsinfo.viewmodel
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,7 +23,7 @@ import javax.inject.Inject
 
 class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel() {
 
-    constructor(moviesApiClient: MovieApiClient,test: Boolean = true): this(moviesApiClient) {
+    constructor(moviesApiClient: MovieApiClient, test: Boolean = true) : this(moviesApiClient) {
         injected = true
     }
 
@@ -42,7 +41,7 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     private val _isViewLoading = MutableLiveData<Boolean>()
     val isViewLoading: LiveData<Boolean> = _isViewLoading
 
-    private val _filmClicked = MutableLiveData<Movie>()
+    val _filmClicked = MutableLiveData<Movie>()
     val filmClicked: LiveData<Movie> = _filmClicked
 
     @Inject
@@ -51,7 +50,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     private var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
 
     private val disposable = CompositeDisposable()
-
 
     fun inject() {
         if (!injected) {
@@ -108,12 +106,13 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
                         _isViewLoading.value = false
                         _movies.postValue(movieList.results)
                         Log.d(DEBUG_TAG, "fetchFromRemote()")
-                        disposable.add(
-                            storeLocally(movieList.results)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe()
-                        )
+//                        disposable.add(
+//                            storeLocally(movieList.results)
+//                                .subscribeOn(Schedulers.io())
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .subscribe()
+//                        )
+//                        fetchFromDatabase()
                     }
 
                     override fun onError(e: Throwable) {
@@ -145,15 +144,15 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
     fun switchFavorite(uuid: Int) {
         val dao = App.instance!!.movieDB.movieDao()
-        Log.d("lll","uuid=${uuid}")
+        Log.d("lll", "uuid=$uuid")
         disposable.add(dao.getMovie(uuid)
             .flatMap {
-                it.isFavorite=!it.isFavorite
+                it.isFavorite = !it.isFavorite
                 dao.switchFavoriteStar(it)
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+            .subscribe({ throwable -> })
         )
     }
 

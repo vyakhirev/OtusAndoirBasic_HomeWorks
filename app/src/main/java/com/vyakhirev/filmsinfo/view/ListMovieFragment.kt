@@ -80,6 +80,8 @@ class ListMovieFragment : Fragment() {
             },
             listenerMy = {
                 viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
+//                var Ind=viewModel.movies.value!![it].uuid
+//                Log.d("kkk","it =$it  id=$Ind")
                 viewModel.movies.value!![it].isFavorite = !viewModel.movies.value!![it].isFavorite
                 adapter.notifyItemChanged(it)
                 listenerMy?.onFavorClick(it)
@@ -194,7 +196,7 @@ class ListMovieFragment : Fragment() {
             listener = activity as OnFilmClickListener
             listenerMy = activity as OnFilmClickListener
         } else {
-            throw Exception("Activity must implement OnNewsClickListener")
+            throw Exception("Activity must implement ClickListener")
         }
 
         Log.d(DEBUG_TAG, "onActivityCreated")
