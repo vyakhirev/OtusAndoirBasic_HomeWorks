@@ -76,16 +76,16 @@ class FavoritesListFragment : Fragment() {
         favoritesRecyclerView.adapter = adapter
     }
 
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//
-//        if (activity is OnFavorClickListener) {
-//            listener = activity as OnFavorClickListener
-//            listenerDel = activity as OnFavorClickListener
-//        } else {
-//            throw Exception("Activity must implement OnFavorClickedListener")
-//        }
-//    }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        if (activity is OnFavorClickListener) {
+            listener = activity as OnFavorClickListener
+            listenerDel = activity as OnFavorClickListener
+        } else {
+            throw Exception("Activity must implement OnFavorClickedListener")
+        }
+    }
 
     companion object {
         const val TAG = "FavoritesListFragment"

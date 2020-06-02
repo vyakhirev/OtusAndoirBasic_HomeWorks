@@ -106,13 +106,13 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
                         _isViewLoading.value = false
                         _movies.postValue(movieList.results)
                         Log.d(DEBUG_TAG, "fetchFromRemote()")
-//                        disposable.add(
-//                            storeLocally(movieList.results)
-//                                .subscribeOn(Schedulers.io())
-//                                .observeOn(AndroidSchedulers.mainThread())
-//                                .subscribe()
-//                        )
-//                        fetchFromDatabase()
+                        disposable.add(
+                            storeLocally(movieList.results)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe()
+                        )
+                        fetchFromDatabase()
                     }
 
                     override fun onError(e: Throwable) {
@@ -144,7 +144,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
     fun switchFavorite(uuid: Int) {
         val dao = App.instance!!.movieDB.movieDao()
-        Log.d("lll", "uuid=$uuid")
         disposable.add(dao.getMovie(uuid)
             .flatMap {
                 it.isFavorite = !it.isFavorite
@@ -167,7 +166,3 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 //     _onMessageError.value = false
 // }
 
-// override fun onCleared() {
-//     super.onCleared()
-//    disposable.clear()
-// }
