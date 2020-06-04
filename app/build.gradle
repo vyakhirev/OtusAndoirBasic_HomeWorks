@@ -33,6 +33,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "default"
+    def MODE = "MODE"
+    productFlavors {
+        free {
+            buildConfigField "String", MODE , '\"free"'
+            applicationId "com.vyakhirev.filmsinfo"
+        }
+        paid {
+            buildConfigField "String", MODE , '\"paid"'
+            applicationId "com.vyakhirev.filmsinfo.paid"
+        }
+
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

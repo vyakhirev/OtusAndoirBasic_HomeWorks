@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
                 )
             )
         }
-        scheduleJob(this)
+//        scheduleJob(this)
     }
 
     private fun setupNavigation() {
