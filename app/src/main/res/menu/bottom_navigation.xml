@@ -8,10 +8,7 @@
         android:id="@+id/action_favorites"
         android:icon="@drawable/ic_favorite_black_24dp"
         android:title="@string/favorites_menu" />
-    <item
-        android:id="@+id/action_watch_later"
-        android:icon="@drawable/ic_tv_black_24dp"
-        android:title="@string/watch_later" />
+
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings_app_24dp"

@@ -164,11 +164,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
                     openFragment(FavoritesListFragment())
                     return@OnNavigationItemSelectedListener true
                 }
-                R.id.action_watch_later -> {
-                    supportFragmentManager.popBackStack()
-                    openFragment(WatchLaterFragment())
-                    return@OnNavigationItemSelectedListener true
-                }
+
                 R.id.action_settings -> {
                     val thirdFragment =
                         SettingsFragment()
