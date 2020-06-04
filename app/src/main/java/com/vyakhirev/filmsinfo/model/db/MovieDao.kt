@@ -16,16 +16,10 @@ interface MovieDao {
 
     @Query("SELECT * FROM movie WHERE uuid=:Id")
     fun getMovie(Id: Int): Single<Movie>
-//    fun getMovie(Id: Int): Movie
 
     @Query("SELECT * FROM movie WHERE isFavorite=:isFavorite")
     fun getFavorites(isFavorite: Boolean): Flowable<List<Movie>>
-//    fun getFavorites(isFavorite: Boolean): List<Movie>
-
-    @Query("DELETE FROM movie")
-    fun deleteAllMovies(): Completable
 
     @Update
     fun switchFavoriteStar(movie: Movie): Single<Int>
-//    fun switchFavoriteStar(movie: Movie):Completable
 }

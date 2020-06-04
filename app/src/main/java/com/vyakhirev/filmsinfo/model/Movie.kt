@@ -28,7 +28,6 @@ data class Movie(
     @ColumnInfo(name = "poster_path")
     @SerializedName("poster_path")
     var posterPath: String? = null
-//     get() = "https://image.tmdb.org/t/p/w154$field"
     @PrimaryKey(autoGenerate = true)
     var uuid: Int = 0
 }

@@ -13,8 +13,6 @@ class App : Application() {
 
     lateinit var moviesApiClient: MovieApiClient
     lateinit var movieDB: MoviesDatabase
-
-    //    lateinit var favorDB: FavorDatabase
     lateinit var prefHelper: SharedPreferencesHelper
 
     override fun onCreate() {

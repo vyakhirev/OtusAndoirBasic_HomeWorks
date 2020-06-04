@@ -43,7 +43,7 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     private val _isViewLoading = MutableLiveData<Boolean>()
     val isViewLoading: LiveData<Boolean> = _isViewLoading
 
-    val _filmClicked = MutableLiveData<Movie>()
+    private val _filmClicked = MutableLiveData<Movie>()
     val filmClicked: LiveData<Movie> = _filmClicked
 
     @Inject
@@ -97,7 +97,9 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
     var page = 1
     fun fetchFromRemote() {
-        _isViewLoading.value = true
+        if (movies.value.isNullOrEmpty()) {
+            _isViewLoading.value = true
+        }
         disposable.add(
             moviesApiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
                 .subscribeOn(Schedulers.newThread())
@@ -114,7 +116,14 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
                                 .subscribe()
                         )
                         fetchFromDatabase()
-                        DiffUtil.calculateDiff(MovieDiffCallback(movies.value!!,movieList.results))
+                        if (movieList.results.isNullOrEmpty()) {
+                            DiffUtil.calculateDiff(
+                                MovieDiffCallback(
+                                    movies.value!!,
+                                    movieList.results
+                                )
+                            )
+                        }
                     }
 
                     override fun onError(e: Throwable) {
@@ -129,11 +138,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
         prefHelper.saveUpdateTime(System.nanoTime())
         val dao = App.instance!!.movieDB.movieDao()
         return dao.insertAll(list)
-    }
-
-    private fun clearDb(): Completable {
-        val dao = App.instance!!.movieDB.movieDao()
-        return dao.deleteAllMovies()
     }
 
     fun openDetails(movie: Movie?) {
@@ -157,10 +161,5 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
         super.onCleared()
         disposable.clear()
     }
-}
-// private fun moviesRetrieved(movies: List<Movie>) {
-//     _movies.value = movies
-//     _isViewLoading.value = false
-//     _onMessageError.value = false
-// }
 
+}
