@@ -29,8 +29,8 @@ import com.vyakhirev.filmsinfo.util.MovieJobService
 import com.vyakhirev.filmsinfo.util.NotificationHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
-import java.util.concurrent.TimeUnit
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
@@ -92,9 +92,11 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
         val listener = View.OnClickListener {
-//            favorites.removeAt(favorites.size - 1)
-//            films[ind].isFavorite = false
-//            filmsRecyclerView.adapter?.notifyItemChanged(ind)
+            viewModel = ViewModelProvider(
+                this,
+                ViewModelFactory(App.instance!!.moviesApiClient)
+            ).get(FilmListViewModel::class.java)
+            viewModel.switchFavorite(ind + 1)
         }
         snack.setAction("Undo", listener)
         snack.setActionTextColor(
@@ -134,19 +136,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         val jobScheduler =
             context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         jobScheduler.schedule(jobBuilder.build())
-    }
-
-    private fun openFilmDetailed() {
-
-        supportFragmentManager
-            .beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                DetailMovieFragment(),
-                DetailMovieFragment.TAG
-            )
-            .addToBackStack(null)
-            .commit()
     }
 
     override fun onResume() {
@@ -189,6 +178,19 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             }
             false
         }
+
+    private fun openFilmDetailed() {
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                DetailMovieFragment(),
+                DetailMovieFragment.TAG
+            )
+            .addToBackStack(null)
+            .commit()
+    }
 
     private fun openFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()

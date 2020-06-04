@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.DiffUtil
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.di.AppModule
@@ -14,6 +15,7 @@ import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.MovieResponse
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
+import com.vyakhirev.filmsinfo.view.adapters.MovieDiffCallback
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -104,7 +106,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
                     override fun onSuccess(movieList: MovieResponse) {
                         _isViewLoading.value = false
-                        _movies.postValue(movieList.results)
                         Log.d(DEBUG_TAG, "fetchFromRemote()")
                         disposable.add(
                             storeLocally(movieList.results)
@@ -113,6 +114,7 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
                                 .subscribe()
                         )
                         fetchFromDatabase()
+                        DiffUtil.calculateDiff(MovieDiffCallback(movies.value!!,movieList.results))
                     }
 
                     override fun onError(e: Throwable) {
@@ -126,10 +128,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     fun storeLocally(list: List<Movie>): Completable {
         prefHelper.saveUpdateTime(System.nanoTime())
         val dao = App.instance!!.movieDB.movieDao()
-        clearDb()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
         return dao.insertAll(list)
     }
 
@@ -151,7 +149,7 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ throwable -> })
+            .subscribe()
         )
     }
 

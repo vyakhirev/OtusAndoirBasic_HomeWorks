@@ -13,14 +13,14 @@ import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.loadImage
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
-import com.vyakhirev.filmsinfo.viewmodel.ViewModelFavorites
+import com.vyakhirev.filmsinfo.viewmodel.FavoritesViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.FavoritesViewModelFactory
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_detail_movie.*
 
 class DetailMovieFragment : Fragment() {
     private lateinit var viewModel: FilmListViewModel
-    private lateinit var favViewModel: ViewModelFavorites
+    private lateinit var favViewModel: FavoritesViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,7 +43,7 @@ class DetailMovieFragment : Fragment() {
         favViewModel =
             ViewModelProvider(requireActivity(),
                 FavoritesViewModelFactory()
-            ).get(ViewModelFavorites::class.java)
+            ).get(FavoritesViewModel::class.java)
         favViewModel.filmClicked.observe(viewLifecycleOwner, filmDetails)
     }
 

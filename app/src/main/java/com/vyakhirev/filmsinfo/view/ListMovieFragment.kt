@@ -80,8 +80,6 @@ class ListMovieFragment : Fragment() {
             },
             listenerMy = {
                 viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
-//                var Ind=viewModel.movies.value!![it].uuid
-//                Log.d("kkk","it =$it  id=$Ind")
                 viewModel.movies.value!![it].isFavorite = !viewModel.movies.value!![it].isFavorite
                 adapter.notifyItemChanged(it)
                 listenerMy?.onFavorClick(it)
@@ -125,7 +123,7 @@ class ListMovieFragment : Fragment() {
             val day = c.get(Calendar.DAY_OF_MONTH)
             val dpd = DatePickerDialog(
                 requireContext(),
-                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                     var date = """$year-${monthOfYear + 1}-$dayOfMonth"""
                     prefHelper.saveWatchLaterData(date)
                 },
@@ -142,7 +140,6 @@ class ListMovieFragment : Fragment() {
             requireActivity(),
             ViewModelFactory(App.instance!!.moviesApiClient)
         ).get(FilmListViewModel::class.java)
-        // if (films.isEmpty()) viewModel.refresh()
         viewModel.movies.observe(viewLifecycleOwner, renderMovies)
         viewModel.isViewLoading.observe(viewLifecycleOwner, isViewLoadingObserver)
         viewModel.onMessageError.observe(viewLifecycleOwner, onMessageErrorObserver)
@@ -154,7 +151,7 @@ class ListMovieFragment : Fragment() {
     }
 
     private val renderMovies = Observer<List<Movie>> {
-        Log.d(DEBUG_TAG, "renderMovies")
+        Log.d(DEBUG_TAG, "renderMovies, size=${it.size} ")
         progressBar.visibility = View.GONE
         loadingTV.visibility = View.GONE
         if (it == null) filmsRecyclerView.visibility = View.GONE

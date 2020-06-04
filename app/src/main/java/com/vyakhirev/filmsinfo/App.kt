@@ -12,19 +12,19 @@ import java.util.concurrent.Executors
 class App : Application() {
 
     lateinit var moviesApiClient: MovieApiClient
-
-    // lateinit var repository: MoviesRepository
     lateinit var movieDB: MoviesDatabase
+
+    //    lateinit var favorDB: FavorDatabase
     lateinit var prefHelper: SharedPreferencesHelper
+
     override fun onCreate() {
         Log.d("App", "App onCreate")
         super.onCreate()
         instance = this
         moviesApiClient = MovieApiClient()
-        // initRepos()
         initRoom()
         initSharePref()
-//        initFcm()
+        initFcm()
     }
 
     private fun initFcm() {
@@ -50,14 +50,9 @@ class App : Application() {
 
     private fun initRoom() {
         Executors.newSingleThreadScheduledExecutor().execute {
-            //                Db.getInstance(this)?.getPublisherDao()?.getAll()
             movieDB = MoviesDatabase.invoke(this)
+//            favorDB = FavorDatabase.invoke(this)
         }
-    }
-
-    private fun initRepos() {
-        // moviesApiClient = MovieApiClient
-        // repository = MoviesRepository(moviesApiClient)
     }
 
     companion object {
