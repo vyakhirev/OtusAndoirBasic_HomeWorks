@@ -26,8 +26,7 @@
         android:layout_marginTop="44dp"
         android:contentDescription="@string/content_descr"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/film1" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/favTitleTV"

@@ -2,10 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <EditTextPreference
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:defaultValue="10"
         android:key="pref_cache_duration"
-        android:title="Cache duration in seconds"
-        />
+        android:title="Cache duration in seconds" />
 
 
 </PreferenceScreen>
