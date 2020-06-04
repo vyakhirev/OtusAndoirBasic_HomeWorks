@@ -73,7 +73,7 @@ class ListMovieFragment : Fragment() {
             listener = {
                 val detMovie = viewModel.movies.value?.get(it)
                 viewModel.openDetails(detMovie)
-                detMovie?.isViewed = true
+                viewModel.filmIsViewed(detMovie!!.uuid)
                 Log.d(DEBUG_TAG, "Captured movie= $detMovie  It=$it")
                 adapter.notifyItemChanged(it)
                 listener?.onFilmClick(it)
@@ -101,10 +101,10 @@ class ListMovieFragment : Fragment() {
         filmsRecyclerView.addItemDecoration(itemDecor)
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == viewModel.movies.value?.size) {
-                    viewModel.page++
-                    viewModel.fetchFromRemote()
-                }
+                        if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == (viewModel.movies.value?.size )) {
+                            viewModel.page++
+                            viewModel.fetchFromRemote()
+                        }
             }
         })
     }
@@ -161,14 +161,15 @@ class ListMovieFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private val onMessageErrorObserver = Observer<Any> {
-        Log.v(DEBUG_TAG, "onMessageError $it")
         errorImg.visibility = View.VISIBLE
         errorTV.text = "Error $it"
         errorTV.visibility = View.VISIBLE
         retryBtn.visibility = View.VISIBLE
         filmsRecyclerView.visibility = View.GONE
+
         retryBtn.setOnClickListener {
             viewModel.refresh()
+//            viewModel._onMessageError.call()
             errorImg.visibility = View.GONE
             errorTV.visibility = View.GONE
             retryBtn.visibility = View.GONE
@@ -177,7 +178,6 @@ class ListMovieFragment : Fragment() {
     }
 
     private val isViewLoadingObserver = Observer<Boolean> {
-        Log.v(DEBUG_TAG, "isViewLoading $it")
         val visibility = if (it) View.VISIBLE else View.GONE
         progressBar.visibility = visibility
         loadingTV.visibility = visibility

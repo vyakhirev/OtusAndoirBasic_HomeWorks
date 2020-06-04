@@ -37,8 +37,7 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies
 
-    private val _onMessageError = SingleLiveEvent<Any>()
-    val onMessageError: LiveData<Any> = _onMessageError
+    val onMessageError: SingleLiveEvent<Any> = SingleLiveEvent()
 
     private val _isViewLoading = MutableLiveData<Boolean>()
     val isViewLoading: LiveData<Boolean> = _isViewLoading
@@ -128,7 +127,7 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
                     override fun onError(e: Throwable) {
                         _isViewLoading.value = false
-                        _onMessageError.postValue(e.printStackTrace())
+                        onMessageError.postValue("Internet connection is not available")
                     }
                 })
         )
@@ -157,6 +156,20 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
         )
     }
 
+    fun filmIsViewed(uuid: Int) {
+        val dao = App.instance!!.movieDB.movieDao()
+        disposable.add(dao.getMovie(uuid)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { film ->
+                Log.d("uuu", film.overview)
+                film.isViewed =true
+                dao.switchFavoriteStar(film)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe()
+            })
+    }
     override fun onCleared() {
         super.onCleared()
         disposable.clear()

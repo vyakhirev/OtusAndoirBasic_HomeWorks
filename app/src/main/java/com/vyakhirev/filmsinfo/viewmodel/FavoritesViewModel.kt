@@ -45,6 +45,8 @@ class FavoritesViewModel() : ViewModel() {
             })
     }
 
+
+
     fun openDetails(movie: Movie?) {
         _filmClicked.postValue(movie)
     }
