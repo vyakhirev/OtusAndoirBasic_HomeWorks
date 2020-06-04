@@ -18,16 +18,26 @@ class MovieIntentService : IntentService(TAG_SCH) {
     override fun onHandleIntent(intent: Intent?) {
         Log.d(TAG_SCH, "Start of onHandleIntent ")
         try {
-            Thread.sleep(10000)
+            Thread.sleep(20000)
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
         Log.d(TAG_SCH, "End of onHandleIntent ")
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate() {
         Log.d(TAG_SCH, "onCreate+ ${prefHelper.getWatchLaterData()}")
-//        NotificationHelper(App.instance!!.baseContext).createNotification()
+        NotificationHelper(App.instance!!.baseContext).createNotification()
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+        val dayX = "$year-${month + 1}-$day"
+        if (prefHelper.getWatchLaterData() == dayX) {
+            Log.d("Kan", "DayX=$dayX")
+          startForeground(123, NotificationHelper(App.instance!!.baseContext).createNotification())
+        }
         super.onCreate()
     }
 
@@ -41,7 +51,8 @@ class MovieIntentService : IntentService(TAG_SCH) {
         val dayX = "$year-${month + 1}-$day"
         if (prefHelper.getWatchLaterData() == dayX) {
             Log.d("Kan", "DayX=$dayX")
-            NotificationHelper(App.instance!!.baseContext).createNotification()
+            startForeground(123, NotificationHelper(App.instance!!.baseContext).createNotification())
+
         }
         return super.onStartCommand(intent, flags, startId)
     }

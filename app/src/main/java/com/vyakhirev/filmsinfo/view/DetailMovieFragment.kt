@@ -12,8 +12,8 @@ import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.loadImage
-import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.FavoritesViewModel
+import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.FavoritesViewModelFactory
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_detail_movie.*

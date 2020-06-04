@@ -101,7 +101,7 @@ class ListMovieFragment : Fragment() {
         filmsRecyclerView.addItemDecoration(itemDecor)
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == (viewModel.movies.value?.size )) {
+                        if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == (viewModel.movies.value?.size)) {
                             viewModel.page++
                             viewModel.fetchFromRemote()
                         }
@@ -124,7 +124,7 @@ class ListMovieFragment : Fragment() {
             val dpd = DatePickerDialog(
                 requireContext(),
                 DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                    var date = """$year-${monthOfYear + 1}-$dayOfMonth"""
+                    val date = """$year-${monthOfYear + 1}-$dayOfMonth"""
                     prefHelper.saveWatchLaterData(date)
                 },
                 year,

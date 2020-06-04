@@ -1,5 +1,6 @@
 package com.vyakhirev.filmsinfo.util
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -22,7 +23,7 @@ class NotificationHelper(val context: Context) {
         const val MOVIE_UUID = "UUID"
     }
 
-    fun createNotification() {
+    fun createNotification():Notification {
         createNotificationChannel()
 
         val intent = Intent(context, MainActivity::class.java).apply {
@@ -35,15 +36,17 @@ class NotificationHelper(val context: Context) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_live_tv_yellow_24dp)
             .setContentTitle("Movie!")
-            .setContentText("Need to watch this movie today: $movieUuid")
+            .setContentText("Need to watch this movie today: ${movieUuid!!.toInt()-1}")
             .setStyle(
                 NotificationCompat.BigTextStyle()
             )
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
             .build()
 
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
+        return notification
     }
 
     private fun createNotificationChannel() {

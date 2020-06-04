@@ -12,7 +12,7 @@ import com.vyakhirev.filmsinfo.util.MovieIntentService.Companion.TAG_SCH
 class MovieJobService : JobService() {
 
     override fun onStopJob(params: JobParameters?): Boolean {
-        return false
+        return true
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -20,7 +20,7 @@ class MovieJobService : JobService() {
         Log.i(TAG_SCH, "onStartJob: starting job with id: " + params?.jobId)
         val startIntentService = Intent(this, MovieIntentService::class.java)
         ContextCompat.startForegroundService(this, startIntentService)
-//        startService(startIntentService)
-        return true
+        jobFinished(params, false)
+        return false
     }
 }

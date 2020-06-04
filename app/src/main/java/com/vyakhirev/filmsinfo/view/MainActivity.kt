@@ -25,10 +25,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.util.MovieJobService
 import com.vyakhirev.filmsinfo.util.NotificationHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
 
@@ -36,6 +41,8 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
     private lateinit var viewModel: FilmListViewModel
+
+    private val disposable = CompositeDisposable()
 
     companion object {
         const val DEBUG_TAG = "Deb"
@@ -67,7 +74,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     private fun setupNotification() {
-//        scheduleJob(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             val channelId = getString(R.string.default_notification_channel_id)
@@ -80,6 +86,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
                 )
             )
         }
+        scheduleJob(this)
     }
 
     private fun setupNavigation() {
@@ -93,8 +100,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
         val listener = View.OnClickListener {
             viewModel = ViewModelProvider(
-                this,
-                ViewModelFactory(App.instance!!.moviesApiClient)
+                this, ViewModelFactory(App.instance!!.moviesApiClient)
             ).get(FilmListViewModel::class.java)
             viewModel.switchFavorite(ind + 1)
         }
@@ -129,7 +135,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         jobBuilder.setOverrideDeadline(15000)
         jobBuilder.setRequiresCharging(false)
         jobBuilder.setBackoffCriteria(
-            TimeUnit.SECONDS.toMillis(10),
+            TimeUnit.SECONDS.toMillis(7200000),
             JobInfo.BACKOFF_POLICY_LINEAR
         )
         Log.i(TAG_SCH, "scheduleJob: adding job to scheduler")
@@ -146,6 +152,21 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
                 this,
                 ViewModelFactory(App.instance!!.moviesApiClient)
             ).get(FilmListViewModel::class.java)
+            val dao = App.instance!!.movieDB.movieDao()
+            disposable.add(dao.getMovie(movieUuid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<Movie>() {
+                    override fun onSuccess(t: Movie) {
+                        viewModel.openDetails(t)
+                    }
+
+                    override fun onError(e: Throwable) {
+                    }
+                }
+                )
+            )
+            openFilmDetailed()
         }
     }
 
