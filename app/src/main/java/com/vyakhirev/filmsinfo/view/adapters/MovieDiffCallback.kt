@@ -7,7 +7,7 @@ class MovieDiffCallback(private val newRows: List<Movie?>, private val oldRows: 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldRow = oldRows[oldItemPosition]
         val newRow = newRows[newItemPosition]
-        return oldRow?.id == newRow?.id
+        return oldRow?.uuid == newRow?.uuid
     }
 
     override fun getOldListSize(): Int = oldRows.size
