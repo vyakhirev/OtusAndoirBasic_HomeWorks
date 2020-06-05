@@ -220,7 +220,7 @@ class ListMovieFragment : Fragment() {
 
     private fun setupRefreshLayout() {
         refreshLayout.setOnRefreshListener {
-            viewModel.page = 0
+//            viewModel.page = 0
             viewModel.refresh()
             refreshLayout.isRefreshing = false
             filmsRecyclerView.adapter?.notifyDataSetChanged()

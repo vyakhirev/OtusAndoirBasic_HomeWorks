@@ -57,8 +57,8 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     override fun onFavorClick(ind: Int) {
-        super.onFavorClick(ind)
         showSnack(ind)
+        super.onFavorClick(ind)
     }
 
     override fun onFavorToDetails(ind: Int) {

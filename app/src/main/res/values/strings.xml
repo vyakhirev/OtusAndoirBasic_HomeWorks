@@ -32,4 +32,5 @@
     <string name="fcm_message">FCM Message</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="default_notification_channel_name">FilmsInfo</string>
+    <string name="available_in_the_full_version">Available in the full version</string>
 </resources>

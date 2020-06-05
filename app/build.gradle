@@ -30,7 +30,14 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            buildConfigField "boolean", "USE_LOG", "false"
+            buildConfigField "boolean", "REPORT_CRASHES", "true"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        dev {
+            minifyEnabled false
+            buildConfigField "boolean", "REPORT_CRASHES", "false"
+            debuggable true
         }
     }
 
@@ -43,7 +50,7 @@ android {
         }
         paid {
             buildConfigField "String", MODE , '\"paid"'
-            applicationId "com.vyakhirev.filmsinfo.paid"
+            applicationId 'com.vyakhirev.filmsinfo'
         }
 
     }
@@ -64,31 +71,31 @@ android {
         it.resValue 'string', "api_key", tmdbApiKey
     }
 
-//    signingConfigs {
-//        debug { /* здесь никаких изменений нет */ }
-//        release {
-//            storeFile file('/home/volttier/bin/keys/FilmsInfo.jks')
-//            storePassword 'MkF301254'
-//            if (project.hasProperty("Keys.repo")) {
-//                def projectPropsFile = file(project.property("Keys.repo") + "~/bin/keys/FilmsInfo.properties")
-//                if (projectPropsFile.exists()) {
-//                    Properties props = new Properties()
-//                    props.load(new FileInputStream(projectPropsFile))
-//                    storeFile file(file(project.property("Keys.repo") + props['RELEASE_STORE_FILE']))
-//                    storePassword props['RELEASE_STORE_PASS']
-//                    keyAlias props['RELEASE_ALIAS']
-//                    keyPassword props['RELEASE_KEY_PASS']
-//                }
-//            } else {
-//                println "======================================================="
-//                println "[ERROR] - Please configure release-compilation environment - e.g. in ~/.signing directory"
-//                println "======================================================="
-//            }
-//        }
-//        Test {
-//            storeFile file('/home/volttier/bin/keys/FilmsInfo.jks')
-//        }
-//    }
+    signingConfigs {
+        debug { /* здесь никаких изменений нет */ }
+        release {
+            storeFile file('/home/volttier/bin/keys/FilmsInfo.jks')
+            storePassword 'MkF301254'
+            if (project.hasProperty("Keys.repo")) {
+                def projectPropsFile = file(project.property("Keys.repo") + "~/bin/keys/FilmsInfo.properties")
+                if (projectPropsFile.exists()) {
+                    Properties props = new Properties()
+                    props.load(new FileInputStream(projectPropsFile))
+                    storeFile file(file(project.property("Keys.repo") + props['RELEASE_STORE_FILE']))
+                    storePassword props['RELEASE_STORE_PASS']
+                    keyAlias props['RELEASE_ALIAS']
+                    keyPassword props['RELEASE_KEY_PASS']
+                }
+            } else {
+                println "======================================================="
+                println "[ERROR] - Please configure release-compilation environment - e.g. in ~/.signing directory"
+                println "======================================================="
+            }
+        }
+        Test {
+            storeFile file('/home/volttier/bin/keys/FilmsInfo.jks')
+        }
+    }
 }
 def retrofitVersion = '2.3.0'
 def rxJavaVersion = '2.1.1'

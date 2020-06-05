@@ -19,7 +19,7 @@
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
-        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/build/generated/res/google-services/free/debug;file://$MODULE_DIR$/build/generated/crashlytics/res/free/debug" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/src/free/res;file://$MODULE_DIR$/build/generated/res/google-services/free/debug;file://$MODULE_DIR$/build/generated/crashlytics/res/free/debug" />
         <option name="TEST_RES_FOLDERS_RELATIVE_PATH" value="" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
       </configuration>
@@ -181,11 +181,15 @@
           <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/freeDebugAndroidTest" />
           <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/freeDebug" />
           <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/freeDebugUnitTest" />
+          <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/freeDev" />
+          <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/freeDevUnitTest" />
           <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/freeRelease" />
           <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/freeReleaseUnitTest" />
           <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/paidDebugAndroidTest" />
           <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/paidDebug" />
           <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/paidDebugUnitTest" />
+          <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/paidDev" />
+          <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/paidDevUnitTest" />
           <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/paidRelease" />
           <root url="file://$MODULE_DIR$/build/tmp/kapt3/classes/paidReleaseUnitTest" />
         </CLASSES>
