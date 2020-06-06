@@ -37,6 +37,7 @@ class MovieIntentService : IntentService(TAG_SCH) {
         if (prefHelper.getWatchLaterData() == dayX) {
             Log.d("Kan", "DayX=$dayX")
           startForeground(123, NotificationHelper(App.instance!!.baseContext).createNotification())
+            NotificationHelper(App.instance!!.baseContext).createNotification()
         }
         super.onCreate()
     }

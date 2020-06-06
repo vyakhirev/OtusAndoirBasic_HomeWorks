@@ -25,31 +25,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         remoteMessage.data.isNotEmpty().let {
             Log.d(TAG, "Message data payload: " + remoteMessage.data)
             sendNotification(remoteMessage.notification?.body!!)
-
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob()
-            } else {
-                // Handle message within 10 seconds
-                handleNow()
-            }
+            scheduleJob()
         }
 
         remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
         }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
-    // [END receive_message]
 
-    // [START on_new_token]
-    /**
-     * Called if InstanceID token is updated. This may occur if the security of
-     * the previous token had been compromised. Note that this is called when the InstanceID token
-     * is initially generated so this is where you would retrieve the token.
-     */
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
 
@@ -60,14 +43,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
     // [END on_new_token]
 
-    /**
-     * Schedule async work using WorkManager.
-     */
     private fun scheduleJob() {
         // [START dispatch_job]
         val work = OneTimeWorkRequest.Builder(MyWorker::class.java).build()
-        WorkManager.getInstance().beginWith(work).enqueue()
-//        sendNotification("Посмотрите побег из Шоушенка")
+        WorkManager
+            .getInstance(applicationContext)
+            .beginWith(work)
+            .enqueue()
         // [END dispatch_job]
     }
 

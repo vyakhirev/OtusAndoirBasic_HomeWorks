@@ -2,6 +2,7 @@ package com.vyakhirev.filmsinfo
 
 import android.app.Application
 import android.util.Log
+import androidx.work.Configuration
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import com.vyakhirev.filmsinfo.model.db.MoviesDatabase
@@ -9,7 +10,7 @@ import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import java.util.concurrent.Executors
 
-class App : Application() {
+class App : Application(), Configuration.Provider {
 
     lateinit var moviesApiClient: MovieApiClient
     lateinit var movieDB: MoviesDatabase
@@ -56,5 +57,17 @@ class App : Application() {
     companion object {
         var instance: App? = null
             private set
+    }
+
+    override fun getWorkManagerConfiguration(): Configuration {
+        return if (BuildConfig.DEBUG) {
+            Configuration.Builder()
+                .setMinimumLoggingLevel(Log.DEBUG)
+                .build()
+        } else {
+            Configuration.Builder()
+                .setMinimumLoggingLevel(Log.ERROR)
+                .build()
+        }
     }
 }
