@@ -25,7 +25,7 @@ class FavoritesViewModel() : ViewModel() {
             App.instance!!.movieDB.movieDao().getFavorites(true)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe() {
+                .subscribe {
                     _favoritesLiveData.value = it
                 })
     }
@@ -36,7 +36,6 @@ class FavoritesViewModel() : ViewModel() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { film ->
-                Log.d("uuu", film.overview)
                 film.isFavorite = !film.isFavorite
                 dao.switchFavoriteStar(film)
                     .subscribeOn(Schedulers.io())
@@ -47,6 +46,20 @@ class FavoritesViewModel() : ViewModel() {
 
     fun openDetails(movie: Movie?) {
         _filmClicked.postValue(movie)
+    }
+
+    fun filmIsViewed(uuid: Int) {
+        val dao = App.instance!!.movieDB.movieDao()
+        disposable.add(dao.getMovie(uuid)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { film ->
+                film.isViewed = true
+                dao.switchFavoriteStar(film)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe()
+            })
     }
 
     override fun onCleared() {

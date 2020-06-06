@@ -3,8 +3,8 @@ package com.vyakhirev.filmsinfo.util
 import android.content.Context
 import android.icu.util.Calendar
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.vyakhirev.filmsinfo.App
@@ -21,9 +21,12 @@ class MyWorker(appContext: Context, workerParams: WorkerParameters) :
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
         val dayX = "$year-${month + 1}-$day"
-        if (prefHelper.getWatchLaterData() == dayX) {
+        return if (prefHelper.getWatchLaterData() == dayX) {
             NotificationHelper(App.instance!!.baseContext).createNotification()
-        }
-        return Result.success()
+            WorkManager
+                .getInstance(applicationContext)
+                .cancelAllWork()
+            Result.success()
+        } else Result.retry()
     }
 }

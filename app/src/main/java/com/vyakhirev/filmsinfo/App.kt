@@ -17,7 +17,6 @@ class App : Application(), Configuration.Provider {
     lateinit var prefHelper: SharedPreferencesHelper
 
     override fun onCreate() {
-        Log.d("App", "App onCreate")
         super.onCreate()
         instance = this
         moviesApiClient = MovieApiClient()
@@ -50,7 +49,6 @@ class App : Application(), Configuration.Provider {
     private fun initRoom() {
         Executors.newSingleThreadScheduledExecutor().execute {
             movieDB = MoviesDatabase.invoke(this)
-//            favorDB = FavorDatabase.invoke(this)
         }
     }
 

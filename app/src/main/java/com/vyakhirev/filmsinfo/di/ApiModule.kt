@@ -10,7 +10,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 open class ApiModule {
-     private val BASE_URL = "https://api.themoviedb.org/3/"
+
+    private val BASE_URL = "https://api.themoviedb.org/3/"
 
     @Provides
     fun provideMovieApiService(): MovieApiInterface {

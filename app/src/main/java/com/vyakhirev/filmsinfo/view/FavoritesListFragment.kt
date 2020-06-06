@@ -63,6 +63,8 @@ class FavoritesListFragment : Fragment() {
             listener = {
                 val detMovie = favViewModel.favoritesLiveData.value!![it]
                 favViewModel.openDetails(detMovie)
+                favViewModel.filmIsViewed(detMovie.uuid)
+                adapter.notifyItemChanged(it)
                 listener?.onFavorToDetails(it)
             },
             listenerDel = {

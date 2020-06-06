@@ -162,7 +162,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { film ->
-                Log.d("uuu", film.overview)
                 film.isViewed = true
                 dao.switchFavoriteStar(film)
                     .subscribeOn(Schedulers.io())
@@ -170,6 +169,7 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
                     .subscribe()
             })
     }
+
     override fun onCleared() {
         super.onCleared()
         disposable.clear()

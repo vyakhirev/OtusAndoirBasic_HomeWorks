@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class RecyclerViewSampleTest {
+class RecyclerViewTest {
 
     @get:Rule
     var activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
@@ -45,8 +45,8 @@ class RecyclerViewSampleTest {
 
     @Test
     fun checkClickOnPoster() {
-        val scenario = launchFragmentInContainer<ListMovieFragment>()
-        Espresso.onView(ViewMatchers.withId(R.id.filmsRecyclerView))
+        launchFragmentInContainer<ListMovieFragment>()
+        onView(ViewMatchers.withId(R.id.filmsRecyclerView))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<FilmsAdapter.FilmsViewHolder>(
                     2,

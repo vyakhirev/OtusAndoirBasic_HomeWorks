@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -18,13 +19,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.util.MyWorker
 import com.vyakhirev.filmsinfo.view.adapters.FilmsAdapter
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_list_movie.*
+import java.util.concurrent.TimeUnit
 
 class ListMovieFragment : Fragment() {
     private var listener: OnFilmClickListener? = null
@@ -56,6 +61,7 @@ class ListMovieFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_list_movie, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         if (savedInstanceState == null) {
@@ -66,6 +72,7 @@ class ListMovieFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupRecyclerView() {
         adapter = FilmsAdapter(
             requireContext(),
@@ -74,7 +81,6 @@ class ListMovieFragment : Fragment() {
                 val detMovie = viewModel.movies.value?.get(it)
                 viewModel.openDetails(detMovie)
                 viewModel.filmIsViewed(detMovie!!.uuid)
-                Log.d(DEBUG_TAG, "Captured movie= $detMovie  It=$it")
                 adapter.notifyItemChanged(it)
                 listener?.onFilmClick(it)
             },
@@ -85,8 +91,10 @@ class ListMovieFragment : Fragment() {
                 listenerMy?.onFavorClick(it)
             },
             listenerWl = {
+                prefHelper.saveWatchLaterData("no")
                 dataPicker()
                 prefHelper.saveWatchLaterUuid(viewModel.movies.value!![it].uuid)
+                scheduleJob()
             })
 
         filmsRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -101,12 +109,26 @@ class ListMovieFragment : Fragment() {
         filmsRecyclerView.addItemDecoration(itemDecor)
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == (viewModel.movies.value?.size)) {
-                            viewModel.page++
-                            viewModel.fetchFromRemote()
-                        }
+                if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == (viewModel.movies.value?.size)) {
+                    viewModel.page++
+                    viewModel.fetchFromRemote()
+                }
             }
         })
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun scheduleJob() {
+        val request = PeriodicWorkRequest
+            .Builder(
+                MyWorker::class.java,
+                16, TimeUnit.MINUTES,
+                16, TimeUnit.MINUTES
+            )
+            .build()
+        WorkManager
+            .getInstance(activity!!.applicationContext)
+            .enqueue(request)
     }
 
     override fun onResume() {
@@ -169,7 +191,6 @@ class ListMovieFragment : Fragment() {
 
         retryBtn.setOnClickListener {
             viewModel.refresh()
-//            viewModel._onMessageError.call()
             errorImg.visibility = View.GONE
             errorTV.visibility = View.GONE
             retryBtn.visibility = View.GONE
@@ -195,8 +216,6 @@ class ListMovieFragment : Fragment() {
         } else {
             throw Exception("Activity must implement ClickListener")
         }
-
-        Log.d(DEBUG_TAG, "onActivityCreated")
     }
 
     companion object {
@@ -220,7 +239,6 @@ class ListMovieFragment : Fragment() {
 
     private fun setupRefreshLayout() {
         refreshLayout.setOnRefreshListener {
-//            viewModel.page = 0
             viewModel.refresh()
             refreshLayout.isRefreshing = false
             filmsRecyclerView.adapter?.notifyDataSetChanged()

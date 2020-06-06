@@ -19,7 +19,6 @@ class FavoritesAdapter(
 ) :
     RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
     fun update(data: List<Movie>) {
-//        favorMovieList= listOf()
         favorMovieList = data
         notifyDataSetChanged()
     }

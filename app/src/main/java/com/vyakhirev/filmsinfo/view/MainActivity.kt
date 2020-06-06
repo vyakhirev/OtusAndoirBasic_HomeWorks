@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
@@ -18,14 +17,11 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.model.Movie
-import com.vyakhirev.filmsinfo.util.MyWorker
 import com.vyakhirev.filmsinfo.util.NotificationHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
@@ -34,7 +30,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
@@ -45,9 +40,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     companion object {
         const val DEBUG_TAG = "Deb"
-        var sJobId = 0
-        const val TAG_SCH = "MovieSch"
-        const val TAG = "MainActivity"
     }
 
     override fun onFilmClick(ind: Int) {
@@ -62,7 +54,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     override fun onFavorToDetails(ind: Int) {
         openFilmDetailed()
-        Log.d(DEBUG_TAG, "fromFavorToDetail")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -71,7 +62,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         setContentView(R.layout.activity_main)
         setupNavigation()
         setupNotification()
-        scheduleJob()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -88,20 +78,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
                 )
             )
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun scheduleJob() {
-        val request = PeriodicWorkRequest
-            .Builder(
-                MyWorker::class.java,
-                16, TimeUnit.MINUTES,
-                16, TimeUnit.MINUTES
-            )
-            .build()
-        WorkManager
-            .getInstance(this)
-            .enqueue(request)
     }
 
     override fun onResume() {

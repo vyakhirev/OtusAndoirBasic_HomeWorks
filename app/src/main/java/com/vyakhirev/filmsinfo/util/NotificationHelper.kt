@@ -23,7 +23,7 @@ class NotificationHelper(val context: Context) {
         const val MOVIE_UUID = "UUID"
     }
 
-    fun createNotification():Notification {
+    fun createNotification(): Notification {
         createNotificationChannel()
 
         val intent = Intent(context, MainActivity::class.java).apply {
@@ -36,7 +36,7 @@ class NotificationHelper(val context: Context) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_live_tv_yellow_24dp)
             .setContentTitle("Movie!")
-            .setContentText("Need to watch this movie today: ${movieUuid!!.toInt()-1}")
+            .setContentText("Need to watch this movie today: ${movieUuid!!.toInt() - 1}")
             .setStyle(
                 NotificationCompat.BigTextStyle()
             )
