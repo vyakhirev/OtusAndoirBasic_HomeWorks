@@ -28,8 +28,8 @@ import com.vyakhirev.filmsinfo.util.MyWorker
 import com.vyakhirev.filmsinfo.view.adapters.FilmsAdapter
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
-import kotlinx.android.synthetic.main.fragment_list_movie.*
 import java.util.concurrent.TimeUnit
+import kotlinx.android.synthetic.main.fragment_list_movie.*
 
 class ListMovieFragment : Fragment() {
     private var listener: OnFilmClickListener? = null

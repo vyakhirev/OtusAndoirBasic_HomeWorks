@@ -26,13 +26,7 @@
             android:name="androidx.work.impl.WorkManagerInitializer"
             android:authorities="${applicationId}.workmanager-init"
             tools:node="remove" />
-        <service
-            android:name=".util.MovieIntentService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <service
-            android:name=".util.MovieJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".util.MyFirebaseMessagingService"
             android:exported="false">

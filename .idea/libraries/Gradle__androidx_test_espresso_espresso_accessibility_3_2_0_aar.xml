@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: androidx.test.espresso:espresso-accessibility:3.2.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b790a6b93aecf6a2dedcd8bed478e463/espresso-accessibility-3.2.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b790a6b93aecf6a2dedcd8bed478e463/espresso-accessibility-3.2.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0bd9273fa0d38ecfbfa3110fd3fce9be/espresso-accessibility-3.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0bd9273fa0d38ecfbfa3110fd3fce9be/espresso-accessibility-3.2.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.test.espresso/espresso-accessibility/3.2.0/414d42f603f7c1d5cf711e114a6a66e2f265dac/espresso-accessibility-3.2.0-javadoc.jar!/" />

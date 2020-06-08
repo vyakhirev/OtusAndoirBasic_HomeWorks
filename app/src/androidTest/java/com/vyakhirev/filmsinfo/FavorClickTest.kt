@@ -46,7 +46,7 @@ class FavorClickTest {
         val scenarioFavor = launchFragmentInContainer<FavoritesListFragment>()
 
         scenarioFavor.onFragment {
-            val expectedText = "Принцесса Мононоке"
+            val expectedText = "Побег из Шоушенка"
             val actualText = it.favTitleTV.text.toString()
 
             Assert.assertEquals(expectedText, actualText)

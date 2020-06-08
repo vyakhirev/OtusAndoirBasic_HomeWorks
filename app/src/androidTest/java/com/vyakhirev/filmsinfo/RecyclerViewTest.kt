@@ -2,7 +2,6 @@ package com.vyakhirev.filmsinfo
 
 import android.view.View
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
