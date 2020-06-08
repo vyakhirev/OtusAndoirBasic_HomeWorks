@@ -35,7 +35,7 @@ class FavorClickTest {
         Espresso.onView(withId(R.id.filmsRecyclerView))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<FilmsAdapter.FilmsViewHolder>(
-                    2,
+                    1,
                     clickOnViewChild(R.id.favoritesImgView)
                 )
             )
