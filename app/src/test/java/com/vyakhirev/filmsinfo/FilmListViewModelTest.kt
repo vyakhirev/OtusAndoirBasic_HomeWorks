@@ -5,9 +5,11 @@ import com.vyakhirev.filmsinfo.di.AppModule
 import com.vyakhirev.filmsinfo.di.DaggerViewModelComponent
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.MovieResponse
+import com.vyakhirev.filmsinfo.model.db.MovieDao
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
+import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -21,6 +23,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.stubbing.OngoingStubbing
 
 class FilmListViewModelTest {
     @get:Rule
@@ -29,10 +32,13 @@ class FilmListViewModelTest {
     @Mock
     lateinit var prefs: SharedPreferencesHelper
 
+    private val movieDao: MovieDao=Mockito.mock(MovieDao::class.java)
+
     private val application = Mockito.mock(App::class.java)
 
     private var movieClient = Mockito.mock(MovieApiClient::class.java)
-    var listViewModel = FilmListViewModel(movieClient, true)
+
+    private var listViewModel = FilmListViewModel(movieClient, true)
 
     @Before
     fun setup() {
@@ -65,11 +71,17 @@ class FilmListViewModelTest {
 
     @Test
     fun getMovieSuccess() {
-        Mockito.`when`(prefs.getCacheDuration()).thenReturn("10")
         val movie = Movie(1, "test", "testtest")
         val movieslist = listOf(movie)
         val movieResponce = MovieResponse(1, movieslist, 20, 1, null, "")
         val testSingle = Single.just(movieResponce)
+//        val testCompl: OngoingStubbing<String?>? =movieslist
+
+        val testCompl =Completable.fromSingle(testSingle)
+
+        Mockito.`when`(prefs.getCacheDuration()).thenReturn("10")
+//        Mockito.`when`(movieDao.insertAll())
+        Mockito.`when`(listViewModel.storeLocally(movieslist)).thenReturn(testCompl)
         Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
         listViewModel.refresh()
@@ -99,6 +111,13 @@ class FilmListViewModelTest {
         Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
         Assert.assertEquals(20, movieResponce.totalResults)
+    }
+
+    @Test
+    fun openDetailsTest(){
+        val movie = Movie(1, "test", "testtest")
+        listViewModel.openDetails(movie)
+        Assert.assertEquals(movie.title,listViewModel.filmClicked.value!!.title)
     }
 
     @Before

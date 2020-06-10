@@ -207,16 +207,16 @@ class ListMovieFragment : Fragment() {
         } else filmsRecyclerView.visibility = View.VISIBLE
     }
 
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//
-//        if (activity is OnFilmClickListener) {
-//            listener = activity as OnFilmClickListener
-//            listenerMy = activity as OnFilmClickListener
-//        } else {
-//            throw Exception("Activity must implement ClickListener")
-//        }
-//    }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        if (activity is OnFilmClickListener) {
+            listener = activity as OnFilmClickListener
+            listenerMy = activity as OnFilmClickListener
+        } else {
+            throw Exception("Activity must implement ClickListener")
+        }
+    }
 
     companion object {
         const val TAG = "ListMovieFragment"
