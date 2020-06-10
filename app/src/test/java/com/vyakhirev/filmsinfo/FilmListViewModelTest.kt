@@ -75,12 +75,10 @@ class FilmListViewModelTest {
         val movieslist = listOf(movie)
         val movieResponce = MovieResponse(1, movieslist, 20, 1, null, "")
         val testSingle = Single.just(movieResponce)
-//        val testCompl: OngoingStubbing<String?>? =movieslist
 
         val testCompl =Completable.fromSingle(testSingle)
 
         Mockito.`when`(prefs.getCacheDuration()).thenReturn("10")
-//        Mockito.`when`(movieDao.insertAll())
         Mockito.`when`(listViewModel.storeLocally(movieslist)).thenReturn(testCompl)
         Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
