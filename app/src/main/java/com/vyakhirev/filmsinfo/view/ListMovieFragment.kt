@@ -49,7 +49,6 @@ class ListMovieFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        Log.d(DEBUG_TAG, "$TAG created(")
     }
 
     override fun onCreateView(
@@ -133,7 +132,6 @@ class ListMovieFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Log.d(DEBUG_TAG, "ListFragment resume")
         viewModel.refresh()
     }
 

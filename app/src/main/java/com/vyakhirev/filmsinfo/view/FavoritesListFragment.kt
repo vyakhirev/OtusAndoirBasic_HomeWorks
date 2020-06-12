@@ -30,7 +30,6 @@ class FavoritesListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(DEBUG_TAG, "FavoritesListFragment created(")
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_favorites_list, container, false)
     }
