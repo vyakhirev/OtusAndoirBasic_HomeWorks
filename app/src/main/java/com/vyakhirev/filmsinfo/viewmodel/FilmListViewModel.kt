@@ -159,15 +159,14 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     fun filmIsViewed(uuid: Int) {
         val dao = App.instance!!.movieDB.movieDao()
         disposable.add(dao.getMovie(uuid)
+            .flatMap {
+                it.isViewed = true
+                dao.switchFavoriteStar(it)
+            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { film ->
-                film.isViewed = true
-                dao.switchFavoriteStar(film)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe()
-            })
+            .subscribe()
+        )
     }
 
     override fun onCleared() {

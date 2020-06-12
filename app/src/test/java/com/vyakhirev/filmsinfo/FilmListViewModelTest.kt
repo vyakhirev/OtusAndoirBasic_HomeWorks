@@ -23,7 +23,6 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import org.mockito.stubbing.OngoingStubbing
 
 class FilmListViewModelTest {
     @get:Rule
@@ -32,7 +31,7 @@ class FilmListViewModelTest {
     @Mock
     lateinit var prefs: SharedPreferencesHelper
 
-    private val movieDao: MovieDao=Mockito.mock(MovieDao::class.java)
+    private val movieDao: MovieDao = Mockito.mock(MovieDao::class.java)
 
     private val application = Mockito.mock(App::class.java)
 
@@ -76,7 +75,7 @@ class FilmListViewModelTest {
         val movieResponce = MovieResponse(1, movieslist, 20, 1, null, "")
         val testSingle = Single.just(movieResponce)
 
-        val testCompl =Completable.fromSingle(testSingle)
+        val testCompl = Completable.fromSingle(testSingle)
 
         Mockito.`when`(prefs.getCacheDuration()).thenReturn("10")
         Mockito.`when`(listViewModel.storeLocally(movieslist)).thenReturn(testCompl)
@@ -112,10 +111,10 @@ class FilmListViewModelTest {
     }
 
     @Test
-    fun openDetailsTest(){
+    fun openDetailsTest() {
         val movie = Movie(1, "test", "testtest")
         listViewModel.openDetails(movie)
-        Assert.assertEquals(movie.title,listViewModel.filmClicked.value!!.title)
+        Assert.assertEquals(movie.title, listViewModel.filmClicked.value!!.title)
     }
 
     @Before

@@ -10,7 +10,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vyakhirev.filmsinfo.view.FavoritesListFragment
-import com.vyakhirev.filmsinfo.view.ListMovieFragment
 import com.vyakhirev.filmsinfo.view.adapters.FilmsAdapter
 import kotlinx.android.synthetic.main.favorite_item.*
 import org.junit.Assert
@@ -31,7 +30,6 @@ class FavorClickTest {
 
     @Test
     fun testFavoritesAdd() {
-        val scenario = launchFragmentInContainer<ListMovieFragment>()
         Espresso.onView(withId(R.id.filmsRecyclerView))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<FilmsAdapter.FilmsViewHolder>(
@@ -52,17 +50,4 @@ class FavorClickTest {
             Assert.assertEquals(expectedText, actualText)
         }
     }
-
-//    @Test
-//    fun openDetailTest(){
-//        val scenario = launchFragmentInContainer<ListMovieFragment>()
-//        Espresso.onView(withId(R.id.filmsRecyclerView))
-//            .perform(
-//                RecyclerViewActions.actionOnItemAtPosition<FilmsAdapter.FilmsViewHolder>(
-//                    2,
-//                    clickOnViewChild(R.id.titleTV)
-//                )
-//            )
-//
-//    }
 }

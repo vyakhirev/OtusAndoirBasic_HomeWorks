@@ -75,7 +75,6 @@ android {
     }
 
     signingConfigs {
-        debug { /* здесь никаких изменений нет */ }
         release {
             storeFile file('/home/volttier/bin/keys/FilmsInfo.jks')
             storePassword 'MkF301254'
