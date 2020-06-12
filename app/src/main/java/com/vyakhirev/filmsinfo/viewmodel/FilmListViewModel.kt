@@ -148,7 +148,7 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
         disposable.add(dao.getMovie(uuid)
             .flatMap {
                 it.isFavorite = !it.isFavorite
-                dao.switchFavoriteStar(it)
+                dao.updateMovie(it)
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -161,7 +161,7 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
         disposable.add(dao.getMovie(uuid)
             .flatMap {
                 it.isViewed = true
-                dao.switchFavoriteStar(it)
+                dao.updateMovie(it)
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

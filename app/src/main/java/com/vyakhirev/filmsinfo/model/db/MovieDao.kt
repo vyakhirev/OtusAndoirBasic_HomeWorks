@@ -25,5 +25,5 @@ interface MovieDao {
     fun getFavorites(isFavorite: Boolean): Flowable<List<Movie>>
 
     @Update
-    fun switchFavoriteStar(movie: Movie): Single<Int>
+    fun updateMovie(movie: Movie): Single<Int>
 }

@@ -8,6 +8,4 @@ import javax.inject.Singleton
 @Component(modules = [ApiModule::class, PrefsModule::class, AppModule::class])
 interface ViewModelComponent {
     fun inject(viewModel: FilmListViewModel)
-//    fun providesmovieDao(): MovieDao
-//    fun providesRoomDatabase(): MoviesDatabase
 }

@@ -25,10 +25,4 @@ class RoomModule(mApplication: Application) {
     fun providesmovieDao(moviesDatabase: MoviesDatabase): MovieDao {
         return moviesDatabase.movieDao()
     }
-
-//    @Singleton
-//    @Provides
-//    fun productRepository(productDao: ProductDao): ProductRepository {
-//        return ProductDataSource(productDao)
-//    }
 }

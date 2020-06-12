@@ -32,7 +32,6 @@ class SharedPreferencesHelper {
             }
 
         private fun buildHelper(context: Context): SharedPreferencesHelper {
-//            prefs = PreferenceManager.getDefaultSharedPreferences(context)
             prefs = PreferenceManager.getDefaultSharedPreferences(context)
             return SharedPreferencesHelper()
         }
@@ -40,7 +39,6 @@ class SharedPreferencesHelper {
 
     // Date_
     fun saveWatchLaterData(date: String) {
-        Log.d("Kan", "date=$date")
         prefs?.edit(commit = true) { putString(
             PREF_DATE, date) }
     }
@@ -49,7 +47,6 @@ class SharedPreferencesHelper {
 
     // UUID
     fun saveWatchLaterUuid(uuid: Int) {
-        Log.d("Kan", "uuid=$uuid")
         prefs?.edit(commit = true) { putInt(
             PREF_UUID, uuid) }
     }

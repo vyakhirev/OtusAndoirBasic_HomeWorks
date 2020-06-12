@@ -36,7 +36,7 @@ class FavoritesViewModel() : ViewModel() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { film ->
                 film.isFavorite = !film.isFavorite
-                dao.switchFavoriteStar(film)
+                dao.updateMovie(film)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe()
@@ -52,7 +52,7 @@ class FavoritesViewModel() : ViewModel() {
         disposable.add(dao.getMovie(uuid)
             .flatMap {
                 it.isViewed = true
-                dao.switchFavoriteStar(it)
+                dao.updateMovie(it)
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
