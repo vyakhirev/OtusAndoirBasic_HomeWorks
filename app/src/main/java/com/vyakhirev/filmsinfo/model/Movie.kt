@@ -5,9 +5,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.bumptech.glide.Glide
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
 import com.google.gson.annotations.SerializedName
 import com.vyakhirev.filmsinfo.R
+
 
 @Entity
 data class Movie(
@@ -31,6 +34,9 @@ data class Movie(
     @PrimaryKey(autoGenerate = true)
     var uuid: Int = 0
 }
+
+@GlideModule
+class CustomGlideModule : AppGlideModule()
 
 const val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
 fun ImageView.loadImage(uri: String?) {
