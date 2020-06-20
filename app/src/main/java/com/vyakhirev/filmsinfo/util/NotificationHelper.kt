@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.vyakhirev.filmsinfo.App
@@ -15,28 +16,35 @@ import com.vyakhirev.filmsinfo.view.MainActivity
 
 class NotificationHelper(val context: Context) {
 
-    var movieUuid = App.instance!!.prefHelper.getWatchLaterUuid()
+    var movieTitle = App.instance!!.prefHelper.getWatchLaterTitle()
+    var moviePoster = App.instance!!.prefHelper.getWatchLaterPoster()
+    var movieOverview = App.instance!!.prefHelper.getWatchLaterOverview()
 
     companion object {
         const val CHANNEL_ID = "Movies channel id"
         const val NOTIFICATION_ID = 123
-        const val MOVIE_UUID = "UUID"
     }
 
     fun createNotification(): Notification {
         createNotificationChannel()
 
+        Log.d("klipsa",movieTitle)
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
-        intent.putExtra(MOVIE_UUID, movieUuid)
+        intent.apply {
+            putExtra("title",movieTitle)
+            putExtra("poster",moviePoster)
+            putExtra("overview",movieOverview)
+        }
+
         val pendingIntent =
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_live_tv_yellow_24dp)
             .setContentTitle("Movie!")
-            .setContentText("Need to watch this movie today: ${movieUuid!!.toInt() - 1}")
+            .setContentText("Need to watch this movie today: $movieTitle")
             .setStyle(
                 NotificationCompat.BigTextStyle()
             )

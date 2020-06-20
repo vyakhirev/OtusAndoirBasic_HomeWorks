@@ -39,7 +39,7 @@ class ListMovieFragment : Fragment() {
     private val prefHelper = App.instance!!.prefHelper
 
     interface OnFilmClickListener {
-        fun onFilmClick(ind: Int) {
+        fun onFilmClick(ind: Int,detMovie: Movie) {
         }
 
         fun onFavorClick(ind: Int) {
@@ -78,10 +78,9 @@ class ListMovieFragment : Fragment() {
             listOf(),
             listener = {
                 val detMovie = viewModel.movies.value?.get(it)
-                viewModel.openDetails(detMovie)
                 viewModel.filmIsViewed(detMovie!!.uuid)
                 adapter.notifyItemChanged(it)
-                listener?.onFilmClick(it)
+                listener?.onFilmClick(it,detMovie)
             },
             listenerMy = {
                 viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
@@ -92,7 +91,11 @@ class ListMovieFragment : Fragment() {
             listenerWl = {
                 prefHelper.saveWatchLaterData("no")
                 dataPicker()
-                prefHelper.saveWatchLaterUuid(viewModel.movies.value!![it].uuid)
+                val movie=viewModel.movies.value!![it]
+//                prefHelper.saveWatchLaterUuid(viewModel.movies.value!![it].uuid)
+                prefHelper.saveWatchLaterTitle(movie.title)
+                prefHelper.saveWatchLaterPoster(movie.posterPath)
+                prefHelper.saveWatchLaterOverview(movie.overview)
                 scheduleJob()
             })
 
@@ -163,12 +166,9 @@ class ListMovieFragment : Fragment() {
         viewModel.movies.observe(viewLifecycleOwner, renderMovies)
         viewModel.isViewLoading.observe(viewLifecycleOwner, isViewLoadingObserver)
         viewModel.onMessageError.observe(viewLifecycleOwner, onMessageErrorObserver)
-        viewModel.filmClicked.observe(viewLifecycleOwner, onFilmClicked)
+//        viewModel.filmClicked.observe(viewLifecycleOwner, onFilmClicked)
     }
 
-    private val onFilmClicked = Observer<Movie> {
-        viewModel.openDetails(it)
-    }
 
     private val renderMovies = Observer<List<Movie>> {
         Log.d(DEBUG_TAG, "renderMovies, size=${it.size} ")

@@ -37,7 +37,7 @@ class FilmListViewModelTest {
 
     private var movieClient = Mockito.mock(MovieApiClient::class.java)
 
-    private var listViewModel = FilmListViewModel(movieClient, true)
+    private var listViewModel = FilmListViewModel(movieClient)
 
     @Before
     fun setup() {
@@ -70,7 +70,7 @@ class FilmListViewModelTest {
 
     @Test
     fun getMovieSuccess() {
-        val movie = Movie(1, "test", "testtest")
+        val movie = Movie(1, "test", "testtest","overview")
         val movieslist = listOf(movie)
         val movieResponce = MovieResponse(1, movieslist, 20, 1, null, "")
         val testSingle = Single.just(movieResponce)
@@ -101,7 +101,7 @@ class FilmListViewModelTest {
     @Test
     fun isMovieSizeEqual20() {
         Mockito.`when`(prefs.getCacheDuration()).thenReturn("10")
-        val movie = Movie(1, "test", "testtest")
+        val movie = Movie(1, "test", "testtest","overview")
         val movieslist = listOf(movie)
         val movieResponce = MovieResponse(1, movieslist, 20, 1, null, "")
         val testSingle = Single.just(movieResponce)
@@ -112,7 +112,7 @@ class FilmListViewModelTest {
 
     @Test
     fun openDetailsTest() {
-        val movie = Movie(1, "test", "testtest")
+        val movie = Movie(1, "test", "testtest","overview")
         listViewModel.openDetails(movie)
         Assert.assertEquals(movie.title, listViewModel.filmClicked.value!!.title)
     }

@@ -2,7 +2,6 @@ package com.vyakhirev.filmsinfo.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 
@@ -52,6 +51,30 @@ class SharedPreferencesHelper {
     }
 
     fun getWatchLaterUuid() = prefs?.getInt(PREF_UUID, 0)
+
+    // Title
+    fun saveWatchLaterTitle(title: String) {
+        prefs?.edit(commit = true) { putString(
+            "title", title) }
+    }
+
+    fun getWatchLaterTitle() = prefs?.getString("title", "title")
+
+    // Poster path
+    fun saveWatchLaterPoster(poster: String) {
+        prefs?.edit(commit = true) { putString(
+            "poster", poster) }
+    }
+
+    fun getWatchLaterPoster() = prefs?.getString("poster", "poster")
+
+    // Overview
+    fun saveWatchLaterOverview(overview: String) {
+        prefs?.edit(commit = true) { putString(
+            "overview", overview) }
+    }
+
+    fun getWatchLaterOverview() = prefs?.getString("overview", "overview")
 
     // For cache duration
     fun saveUpdateTime(time: Long) {

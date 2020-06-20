@@ -25,8 +25,15 @@ import javax.inject.Inject
 
 class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel() {
 
-    constructor(moviesApiClient: MovieApiClient, test: Boolean = true) : this(moviesApiClient) {
-        injected = true
+//    constructor(moviesApiClient: MovieApiClient, test: Boolean = true) : this(moviesApiClient) {
+//        injected = true
+//    }
+
+    init {
+        DaggerViewModelComponent.builder()
+            .appModule(AppModule(App.instance!!))
+            .build()
+            .inject(this)
     }
 
     companion object {
@@ -52,17 +59,17 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
     private val disposable = CompositeDisposable()
 
-    fun inject() {
-        if (!injected) {
-            DaggerViewModelComponent.builder()
-                .appModule(AppModule(App.instance!!))
-                .build()
-                .inject(this)
-        }
-    }
+//    fun inject() {
+//        if (!injected) {
+//            DaggerViewModelComponent.builder()
+//                .appModule(AppModule(App.instance!!))
+//                .build()
+//                .inject(this)
+//        }
+//    }
 
     fun refresh() {
-        inject()
+//        inject()
         checkCacheDuration()
         val updateTime = prefHelper.getUpdateTime()
         if (updateTime != null && updateTime != 0L && System.nanoTime() - updateTime < refreshTime) {
@@ -99,22 +106,26 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
         if (movies.value.isNullOrEmpty()) {
             _isViewLoading.value = true
         }
+
         disposable.add(
             moviesApiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<MovieResponse>() {
 
                     override fun onSuccess(movieList: MovieResponse) {
                         _isViewLoading.value = false
                         Log.d(DEBUG_TAG, "fetchFromRemote()")
+
                         disposable.add(
                             storeLocally(movieList.results)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe()
                         )
+
                         fetchFromDatabase()
+
                         if (movieList.results.isNullOrEmpty()) {
                             DiffUtil.calculateDiff(
                                 MovieDiffCallback(
@@ -152,6 +163,9 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnError {
+                it.message
+            }
             .subscribe()
         )
     }

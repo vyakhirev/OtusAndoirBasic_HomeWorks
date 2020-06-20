@@ -1,5 +1,6 @@
 package com.vyakhirev.filmsinfo
 
+import android.content.Intent
 import android.view.View
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso
@@ -7,9 +8,11 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vyakhirev.filmsinfo.view.FavoritesListFragment
+import com.vyakhirev.filmsinfo.view.MainActivity
 import com.vyakhirev.filmsinfo.view.adapters.FilmsAdapter
 import kotlinx.android.synthetic.main.favorite_item.*
 import org.junit.Assert
@@ -30,6 +33,8 @@ class FavorClickTest {
 
     @Test
     fun testFavoritesAdd() {
+        var mainActivity: IntentsTestRule<MainActivity> = IntentsTestRule(MainActivity::class.java)
+        mainActivity.launchActivity(Intent())
         Espresso.onView(withId(R.id.filmsRecyclerView))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<FilmsAdapter.FilmsViewHolder>(
@@ -41,6 +46,10 @@ class FavorClickTest {
 
     @Test
     fun testEqualInFavor() {
+
+        var mainActivity: IntentsTestRule<MainActivity> = IntentsTestRule(MainActivity::class.java)
+        mainActivity.launchActivity(Intent())
+
         val scenarioFavor = launchFragmentInContainer<FavoritesListFragment>()
 
         scenarioFavor.onFragment {

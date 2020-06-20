@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
@@ -34,17 +35,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
-    private lateinit var viewModel: FilmListViewModel
-
+    lateinit var viewModel:FilmListViewModel
     private val disposable = CompositeDisposable()
 
-    companion object {
-        const val DEBUG_TAG = "Deb"
-    }
-
-    override fun onFilmClick(ind: Int) {
-        super.onFilmClick(ind)
-        openFilmDetailed()
+    override fun onFilmClick(ind: Int,detMovie: Movie) {
+        super.onFilmClick(ind,detMovie)
+        openFilmDetailed(ind,detMovie)
     }
 
     override fun onFavorClick(ind: Int) {
@@ -52,8 +48,8 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         super.onFavorClick(ind)
     }
 
-    override fun onFavorToDetails(ind: Int) {
-        openFilmDetailed()
+    override fun onFavorToDetails(ind: Int,detMovie: Movie) {
+        openFilmDetailed(ind,detMovie)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -62,6 +58,11 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         setContentView(R.layout.activity_main)
         setupNavigation()
         setupNotification()
+
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(App.instance!!.moviesApiClient)
+        ).get(FilmListViewModel::class.java)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -80,31 +81,15 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        val movieUuid = intent.getIntExtra(NotificationHelper.MOVIE_UUID, 0)
-        if (movieUuid != 0) {
-            viewModel = ViewModelProvider(
-                this,
-                ViewModelFactory(App.instance!!.moviesApiClient)
-            ).get(FilmListViewModel::class.java)
-            val dao = App.instance!!.movieDB.movieDao()
-            disposable.add(dao.getMovie(movieUuid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<Movie>() {
-                    override fun onSuccess(t: Movie) {
-                        viewModel.openDetails(t)
-                    }
-
-                    override fun onError(e: Throwable) {
-                    }
-                }
-                )
-            )
-            openFilmDetailed()
-        }
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        if() {
+//            var movieTitle = App.instance!!.prefHelper.getWatchLaterTitle()
+//            var moviePoster = App.instance!!.prefHelper.getWatchLaterPoster()
+//            var movieOverview = App.instance!!.prefHelper.getWatchLaterOverview()
+//            openFilmDetailed(0, Movie(1, movieTitle!!, moviePoster!!, movieOverview!!))
+//        }
+//    }
 
     private fun setupNavigation() {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
@@ -141,44 +126,52 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     private fun showSnack(ind: Int) {
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
-        val listener = View.OnClickListener {
-            viewModel = ViewModelProvider(
-                this, ViewModelFactory(App.instance!!.moviesApiClient)
-            ).get(FilmListViewModel::class.java)
-            viewModel.switchFavorite(ind + 1)
-        }
-        snack.setAction("Undo", listener)
+        snack.setAction("Undo", ({viewModel.switchFavorite(ind + 1)}))
         snack.setActionTextColor(
             ContextCompat.getColor(
                 this,
                 R.color.indigo
             )
         )
+
         val snackView = snack.view
         val snackTextId = com.google.android.material.R.id.snackbar_text
         val textView = snackView.findViewById<View>(snackTextId) as TextView
         textView.setTextColor(ContextCompat.getColor(this, android.R.color.white))
         snackView.setBackgroundColor(Color.GRAY)
-        val layoutParams = snack.view.layoutParams as CoordinatorLayout.LayoutParams
-        layoutParams.anchorId = R.id.bottomNav
-        layoutParams.anchorGravity = Gravity.TOP
-        layoutParams.gravity = Gravity.TOP
-        snack.view.layoutParams = layoutParams
 
+        val layoutParams = snack.view.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.apply {
+            anchorId = R.id.bottomNav
+            anchorGravity = Gravity.TOP
+            gravity = Gravity.TOP
+
+        }
+
+        snack.view.layoutParams = layoutParams
         snack.show()
+
         coordinatorLayout1.postDelayed({
             snack.dismiss()
         }, 3000)
     }
 
-    private fun openFilmDetailed() {
+    private fun openFilmDetailed(ind:Int,detMovie:Movie) {
+        val detFragment=DetailMovieFragment()
+        val bundle = Bundle()
+        bundle.apply {
+            putString("title",detMovie.title)
+            putString("poster",detMovie.posterPath)
+            putString("overview",detMovie.overview)
 
+        }
+
+        detFragment.arguments=bundle
         supportFragmentManager
             .beginTransaction()
             .replace(
                 R.id.fragmentContainer,
-                DetailMovieFragment(),
-                DetailMovieFragment.TAG
+                detFragment
             )
             .addToBackStack(null)
             .commit()
@@ -200,16 +193,21 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     private fun myExitDialog() {
         val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.custom_dialog)
+        dialog.apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setCancelable(false)
+            setContentView(R.layout.custom_dialog)
+        }
+
         val body = dialog.findViewById(R.id.txt_dia) as TextView
         body.text = getString(R.string.exit_dialog)
+
         val yesBtn = dialog.findViewById(R.id.btn_yes) as Button
         val noBtn = dialog.findViewById(R.id.btn_no) as Button
         yesBtn.setOnClickListener {
             super.onBackPressed()
         }
+
         noBtn.setOnClickListener {
             dialog.dismiss()
         }

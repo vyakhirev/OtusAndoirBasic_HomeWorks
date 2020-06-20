@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.view.adapters.FavoritesAdapter
 import com.vyakhirev.filmsinfo.viewmodel.FavoritesViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.FavoritesViewModelFactory
@@ -16,7 +17,7 @@ import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
 class FavoritesListFragment : Fragment() {
     interface OnFavorClickListener {
-        fun onFavorToDetails(ind: Int)
+        fun onFavorToDetails(ind: Int,detMovie: Movie)
     }
 
     private var listener: OnFavorClickListener? = null
@@ -60,10 +61,9 @@ class FavoritesListFragment : Fragment() {
             listOf(),
             listener = {
                 val detMovie = favViewModel.favoritesLiveData.value!![it]
-                favViewModel.openDetails(detMovie)
                 favViewModel.filmIsViewed(detMovie.uuid)
                 adapter.notifyItemChanged(it)
-                listener?.onFavorToDetails(it)
+                listener?.onFavorToDetails(it,detMovie)
             },
             listenerDel = {
                 favViewModel.switchFavorite(favViewModel.favoritesLiveData.value!![it].uuid)

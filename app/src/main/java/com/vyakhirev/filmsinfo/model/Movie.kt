@@ -11,7 +11,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.gson.annotations.SerializedName
 import com.vyakhirev.filmsinfo.R
 
-
 @Entity
 data class Movie(
     @ColumnInfo(name = "id")
@@ -20,6 +19,9 @@ data class Movie(
     @ColumnInfo(name = "title")
     @SerializedName("title")
     var title: String,
+    @ColumnInfo(name = "poster_path")
+    @SerializedName("poster_path")
+    var posterPath: String,
     @ColumnInfo(name = "overview")
     @SerializedName("overview")
     var overview: String,
@@ -27,10 +29,7 @@ data class Movie(
     var isViewed: Boolean = false,
     @ColumnInfo(name = "isFavorite")
     var isFavorite: Boolean = false
-) {
-    @ColumnInfo(name = "poster_path")
-    @SerializedName("poster_path")
-    var posterPath: String? = null
+)  {
     @PrimaryKey(autoGenerate = true)
     var uuid: Int = 0
 }

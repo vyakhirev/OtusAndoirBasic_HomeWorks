@@ -20,6 +20,11 @@ class FilmsAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    companion object {
+        const val VIEW_TYPE_ITEM = 0
+        const val VIEW_TYPE_FOOTER = 1
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ITEM) {
             FilmsViewHolder(
@@ -46,16 +51,12 @@ class FilmsAdapter(
         if (holder is FooterViewHolder)
             if (position == 0) {
                 holder.itemView.visibility = View.GONE
-            }
+            } else holder.itemView.visibility = View.VISIBLE
+
         if (holder is FilmsViewHolder) {
             val film = films[position]
             holder.setData(film, position)
         }
-    }
-
-    companion object {
-        const val VIEW_TYPE_ITEM = 0
-        const val VIEW_TYPE_FOOTER = 1
     }
 
     inner class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -79,14 +80,16 @@ class FilmsAdapter(
             }
         }
 
-        fun setData(film: Movie?, pos: Int) {
+        fun setData(film: Movie, pos: Int) {
             itemView.movieTitleTextView.text = film!!.title
-            if (films[pos].isViewed) itemView.movieTitleTextView.setTextColor(Color.BLUE)
-            else itemView.movieTitleTextView.setTextColor(Color.GRAY)
+
+            itemView.movieTitleTextView.setTextColor(if (films[pos].isViewed) Color.BLUE else Color.GRAY)
+
             itemView.posterImgView.loadImage(films[pos].posterPath)
+
             if (films[pos].isFavorite) itemView.favoritesImgView.setImageResource(R.drawable.ic_star_on_24dp)
             else itemView.favoritesImgView.setImageResource(R.drawable.ic_star_off_36dp)
-            this.currentFilm = film
+
             this.currentPosition = pos
         }
     }
