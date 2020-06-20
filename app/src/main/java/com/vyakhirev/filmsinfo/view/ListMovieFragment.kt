@@ -92,7 +92,7 @@ class ListMovieFragment : Fragment() {
                 prefHelper.saveWatchLaterData("no")
                 dataPicker()
                 val movie=viewModel.movies.value!![it]
-//                prefHelper.saveWatchLaterUuid(viewModel.movies.value!![it].uuid)
+                prefHelper.saveWatchLaterUuid(movie.uuid)
                 prefHelper.saveWatchLaterTitle(movie.title)
                 prefHelper.saveWatchLaterPoster(movie.posterPath)
                 prefHelper.saveWatchLaterOverview(movie.overview)

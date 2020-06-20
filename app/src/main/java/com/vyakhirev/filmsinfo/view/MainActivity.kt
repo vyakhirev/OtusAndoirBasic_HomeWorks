@@ -6,9 +6,7 @@ import android.app.NotificationManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
-import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
@@ -22,21 +20,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.di.CONTEXT_APP
+import com.vyakhirev.filmsinfo.di.TypeOfContext
 import com.vyakhirev.filmsinfo.model.Movie
-import com.vyakhirev.filmsinfo.util.NotificationHelper
+import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
     lateinit var viewModel:FilmListViewModel
-    private val disposable = CompositeDisposable()
+
+    @Inject
+    @field:TypeOfContext(CONTEXT_APP)
+    lateinit var prefs: SharedPreferencesHelper
 
     override fun onFilmClick(ind: Int,detMovie: Movie) {
         super.onFilmClick(ind,detMovie)
@@ -52,6 +52,16 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         openFilmDetailed(ind,detMovie)
     }
 
+    override fun onResume() {
+        super.onResume()
+        val movieUuid = intent.getIntExtra("uuid", -1)
+        if (movieUuid != -1) {
+            var movieTitle = prefs.getWatchLaterTitle()
+            var moviePoster = prefs.getWatchLaterPoster()
+            var movieOverview = prefs.getWatchLaterOverview()
+            openFilmDetailed(-1, Movie(1, movieTitle!!, moviePoster!!, movieOverview!!))
+        }
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,16 +90,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             )
         }
     }
-
-//    override fun onResume() {
-//        super.onResume()
-//        if() {
-//            var movieTitle = App.instance!!.prefHelper.getWatchLaterTitle()
-//            var moviePoster = App.instance!!.prefHelper.getWatchLaterPoster()
-//            var movieOverview = App.instance!!.prefHelper.getWatchLaterOverview()
-//            openFilmDetailed(0, Movie(1, movieTitle!!, moviePoster!!, movieOverview!!))
-//        }
-//    }
 
     private fun setupNavigation() {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
@@ -134,12 +134,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             )
         )
 
-        val snackView = snack.view
-        val snackTextId = com.google.android.material.R.id.snackbar_text
-        val textView = snackView.findViewById<View>(snackTextId) as TextView
-        textView.setTextColor(ContextCompat.getColor(this, android.R.color.white))
-        snackView.setBackgroundColor(Color.GRAY)
-
         val layoutParams = snack.view.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.apply {
             anchorId = R.id.bottomNav
@@ -148,7 +142,10 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
         }
 
-        snack.view.layoutParams = layoutParams
+        snack.apply {
+            view.layoutParams = layoutParams
+            view.setBackgroundColor(Color.GRAY)
+        }
         snack.show()
 
         coordinatorLayout1.postDelayed({
@@ -158,6 +155,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     private fun openFilmDetailed(ind:Int,detMovie:Movie) {
         val detFragment=DetailMovieFragment()
+
         val bundle = Bundle()
         bundle.apply {
             putString("title",detMovie.title)

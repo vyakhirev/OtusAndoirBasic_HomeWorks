@@ -25,9 +25,9 @@ import javax.inject.Inject
 
 class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel() {
 
-//    constructor(moviesApiClient: MovieApiClient, test: Boolean = true) : this(moviesApiClient) {
-//        injected = true
-//    }
+    companion object {
+        const val DEBUG_TAG = "deb"
+    }
 
     init {
         DaggerViewModelComponent.builder()
@@ -36,11 +36,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
             .inject(this)
     }
 
-    companion object {
-        const val DEBUG_TAG = "deb"
-    }
-
-    private var injected = false
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies
 
@@ -55,21 +50,13 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     @Inject
     @field:TypeOfContext(CONTEXT_APP)
     lateinit var prefHelper: SharedPreferencesHelper
+
     private var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
 
     private val disposable = CompositeDisposable()
-
-//    fun inject() {
-//        if (!injected) {
-//            DaggerViewModelComponent.builder()
-//                .appModule(AppModule(App.instance!!))
-//                .build()
-//                .inject(this)
-//        }
-//    }
+    var page = 1
 
     fun refresh() {
-//        inject()
         checkCacheDuration()
         val updateTime = prefHelper.getUpdateTime()
         if (updateTime != null && updateTime != 0L && System.nanoTime() - updateTime < refreshTime) {
@@ -101,7 +88,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
                 })
     }
 
-    var page = 1
     fun fetchFromRemote() {
         if (movies.value.isNullOrEmpty()) {
             _isViewLoading.value = true

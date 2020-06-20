@@ -16,9 +16,12 @@ import com.vyakhirev.filmsinfo.view.MainActivity
 
 class NotificationHelper(val context: Context) {
 
-    var movieTitle = App.instance!!.prefHelper.getWatchLaterTitle()
-    var moviePoster = App.instance!!.prefHelper.getWatchLaterPoster()
-    var movieOverview = App.instance!!.prefHelper.getWatchLaterOverview()
+    private val prefs=App.instance!!.prefHelper
+
+    var movieUuid = prefs.getWatchLaterUuid()
+    var movieTitle = prefs.getWatchLaterTitle()
+    var moviePoster = prefs.getWatchLaterPoster()
+    var movieOverview = prefs.getWatchLaterOverview()
 
     companion object {
         const val CHANNEL_ID = "Movies channel id"
@@ -33,6 +36,7 @@ class NotificationHelper(val context: Context) {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         intent.apply {
+            putExtra("uuid",movieUuid)
             putExtra("title",movieTitle)
             putExtra("poster",moviePoster)
             putExtra("overview",movieOverview)
