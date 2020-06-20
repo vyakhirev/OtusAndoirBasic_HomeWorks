@@ -34,9 +34,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
 
     lateinit var viewModel:FilmListViewModel
 
-    @Inject
-    @field:TypeOfContext(CONTEXT_APP)
-    lateinit var prefs: SharedPreferencesHelper
+    private val prefs=App.instance!!.prefHelper
 
     override fun onFilmClick(ind: Int,detMovie: Movie) {
         super.onFilmClick(ind,detMovie)
