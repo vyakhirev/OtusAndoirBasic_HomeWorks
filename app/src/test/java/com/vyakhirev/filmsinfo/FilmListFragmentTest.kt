@@ -3,7 +3,7 @@ package com.vyakhirev.filmsinfo
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
-import com.vyakhirev.filmsinfo.view.ListMovieFragment
+import com.vyakhirev.filmsinfo.presentation.view.ListMovieFragment
 import kotlinx.android.synthetic.main.fragment_detail_movie.*
 import org.junit.Assert
 import org.junit.Test

@@ -1,10 +1,10 @@
-package com.vyakhirev.filmsinfo.model.db
+package com.vyakhirev.filmsinfo.data.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.data.Movie
 
 @Database(entities = arrayOf(Movie::class), version = 1)
 abstract class MoviesDatabase : RoomDatabase() {

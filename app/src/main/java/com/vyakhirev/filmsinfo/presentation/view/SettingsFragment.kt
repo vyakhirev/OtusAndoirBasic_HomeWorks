@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.view
+package com.vyakhirev.filmsinfo.presentation.view
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat

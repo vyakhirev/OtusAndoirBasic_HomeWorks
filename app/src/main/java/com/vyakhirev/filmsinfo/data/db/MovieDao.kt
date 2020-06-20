@@ -1,11 +1,11 @@
-package com.vyakhirev.filmsinfo.model.db
+package com.vyakhirev.filmsinfo.data.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.data.Movie
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

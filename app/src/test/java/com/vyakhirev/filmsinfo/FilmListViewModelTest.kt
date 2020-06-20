@@ -3,12 +3,12 @@ package com.vyakhirev.filmsinfo
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.vyakhirev.filmsinfo.di.AppModule
 import com.vyakhirev.filmsinfo.di.DaggerViewModelComponent
-import com.vyakhirev.filmsinfo.model.Movie
-import com.vyakhirev.filmsinfo.model.MovieResponse
-import com.vyakhirev.filmsinfo.model.db.MovieDao
-import com.vyakhirev.filmsinfo.model.network.MovieApiClient
+import com.vyakhirev.filmsinfo.data.Movie
+import com.vyakhirev.filmsinfo.data.MovieResponse
+import com.vyakhirev.filmsinfo.data.db.MovieDao
+import com.vyakhirev.filmsinfo.data.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
-import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
+import com.vyakhirev.filmsinfo.presentation.viewmodel.FilmListViewModel
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
@@ -37,7 +37,11 @@ class FilmListViewModelTest {
 
     private var movieClient = Mockito.mock(MovieApiClient::class.java)
 
-    private var listViewModel = FilmListViewModel(movieClient, true)
+    private var listViewModel =
+        FilmListViewModel(
+            movieClient,
+            true
+        )
 
     @Before
     fun setup() {

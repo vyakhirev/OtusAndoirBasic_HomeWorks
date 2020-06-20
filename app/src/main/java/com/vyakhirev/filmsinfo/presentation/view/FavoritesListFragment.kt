@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.view
+package com.vyakhirev.filmsinfo.presentation.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,9 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.view.adapters.FavoritesAdapter
-import com.vyakhirev.filmsinfo.viewmodel.FavoritesViewModel
-import com.vyakhirev.filmsinfo.viewmodel.factories.FavoritesViewModelFactory
+import com.vyakhirev.filmsinfo.presentation.view.adapters.FavoritesAdapter
+import com.vyakhirev.filmsinfo.presentation.viewmodel.FavoritesViewModel
+import com.vyakhirev.filmsinfo.presentation.viewmodel.factories.FavoritesViewModelFactory
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
 class FavoritesListFragment : Fragment() {
@@ -55,23 +55,24 @@ class FavoritesListFragment : Fragment() {
     }
 
     private fun setupRecycler() {
-        adapter = FavoritesAdapter(
-            requireContext(),
-            listOf(),
-            listener = {
-                val detMovie = favViewModel.favoritesLiveData.value!![it]
-                favViewModel.openDetails(detMovie)
-                favViewModel.filmIsViewed(detMovie.uuid)
-                adapter.notifyItemChanged(it)
-                listener?.onFavorToDetails(it)
-            },
-            listenerDel = {
-                favViewModel.switchFavorite(favViewModel.favoritesLiveData.value!![it].uuid)
-                favViewModel.favoritesLiveData.value!![it].isFavorite =
-                    !favViewModel.favoritesLiveData.value!![it].isFavorite
-                adapter.notifyItemRemoved(it)
-            }
-        )
+        adapter =
+            FavoritesAdapter(
+                requireContext(),
+                listOf(),
+                listener = {
+                    val detMovie = favViewModel.favoritesLiveData.value!![it]
+                    favViewModel.openDetails(detMovie)
+                    favViewModel.filmIsViewed(detMovie.uuid)
+                    adapter.notifyItemChanged(it)
+                    listener?.onFavorToDetails(it)
+                },
+                listenerDel = {
+                    favViewModel.switchFavorite(favViewModel.favoritesLiveData.value!![it].uuid)
+                    favViewModel.favoritesLiveData.value!![it].isFavorite =
+                        !favViewModel.favoritesLiveData.value!![it].isFavorite
+                    adapter.notifyItemRemoved(it)
+                }
+            )
         favoritesRecyclerView.layoutManager = LinearLayoutManager(context)
         favoritesRecyclerView.adapter = adapter
     }

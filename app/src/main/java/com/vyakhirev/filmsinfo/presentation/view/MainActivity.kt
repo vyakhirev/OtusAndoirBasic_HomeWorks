@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.view
+package com.vyakhirev.filmsinfo.presentation.view
 
 import android.app.Dialog
 import android.app.NotificationChannel
@@ -21,10 +21,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.data.Movie
 import com.vyakhirev.filmsinfo.util.NotificationHelper
-import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
-import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
+import com.vyakhirev.filmsinfo.presentation.viewmodel.FilmListViewModel
+import com.vyakhirev.filmsinfo.presentation.viewmodel.factories.ViewModelFactory
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -86,7 +86,9 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         if (movieUuid != 0) {
             viewModel = ViewModelProvider(
                 this,
-                ViewModelFactory(App.instance!!.moviesApiClient)
+                ViewModelFactory(
+                    App.instance!!.moviesApiClient
+                )
             ).get(FilmListViewModel::class.java)
             val dao = App.instance!!.movieDB.movieDao()
             disposable.add(dao.getMovie(movieUuid)
@@ -143,7 +145,10 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
         val listener = View.OnClickListener {
             viewModel = ViewModelProvider(
-                this, ViewModelFactory(App.instance!!.moviesApiClient)
+                this,
+                ViewModelFactory(
+                    App.instance!!.moviesApiClient
+                )
             ).get(FilmListViewModel::class.java)
             viewModel.switchFavorite(ind + 1)
         }
@@ -160,9 +165,12 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         textView.setTextColor(ContextCompat.getColor(this, android.R.color.white))
         snackView.setBackgroundColor(Color.GRAY)
         val layoutParams = snack.view.layoutParams as CoordinatorLayout.LayoutParams
-        layoutParams.anchorId = R.id.bottomNav
-        layoutParams.anchorGravity = Gravity.TOP
-        layoutParams.gravity = Gravity.TOP
+        layoutParams.apply {
+            anchorId = R.id.bottomNav
+            anchorGravity = Gravity.TOP
+            gravity = Gravity.TOP
+
+        }
         snack.view.layoutParams = layoutParams
 
         snack.show()
@@ -172,7 +180,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     }
 
     private fun openFilmDetailed() {
-
         supportFragmentManager
             .beginTransaction()
             .replace(

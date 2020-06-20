@@ -1,7 +1,7 @@
-package com.vyakhirev.filmsinfo.view.adapters
+package com.vyakhirev.filmsinfo.presentation.view.adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.data.Movie
 
 class MovieDiffCallback(private val newRows: List<Movie?>, private val oldRows: List<Movie?>) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

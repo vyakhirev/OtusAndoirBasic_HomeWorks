@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.view
+package com.vyakhirev.filmsinfo.presentation.view
 
 import android.os.Bundle
 import android.util.Log
@@ -10,12 +10,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.model.Movie
-import com.vyakhirev.filmsinfo.model.loadImage
-import com.vyakhirev.filmsinfo.viewmodel.FavoritesViewModel
-import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
-import com.vyakhirev.filmsinfo.viewmodel.factories.FavoritesViewModelFactory
-import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
+import com.vyakhirev.filmsinfo.data.Movie
+import com.vyakhirev.filmsinfo.data.loadImage
+import com.vyakhirev.filmsinfo.presentation.viewmodel.FavoritesViewModel
+import com.vyakhirev.filmsinfo.presentation.viewmodel.FilmListViewModel
+import com.vyakhirev.filmsinfo.presentation.viewmodel.factories.FavoritesViewModelFactory
+import com.vyakhirev.filmsinfo.presentation.viewmodel.factories.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_detail_movie.*
 
 class DetailMovieFragment : Fragment() {
@@ -36,14 +36,18 @@ class DetailMovieFragment : Fragment() {
 
         viewModel = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(App.instance!!.moviesApiClient)
+            ViewModelFactory(
+                App.instance!!.moviesApiClient
+            )
         ).get(FilmListViewModel::class.java)
+
         viewModel.filmClicked.observe(viewLifecycleOwner, filmDetails)
 
         favViewModel =
             ViewModelProvider(requireActivity(),
                 FavoritesViewModelFactory()
             ).get(FavoritesViewModel::class.java)
+
         favViewModel.filmClicked.observe(viewLifecycleOwner, filmDetails)
     }
 

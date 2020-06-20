@@ -1,7 +1,7 @@
 package com.vyakhirev.filmsinfo.di
 
-import com.vyakhirev.filmsinfo.model.network.MovieApiClient
-import com.vyakhirev.filmsinfo.model.network.MovieApiInterface
+import com.vyakhirev.filmsinfo.data.network.MovieApiClient
+import com.vyakhirev.filmsinfo.data.network.MovieApiInterface
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

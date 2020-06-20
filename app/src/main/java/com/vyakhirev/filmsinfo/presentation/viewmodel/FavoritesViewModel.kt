@@ -1,10 +1,10 @@
-package com.vyakhirev.filmsinfo.viewmodel
+package com.vyakhirev.filmsinfo.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vyakhirev.filmsinfo.App
-import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.data.Movie
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

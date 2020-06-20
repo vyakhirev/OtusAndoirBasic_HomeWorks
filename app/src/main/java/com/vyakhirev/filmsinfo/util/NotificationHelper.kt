@@ -11,7 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.view.MainActivity
+import com.vyakhirev.filmsinfo.presentation.view.MainActivity
 
 class NotificationHelper(val context: Context) {
 

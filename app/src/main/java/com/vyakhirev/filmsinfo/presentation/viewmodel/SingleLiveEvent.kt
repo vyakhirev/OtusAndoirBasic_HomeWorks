@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.viewmodel
+package com.vyakhirev.filmsinfo.presentation.viewmodel
 
 import android.util.Log
 import androidx.annotation.MainThread

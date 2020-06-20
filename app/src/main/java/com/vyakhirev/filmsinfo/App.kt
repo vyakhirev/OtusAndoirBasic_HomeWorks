@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.work.Configuration
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
-import com.vyakhirev.filmsinfo.model.db.MoviesDatabase
-import com.vyakhirev.filmsinfo.model.network.MovieApiClient
+import com.vyakhirev.filmsinfo.data.db.MoviesDatabase
+import com.vyakhirev.filmsinfo.data.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import java.util.concurrent.Executors
 

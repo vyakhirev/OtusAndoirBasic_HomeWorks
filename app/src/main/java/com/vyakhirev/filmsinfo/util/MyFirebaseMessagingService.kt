@@ -14,7 +14,7 @@ import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.view.MainActivity
+import com.vyakhirev.filmsinfo.presentation.view.MainActivity
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {

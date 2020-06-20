@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.model
+package com.vyakhirev.filmsinfo.data
 
 import com.google.gson.annotations.SerializedName
 

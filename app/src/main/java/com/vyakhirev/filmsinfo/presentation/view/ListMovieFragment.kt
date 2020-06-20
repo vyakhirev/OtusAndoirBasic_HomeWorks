@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.view
+package com.vyakhirev.filmsinfo.presentation.view
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
@@ -23,11 +23,11 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.data.Movie
 import com.vyakhirev.filmsinfo.util.MyWorker
-import com.vyakhirev.filmsinfo.view.adapters.FilmsAdapter
-import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
-import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
+import com.vyakhirev.filmsinfo.presentation.view.adapters.FilmsAdapter
+import com.vyakhirev.filmsinfo.presentation.viewmodel.FilmListViewModel
+import com.vyakhirev.filmsinfo.presentation.viewmodel.factories.ViewModelFactory
 import java.util.concurrent.TimeUnit
 import kotlinx.android.synthetic.main.fragment_list_movie.*
 
@@ -73,33 +73,39 @@ class ListMovieFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupRecyclerView() {
-        adapter = FilmsAdapter(
-            requireContext(),
-            listOf(),
-            listener = {
-                val detMovie = viewModel.movies.value?.get(it)
-                viewModel.openDetails(detMovie)
-                viewModel.filmIsViewed(detMovie!!.uuid)
-                adapter.notifyItemChanged(it)
-                listener?.onFilmClick(it)
-            },
-            listenerMy = {
-                viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
-                viewModel.movies.value!![it].isFavorite = !viewModel.movies.value!![it].isFavorite
-                adapter.notifyItemChanged(it)
-                listenerMy?.onFavorClick(it)
-            },
-            listenerWl = {
-                prefHelper.saveWatchLaterData("no")
-                dataPicker()
-                prefHelper.saveWatchLaterUuid(viewModel.movies.value!![it].uuid)
-                scheduleJob()
-            })
+        adapter =
+            FilmsAdapter(
+                requireContext(),
+                listOf(),
+                listener = {
+                    val detMovie = viewModel.movies.value?.get(it)
+                    viewModel.openDetails(detMovie)
+                    viewModel.filmIsViewed(detMovie!!.uuid)
+                    adapter.notifyItemChanged(it)
+                    listener?.onFilmClick(it)
+                },
+                listenerMy = {
+                    viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
+                    viewModel.movies.value!![it].isFavorite =
+                        !viewModel.movies.value!![it].isFavorite
+                    adapter.notifyItemChanged(it)
+                    listenerMy?.onFavorClick(it)
+                },
+                listenerWl = {
+                    prefHelper.saveWatchLaterData("no")
+                    dataPicker()
+                    prefHelper.saveWatchLaterUuid(viewModel.movies.value!![it].uuid)
+                    scheduleJob()
+                })
 
         filmsRecyclerView.layoutManager = LinearLayoutManager(context)
         filmsRecyclerView.adapter = adapter
 
-        val itemDecor = CustomItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+        val itemDecor =
+            CustomItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
         ContextCompat.getDrawable(requireContext(), R.drawable.my_divider)
             ?.let { itemDecor.setDrawable(it) }
         if (filmsRecyclerView.adapter!!.itemCount == 1) {
@@ -158,7 +164,9 @@ class ListMovieFragment : Fragment() {
     private fun setupViewModel() {
         viewModel = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(App.instance!!.moviesApiClient)
+            ViewModelFactory(
+                App.instance!!.moviesApiClient
+            )
         ).get(FilmListViewModel::class.java)
         viewModel.movies.observe(viewLifecycleOwner, renderMovies)
         viewModel.isViewLoading.observe(viewLifecycleOwner, isViewLoadingObserver)

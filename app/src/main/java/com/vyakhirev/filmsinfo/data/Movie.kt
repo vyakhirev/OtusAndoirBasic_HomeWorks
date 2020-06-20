@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.model
+package com.vyakhirev.filmsinfo.data
 
 import android.widget.ImageView
 import androidx.room.ColumnInfo
@@ -10,7 +10,6 @@ import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
 import com.google.gson.annotations.SerializedName
 import com.vyakhirev.filmsinfo.R
-
 
 @Entity
 data class Movie(

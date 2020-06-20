@@ -2,8 +2,8 @@ package com.vyakhirev.filmsinfo.di
 
 import android.app.Application
 import androidx.room.Room
-import com.vyakhirev.filmsinfo.model.db.MovieDao
-import com.vyakhirev.filmsinfo.model.db.MoviesDatabase
+import com.vyakhirev.filmsinfo.data.db.MovieDao
+import com.vyakhirev.filmsinfo.data.db.MoviesDatabase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
