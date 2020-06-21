@@ -1,10 +1,8 @@
 package com.vyakhirev.filmsinfo.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.DiffUtil
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.di.AppModule
@@ -15,7 +13,6 @@ import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.MovieResponse
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
-import com.vyakhirev.filmsinfo.view.adapters.MovieDiffCallback
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -24,10 +21,6 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel() {
-
-    companion object {
-        const val DEBUG_TAG = "deb"
-    }
 
     init {
         DaggerViewModelComponent.builder()
@@ -44,11 +37,8 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     private val _isViewLoading = MutableLiveData<Boolean>()
     val isViewLoading: LiveData<Boolean> = _isViewLoading
 
-    private val _filmClicked = MutableLiveData<Movie>()
-    val filmClicked: LiveData<Movie> = _filmClicked
-
     @Inject
-    @field:TypeOfContext(CONTEXT_APP)
+    @TypeOfContext(CONTEXT_APP)
     lateinit var prefHelper: SharedPreferencesHelper
 
     private var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
@@ -77,7 +67,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     }
 
     private fun fetchFromDatabase() {
-        Log.d(DEBUG_TAG, "fetchFromDatabase()")
         _isViewLoading.value = true
         disposable.add(
             App.instance!!.movieDB.movieDao().getAllMovie()
@@ -101,7 +90,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
                     override fun onSuccess(movieList: MovieResponse) {
                         _isViewLoading.value = false
-                        Log.d(DEBUG_TAG, "fetchFromRemote()")
 
                         disposable.add(
                             storeLocally(movieList.results)
@@ -111,15 +99,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
                         )
 
                         fetchFromDatabase()
-
-                        if (movieList.results.isNullOrEmpty()) {
-                            DiffUtil.calculateDiff(
-                                MovieDiffCallback(
-                                    movies.value!!,
-                                    movieList.results
-                                )
-                            )
-                        }
                     }
 
                     override fun onError(e: Throwable) {
@@ -134,10 +113,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
         prefHelper.saveUpdateTime(System.nanoTime())
         val dao = App.instance!!.movieDB.movieDao()
         return dao.insertAll(list)
-    }
-
-    fun openDetails(movie: Movie?) {
-        _filmClicked.postValue(movie)
     }
 
     fun switchFavorite(uuid: Int) {

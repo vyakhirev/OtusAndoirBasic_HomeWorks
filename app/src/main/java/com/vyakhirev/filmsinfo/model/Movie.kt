@@ -29,7 +29,7 @@ data class Movie(
     var isViewed: Boolean = false,
     @ColumnInfo(name = "isFavorite")
     var isFavorite: Boolean = false
-)  {
+) {
     @PrimaryKey(autoGenerate = true)
     var uuid: Int = 0
 }

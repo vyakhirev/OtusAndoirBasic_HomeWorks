@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
 class FavoritesListFragment : Fragment() {
     interface OnFavorClickListener {
-        fun onFavorToDetails(ind: Int,detMovie: Movie)
+        fun onFavorToDetails(ind: Int, detMovie: Movie)
     }
 
     private var listener: OnFavorClickListener? = null
@@ -46,12 +46,11 @@ class FavoritesListFragment : Fragment() {
                 requireActivity(),
                 FavoritesViewModelFactory()
             ).get(FavoritesViewModel::class.java)
+
         favViewModel.loadFavorites()
+
         favViewModel.favoritesLiveData.observe(viewLifecycleOwner, Observer {
             adapter.update(it)
-        })
-        favViewModel.filmClicked.observe(viewLifecycleOwner, Observer {
-            favViewModel.openDetails(it)
         })
     }
 
@@ -63,7 +62,7 @@ class FavoritesListFragment : Fragment() {
                 val detMovie = favViewModel.favoritesLiveData.value!![it]
                 favViewModel.filmIsViewed(detMovie.uuid)
                 adapter.notifyItemChanged(it)
-                listener?.onFavorToDetails(it,detMovie)
+                listener?.onFavorToDetails(it, detMovie)
             },
             listenerDel = {
                 favViewModel.switchFavorite(favViewModel.favoritesLiveData.value!![it].uuid)

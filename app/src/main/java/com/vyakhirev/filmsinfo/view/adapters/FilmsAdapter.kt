@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.model.Movie
@@ -43,8 +44,11 @@ class FilmsAdapter(
     }
 
     fun update(data: List<Movie>) {
+        val movieDiffUtilCallback = MovieDiffCallback(films, data)
+        val diffResult = DiffUtil.calculateDiff(movieDiffUtilCallback)
+        films = listOf()
         films = data
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -62,7 +66,6 @@ class FilmsAdapter(
     inner class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     inner class FilmsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var currentFilm: Movie? = null
         private var currentPosition = 0
 
         init {
@@ -81,14 +84,15 @@ class FilmsAdapter(
         }
 
         fun setData(film: Movie, pos: Int) {
-            itemView.movieTitleTextView.text = film!!.title
+            itemView.movieTitleTextView.text = film.title
 
-            itemView.movieTitleTextView.setTextColor(if (films[pos].isViewed) Color.BLUE else Color.GRAY)
+            itemView.movieTitleTextView.setTextColor(if (films[pos].isViewed)
+                Color.BLUE else Color.GRAY)
 
             itemView.posterImgView.loadImage(films[pos].posterPath)
 
-            if (films[pos].isFavorite) itemView.favoritesImgView.setImageResource(R.drawable.ic_star_on_24dp)
-            else itemView.favoritesImgView.setImageResource(R.drawable.ic_star_off_36dp)
+            itemView.favoritesImgView.setImageResource(if (films[pos].isFavorite)
+                R.drawable.ic_star_on_24dp else R.drawable.ic_star_off_36dp)
 
             this.currentPosition = pos
         }

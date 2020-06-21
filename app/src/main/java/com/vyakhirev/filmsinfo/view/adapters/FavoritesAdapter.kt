@@ -10,6 +10,7 @@ import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.loadImage
 import kotlinx.android.synthetic.main.favorite_item.view.*
+import kotlinx.android.synthetic.main.movie_item.view.*
 
 class FavoritesAdapter(
     private val context: Context,
@@ -51,12 +52,13 @@ class FavoritesAdapter(
         }
 
         fun setData(film: Movie, pos: Int) {
-            this.currentFilm = film
             this.currentPosition = pos
+
             itemView.favTitleTV.text = film.title
-            if (favorMovieList[pos].isViewed) itemView.favTitleTV.setTextColor(Color.BLUE)
-            else itemView.favTitleTV.setTextColor(Color.GRAY)
             itemView.favorPosterIV.loadImage(favorMovieList[pos].posterPath)
+
+            itemView.favTitleTV.setTextColor(if (favorMovieList[pos].isViewed)
+                Color.BLUE else Color.GRAY)
         }
     }
 }

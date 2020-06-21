@@ -32,19 +32,17 @@ class FavoritesViewModel() : ViewModel() {
     fun switchFavorite(uuid: Int) {
         val dao = App.instance!!.movieDB.movieDao()
         disposable.add(dao.getMovie(uuid)
+            .flatMap {
+                it.isFavorite = !it.isFavorite
+                dao.updateMovie(it)
+            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { film ->
-                film.isFavorite = !film.isFavorite
-                dao.updateMovie(film)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe()
-            })
-    }
-
-    fun openDetails(movie: Movie?) {
-        _filmClicked.postValue(movie)
+            .doOnError {
+                it.message
+            }
+            .subscribe()
+        )
     }
 
     fun filmIsViewed(uuid: Int) {

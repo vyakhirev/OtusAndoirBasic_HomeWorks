@@ -20,25 +20,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
-import com.vyakhirev.filmsinfo.di.CONTEXT_APP
-import com.vyakhirev.filmsinfo.di.TypeOfContext
 import com.vyakhirev.filmsinfo.model.Movie
-import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
-import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
+import kotlinx.android.synthetic.main.activity_main.coordinatorLayout1
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
-    lateinit var viewModel:FilmListViewModel
+    lateinit var viewModel: FilmListViewModel
 
-    private val prefs=App.instance!!.prefHelper
+    private val prefs = App.instance!!.prefHelper
 
-    override fun onFilmClick(ind: Int,detMovie: Movie) {
-        super.onFilmClick(ind,detMovie)
-        openFilmDetailed(ind,detMovie)
+    override fun onFilmClick(ind: Int, detMovie: Movie) {
+        super.onFilmClick(ind, detMovie)
+        openFilmDetailed(detMovie)
     }
 
     override fun onFavorClick(ind: Int) {
@@ -46,18 +42,18 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         super.onFavorClick(ind)
     }
 
-    override fun onFavorToDetails(ind: Int,detMovie: Movie) {
-        openFilmDetailed(ind,detMovie)
+    override fun onFavorToDetails(ind: Int, detMovie: Movie) {
+        openFilmDetailed(detMovie)
     }
 
     override fun onResume() {
         super.onResume()
         val movieUuid = intent.getIntExtra("uuid", -1)
         if (movieUuid != -1) {
-            var movieTitle = prefs.getWatchLaterTitle()
-            var moviePoster = prefs.getWatchLaterPoster()
-            var movieOverview = prefs.getWatchLaterOverview()
-            openFilmDetailed(-1, Movie(1, movieTitle!!, moviePoster!!, movieOverview!!))
+            val movieTitle = prefs.getWatchLaterTitle()
+            val moviePoster = prefs.getWatchLaterPoster()
+            val movieOverview = prefs.getWatchLaterOverview()
+            openFilmDetailed(Movie(1, movieTitle!!, moviePoster!!, movieOverview!!))
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)
@@ -124,7 +120,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     private fun showSnack(ind: Int) {
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
-        snack.setAction("Undo", ({viewModel.switchFavorite(ind + 1)}))
+        snack.setAction("Undo", ({ viewModel.switchFavorite(ind + 1) }))
         snack.setActionTextColor(
             ContextCompat.getColor(
                 this,
@@ -137,7 +133,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             anchorId = R.id.bottomNav
             anchorGravity = Gravity.TOP
             gravity = Gravity.TOP
-
         }
 
         snack.apply {
@@ -151,18 +146,17 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         }, 3000)
     }
 
-    private fun openFilmDetailed(ind:Int,detMovie:Movie) {
-        val detFragment=DetailMovieFragment()
+    private fun openFilmDetailed(detMovie: Movie) {
+        val detFragment = DetailMovieFragment()
 
         val bundle = Bundle()
         bundle.apply {
-            putString("title",detMovie.title)
-            putString("poster",detMovie.posterPath)
-            putString("overview",detMovie.overview)
-
+            putString("title", detMovie.title)
+            putString("poster", detMovie.posterPath)
+            putString("overview", detMovie.overview)
         }
 
-        detFragment.arguments=bundle
+        detFragment.arguments = bundle
         supportFragmentManager
             .beginTransaction()
             .replace(

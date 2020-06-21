@@ -39,7 +39,7 @@ class ListMovieFragment : Fragment() {
     private val prefHelper = App.instance!!.prefHelper
 
     interface OnFilmClickListener {
-        fun onFilmClick(ind: Int,detMovie: Movie) {
+        fun onFilmClick(ind: Int, detMovie: Movie) {
         }
 
         fun onFavorClick(ind: Int) {
@@ -49,6 +49,11 @@ class ListMovieFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refresh()
     }
 
     override fun onCreateView(
@@ -76,26 +81,31 @@ class ListMovieFragment : Fragment() {
         adapter = FilmsAdapter(
             requireContext(),
             listOf(),
+
             listener = {
                 val detMovie = viewModel.movies.value?.get(it)
                 viewModel.filmIsViewed(detMovie!!.uuid)
                 adapter.notifyItemChanged(it)
-                listener?.onFilmClick(it,detMovie)
+                listener?.onFilmClick(it, detMovie)
             },
+
             listenerMy = {
                 viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
                 viewModel.movies.value!![it].isFavorite = !viewModel.movies.value!![it].isFavorite
                 adapter.notifyItemChanged(it)
                 listenerMy?.onFavorClick(it)
             },
+
             listenerWl = {
                 prefHelper.saveWatchLaterData("no")
                 dataPicker()
-                val movie=viewModel.movies.value!![it]
-                prefHelper.saveWatchLaterUuid(movie.uuid)
-                prefHelper.saveWatchLaterTitle(movie.title)
-                prefHelper.saveWatchLaterPoster(movie.posterPath)
-                prefHelper.saveWatchLaterOverview(movie.overview)
+                val movie = viewModel.movies.value!![it]
+                prefHelper.apply {
+                    saveWatchLaterUuid(movie.uuid)
+                    saveWatchLaterTitle(movie.title)
+                    saveWatchLaterPoster(movie.posterPath)
+                    saveWatchLaterOverview(movie.overview)
+                }
                 scheduleJob()
             })
 
@@ -105,10 +115,8 @@ class ListMovieFragment : Fragment() {
         val itemDecor = CustomItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         ContextCompat.getDrawable(requireContext(), R.drawable.my_divider)
             ?.let { itemDecor.setDrawable(it) }
-        if (filmsRecyclerView.adapter!!.itemCount == 1) {
-            filmsRecyclerView.removeItemDecoration(itemDecor)
-        }
         filmsRecyclerView.addItemDecoration(itemDecor)
+
         filmsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == (viewModel.movies.value?.size)) {
@@ -131,11 +139,6 @@ class ListMovieFragment : Fragment() {
         WorkManager
             .getInstance(activity!!.applicationContext)
             .enqueue(request)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.refresh()
     }
 
     private fun dataPicker() {
@@ -163,12 +166,12 @@ class ListMovieFragment : Fragment() {
             requireActivity(),
             ViewModelFactory(App.instance!!.moviesApiClient)
         ).get(FilmListViewModel::class.java)
-        viewModel.movies.observe(viewLifecycleOwner, renderMovies)
-        viewModel.isViewLoading.observe(viewLifecycleOwner, isViewLoadingObserver)
-        viewModel.onMessageError.observe(viewLifecycleOwner, onMessageErrorObserver)
-//        viewModel.filmClicked.observe(viewLifecycleOwner, onFilmClicked)
+        viewModel.apply {
+            movies.observe(viewLifecycleOwner, renderMovies)
+            isViewLoading.observe(viewLifecycleOwner, isViewLoadingObserver)
+            onMessageError.observe(viewLifecycleOwner, onMessageErrorObserver)
+        }
     }
-
 
     private val renderMovies = Observer<List<Movie>> {
         Log.d(DEBUG_TAG, "renderMovies, size=${it.size} ")
