@@ -59,6 +59,11 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (savedInstanceState == null) {
+            openFragment(ListMovieFragment())
+        }
+
         setContentView(R.layout.activity_main)
         setupNavigation()
         setupNotification()
@@ -88,7 +93,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     private fun setupNavigation() {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        openFragment(ListMovieFragment())
+//        openFragment(ListMovieFragment())
     }
 
     private val mOnNavigationItemSelectedListener =
@@ -120,7 +125,9 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     private fun showSnack(ind: Int) {
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
-        snack.setAction("Undo", ({ viewModel.switchFavorite(ind + 1) }))
+
+        snack.setAction("Undo") { viewModel.switchFavorite(ind + 1) }
+
         snack.setActionTextColor(
             ContextCompat.getColor(
                 this,

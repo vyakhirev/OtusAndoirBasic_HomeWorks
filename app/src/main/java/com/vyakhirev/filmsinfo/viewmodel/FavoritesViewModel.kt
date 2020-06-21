@@ -14,9 +14,6 @@ class FavoritesViewModel() : ViewModel() {
     private val _favoritesLiveData = MutableLiveData<List<Movie>>()
     val favoritesLiveData: LiveData<List<Movie>> = _favoritesLiveData
 
-    private val _filmClicked = MutableLiveData<Movie>()
-    val filmClicked: LiveData<Movie> = _filmClicked
-
     private val disposable = CompositeDisposable()
 
     fun loadFavorites() {

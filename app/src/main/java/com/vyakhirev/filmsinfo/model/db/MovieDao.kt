@@ -16,7 +16,7 @@ interface MovieDao {
     fun insertAll(movies: List<Movie>): Completable
 
     @Query("SELECT * FROM movie")
-    fun getAllMovie(): Flowable<List<Movie>>
+    fun getAllMovie(): Single<List<Movie>>
 
     @Query("SELECT * FROM movie WHERE uuid=:Id")
     fun getMovie(Id: Int): Single<Movie>

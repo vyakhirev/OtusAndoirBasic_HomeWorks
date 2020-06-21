@@ -64,7 +64,7 @@ class FilmListViewModelTest {
         val testSingle = Single.error<MovieResponse>(Throwable())
         Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
-        listViewModel.refresh()
+        listViewModel.getMovies()
         Assert.assertEquals(false, listViewModel.isViewLoading.value)
     }
 
@@ -81,7 +81,7 @@ class FilmListViewModelTest {
         Mockito.`when`(listViewModel.storeLocally(movieslist)).thenReturn(testCompl)
         Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
-        listViewModel.refresh()
+        listViewModel.getMovies()
         Assert.assertEquals(1, listViewModel.movies.value?.size)
         Assert.assertEquals(false, listViewModel.isViewLoading.value)
         Assert.assertEquals(null, listViewModel.onMessageError.value)
@@ -93,7 +93,7 @@ class FilmListViewModelTest {
         val testSingle = Single.error<MovieResponse>(Throwable())
         Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
-        listViewModel.refresh()
+        listViewModel.getMovies()
         Assert.assertEquals(null, listViewModel.movies.value?.size)
         Assert.assertEquals(false, listViewModel.isViewLoading.value)
     }

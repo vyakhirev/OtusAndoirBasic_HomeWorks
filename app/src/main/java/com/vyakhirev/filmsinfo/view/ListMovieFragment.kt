@@ -53,7 +53,7 @@ class ListMovieFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.refresh()
+        viewModel.getMovies()
     }
 
     override fun onCreateView(
@@ -121,7 +121,7 @@ class ListMovieFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == (viewModel.movies.value?.size)) {
                     viewModel.page++
-                    viewModel.fetchFromRemote()
+                    viewModel.getMovies()
                 }
             }
         })
@@ -191,7 +191,7 @@ class ListMovieFragment : Fragment() {
         filmsRecyclerView.visibility = View.GONE
 
         retryBtn.setOnClickListener {
-            viewModel.refresh()
+            viewModel.getMovies()
             errorImg.visibility = View.GONE
             errorTV.visibility = View.GONE
             retryBtn.visibility = View.GONE
@@ -240,7 +240,7 @@ class ListMovieFragment : Fragment() {
 
     private fun setupRefreshLayout() {
         refreshLayout.setOnRefreshListener {
-            viewModel.refresh()
+            viewModel.getMovies()
             refreshLayout.isRefreshing = false
             filmsRecyclerView.adapter?.notifyDataSetChanged()
         }
