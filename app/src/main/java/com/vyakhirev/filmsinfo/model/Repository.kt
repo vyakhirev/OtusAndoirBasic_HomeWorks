@@ -12,7 +12,7 @@ import javax.inject.Inject
 class Repository @Inject constructor (private val moviesApiClient: MovieApiClient, private val roomDao: MovieDao) {
 
     private var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
-    val prefHelper = App.instance!!.prefHelper
+    private val prefHelper = App.instance!!.prefHelper
 
     private fun checkCacheDuration() {
         val cachePreference = prefHelper.getCacheDuration()

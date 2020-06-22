@@ -36,7 +36,6 @@ class FavoritesAdapter(
     }
 
     inner class FavoritesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var currentFilm: Movie? = null
         private var currentPosition = 0
 
         init {

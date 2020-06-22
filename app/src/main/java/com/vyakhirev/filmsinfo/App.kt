@@ -8,7 +8,6 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.vyakhirev.filmsinfo.model.db.MoviesDatabase
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
-import java.util.concurrent.Executors
 
 class App : Application(), Configuration.Provider {
 
@@ -47,14 +46,7 @@ class App : Application(), Configuration.Provider {
     }
 
     private fun initRoom() {
-        Executors.newSingleThreadScheduledExecutor().execute {
-            movieDB = MoviesDatabase.invoke(this)
-        }
-    }
-
-    companion object {
-        var instance: App? = null
-            private set
+            movieDB = MoviesDatabase.getDatabase(this)
     }
 
     override fun getWorkManagerConfiguration(): Configuration {
@@ -67,5 +59,10 @@ class App : Application(), Configuration.Provider {
                 .setMinimumLoggingLevel(Log.ERROR)
                 .build()
         }
+    }
+
+    companion object {
+        var instance: App? = null
+            private set
     }
 }

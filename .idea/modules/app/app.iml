@@ -70,10 +70,10 @@
     <output-test url="file://$MODULE_DIR$/../../../app/build/intermediates/javac/paidDebugUnitTest/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../app">
-      <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/source/kaptKotlin/paidDebug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/aidl_source_output_dir/paidDebug/out" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/source/buildConfig/paid/debug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/source/kapt/paidDebug" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/aidl_source_output_dir/paidDebug/out" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/source/kaptKotlin/paidDebug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/ap_generated_sources/paidDebug/out" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/renderscript_source_output_dir/paidDebug/out" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/res/google-services/paid/debug" type="java-resource" generated="true" />
@@ -182,10 +182,10 @@
         <CLASSES>
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/freeDev" />
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/paidReleaseUnitTest" />
+          <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/freeDebugUnitTest" />
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/paidRelease" />
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/freeDebug" />
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/paidDebugAndroidTest" />
-          <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/paidDebug" />
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/freeRelease" />
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/paidDebugUnitTest" />
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/freeDevUnitTest" />
@@ -193,7 +193,7 @@
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/paidDevUnitTest" />
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/freeReleaseUnitTest" />
           <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/paidDev" />
-          <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/freeDebugUnitTest" />
+          <root url="file://$MODULE_DIR$/../../../app/build/tmp/kapt3/classes/paidDebug" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

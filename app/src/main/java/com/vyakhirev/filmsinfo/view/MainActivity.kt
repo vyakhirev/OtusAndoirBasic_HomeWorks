@@ -93,7 +93,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     private fun setupNavigation() {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-//        openFragment(ListMovieFragment())
     }
 
     private val mOnNavigationItemSelectedListener =

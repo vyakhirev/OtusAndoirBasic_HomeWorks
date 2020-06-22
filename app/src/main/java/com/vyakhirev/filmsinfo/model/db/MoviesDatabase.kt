@@ -10,21 +10,24 @@ import com.vyakhirev.filmsinfo.model.Movie
 abstract class MoviesDatabase : RoomDatabase() {
     abstract fun movieDao(): MovieDao
 
-    companion object {
-        @Volatile
-        private var instance: MoviesDatabase? = null
-        private val LOCK = Any()
+companion object {
+    @Volatile
+    private var INSTANCE: MoviesDatabase? = null
 
-        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
-            instance ?: buildDatabase(context).also {
-                instance = it
+    fun getDatabase(context: Context): MoviesDatabase {
+        val tempInstance = INSTANCE
+        if (tempInstance != null) {
+            return tempInstance
+        }
+        synchronized(this) {
+            val instance = Room.databaseBuilder(
+                context.applicationContext,
+                MoviesDatabase::class.java,
+                "moviesdatabase"
+            ).build()
+            INSTANCE = instance
+            return instance
             }
         }
-
-        private fun buildDatabase(context: Context) = Room.databaseBuilder(
-            context.applicationContext,
-            MoviesDatabase::class.java,
-            "moviesdatabase"
-        ).build()
     }
 }

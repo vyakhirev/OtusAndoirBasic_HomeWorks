@@ -2,8 +2,6 @@ package com.vyakhirev.filmsinfo.view
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.content.Context
-import android.graphics.Rect
 import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
@@ -39,11 +37,8 @@ class ListMovieFragment : Fragment() {
     private val prefHelper = App.instance!!.prefHelper
 
     interface OnFilmClickListener {
-        fun onFilmClick(ind: Int, detMovie: Movie) {
-        }
-
-        fun onFavorClick(ind: Int) {
-        }
+        fun onFilmClick(ind: Int, detMovie: Movie) { }
+        fun onFavorClick(ind: Int) { }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +94,9 @@ class ListMovieFragment : Fragment() {
             listenerWl = {
                 prefHelper.saveWatchLaterData("no")
                 dataPicker()
+
                 val movie = viewModel.movies.value!![it]
+
                 prefHelper.apply {
                     saveWatchLaterUuid(movie.uuid)
                     saveWatchLaterTitle(movie.title)
@@ -166,6 +163,7 @@ class ListMovieFragment : Fragment() {
             requireActivity(),
             ViewModelFactory(App.instance!!.moviesApiClient)
         ).get(FilmListViewModel::class.java)
+
         viewModel.apply {
             movies.observe(viewLifecycleOwner, renderMovies)
             isViewLoading.observe(viewLifecycleOwner, isViewLoadingObserver)
@@ -185,8 +183,10 @@ class ListMovieFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private val onMessageErrorObserver = Observer<Any> {
         errorImg.visibility = View.VISIBLE
+
         errorTV.text = "Error $it"
         errorTV.visibility = View.VISIBLE
+
         retryBtn.visibility = View.VISIBLE
         filmsRecyclerView.visibility = View.GONE
 
@@ -201,8 +201,10 @@ class ListMovieFragment : Fragment() {
 
     private val isViewLoadingObserver = Observer<Boolean> {
         val visibility = if (it) View.VISIBLE else View.GONE
+
         progressBar.visibility = visibility
         loadingTV.visibility = visibility
+
         if (it) {
             filmsRecyclerView.visibility = View.GONE
         } else filmsRecyclerView.visibility = View.VISIBLE
@@ -219,30 +221,16 @@ class ListMovieFragment : Fragment() {
         }
     }
 
-    companion object {
-        const val TAG = "ListMovieFragment"
-        const val DEBUG_TAG = "deb+$TAG"
-    }
-
-    class CustomItemDecoration(context: Context, orientation: Int) :
-        DividerItemDecoration(context, orientation) {
-
-        override fun getItemOffsets(
-            outRect: Rect,
-            view: View,
-            parent: RecyclerView,
-            state: RecyclerView.State
-        ) {
-            super.getItemOffsets(outRect, view, parent, state)
-            outRect.bottom = 150
-        }
-    }
-
     private fun setupRefreshLayout() {
         refreshLayout.setOnRefreshListener {
             viewModel.getMovies()
             refreshLayout.isRefreshing = false
             filmsRecyclerView.adapter?.notifyDataSetChanged()
         }
+    }
+
+    companion object {
+        const val TAG = "ListMovieFragment"
+        const val DEBUG_TAG = "deb+$TAG"
     }
 }

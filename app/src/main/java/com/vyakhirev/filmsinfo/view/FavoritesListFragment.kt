@@ -58,12 +58,14 @@ class FavoritesListFragment : Fragment() {
         adapter = FavoritesAdapter(
             requireContext(),
             listOf(),
+
             listener = {
                 val detMovie = favViewModel.favoritesLiveData.value!![it]
                 favViewModel.filmIsViewed(detMovie.uuid)
                 adapter.notifyItemChanged(it)
                 listener?.onFavorToDetails(it, detMovie)
             },
+
             listenerDel = {
                 favViewModel.switchFavorite(favViewModel.favoritesLiveData.value!![it].uuid)
                 favViewModel.favoritesLiveData.value!![it].isFavorite =
@@ -71,6 +73,7 @@ class FavoritesListFragment : Fragment() {
                 adapter.notifyItemRemoved(it)
             }
         )
+
         favoritesRecyclerView.layoutManager = LinearLayoutManager(context)
         favoritesRecyclerView.adapter = adapter
     }
@@ -84,10 +87,5 @@ class FavoritesListFragment : Fragment() {
         } else {
             throw Exception("Activity must implement OnFavorClickedListener")
         }
-    }
-
-    companion object {
-        const val TAG = "FavoritesListFragment"
-        const val DEBUG_TAG = "Deb"
     }
 }
