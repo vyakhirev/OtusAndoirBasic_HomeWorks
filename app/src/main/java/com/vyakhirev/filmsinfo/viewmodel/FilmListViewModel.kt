@@ -34,22 +34,22 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     var page = 1
 
     fun getMovies() {
-            repo.getAllMovies(page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map {
-                    _movies.value = it
-                    _isViewLoading.value = false
-                }
-                .onErrorReturn {
-                    _isViewLoading.value = false
-                    onMessageError.postValue("Internet connection is not available")
-                }
-                .subscribe()
+        repo.getAllMovies(page)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .map {
+                _movies.value = it
+                _isViewLoading.value = false
+            }
+            .onErrorReturn {
+                _isViewLoading.value = false
+                onMessageError.postValue("Internet connection is not available")
+            }
+            .subscribe()
     }
 
     fun filmIsViewed(uuid: Int) {
-    repo.filmIsViewed(uuid)
+        repo.filmIsViewed(uuid)
     }
 
     fun switchFavorite(uuid: Int) {
