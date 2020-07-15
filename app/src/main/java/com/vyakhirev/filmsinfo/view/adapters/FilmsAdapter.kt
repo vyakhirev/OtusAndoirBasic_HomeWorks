@@ -46,7 +46,6 @@ class FilmsAdapter(
     fun update(data: List<Movie>) {
         val movieDiffUtilCallback = MovieDiffCallback(films, data)
         val diffResult = DiffUtil.calculateDiff(movieDiffUtilCallback)
-        films = listOf()
         films = data
         diffResult.dispatchUpdatesTo(this)
     }

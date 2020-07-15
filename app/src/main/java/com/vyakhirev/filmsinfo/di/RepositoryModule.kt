@@ -14,7 +14,7 @@ open class RepositoryModule {
     private val BASE_URL = "https://api.themoviedb.org/3/"
 
     @Provides
-    fun provideMovieApiService(): MovieApiInterface {
+    fun providesRepository(): MovieApiInterface {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

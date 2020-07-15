@@ -12,6 +12,10 @@ class SharedPreferencesHelper {
         private const val PREF_TIME = "Pref time"
         private const val PREF_DATE = "Pref date"
         private const val PREF_UUID = "Pref uuid"
+        private const val TITLE = "title"
+        private const val POSTER = "poster"
+        private const val OVERVIEW = "overview"
+        private const val CACHE_DURATION = "pref_cache_duration"
         private var prefs: SharedPreferences? = null
 
         @Volatile
@@ -55,26 +59,26 @@ class SharedPreferencesHelper {
     // Title
     fun saveWatchLaterTitle(title: String) {
         prefs?.edit(commit = true) { putString(
-            "title", title) }
+            TITLE, title) }
     }
 
-    fun getWatchLaterTitle() = prefs?.getString("title", "title")
+    fun getWatchLaterTitle() = prefs?.getString(TITLE, TITLE)
 
     // Poster path
     fun saveWatchLaterPoster(poster: String) {
         prefs?.edit(commit = true) { putString(
-            "poster", poster) }
+            POSTER, poster) }
     }
 
-    fun getWatchLaterPoster() = prefs?.getString("poster", "poster")
+    fun getWatchLaterPoster() = prefs?.getString(POSTER, POSTER)
 
     // Overview
     fun saveWatchLaterOverview(overview: String) {
         prefs?.edit(commit = true) { putString(
-            "overview", overview) }
+            OVERVIEW, overview) }
     }
 
-    fun getWatchLaterOverview() = prefs?.getString("overview", "overview")
+    fun getWatchLaterOverview() = prefs?.getString(OVERVIEW, OVERVIEW)
 
     // For cache duration
     fun saveUpdateTime(time: Long) {
@@ -85,5 +89,5 @@ class SharedPreferencesHelper {
     fun getUpdateTime() = prefs?.getLong(
         PREF_TIME, 0L)
 
-    fun getCacheDuration() = prefs?.getString("pref_cache_duration", "10")
+    fun getCacheDuration() = prefs?.getString(CACHE_DURATION, "10")
 }

@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vyakhirev.filmsinfo.App
-import com.vyakhirev.filmsinfo.di.AppModule
 import com.vyakhirev.filmsinfo.di.DaggerViewModelComponent
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.Repository
@@ -16,7 +15,7 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
     init {
         DaggerViewModelComponent.builder()
-            .appModule(AppModule(App.instance!!))
+//            .appModule(AppModule(App.instance!!))
             .build()
             .inject(this)
     }
