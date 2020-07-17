@@ -11,7 +11,8 @@ import javax.inject.Inject
 
 class Repository @Inject constructor (private val moviesApiClient: MovieApiClient, private val roomDao: MovieDao) {
 
-    private var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
+    private var refreshTime = java.util.concurrent.TimeUnit.MINUTES.toMillis(5)
+//    private var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
     private val prefHelper = App.instance!!.prefHelper
 
     private fun checkCacheDuration() {

@@ -10,6 +10,14 @@ import com.vyakhirev.filmsinfo.model.loadImage
 import kotlinx.android.synthetic.main.fragment_detail_movie.*
 
 class DetailMovieFragment : Fragment() {
+
+    companion object {
+
+        private const val POSTER = "poster"
+        private const val TITLE = "title"
+        private const val OVERVIEW = "overview"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -21,8 +29,8 @@ class DetailMovieFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        poster.loadImage(arguments?.getString("poster"))
-        titleTV.text = arguments?.getString("title")
-        descrTV.text = arguments?.getString("overview")
+        poster.loadImage(arguments?.getString(POSTER))
+        titleTV.text = arguments?.getString(TITLE)
+        descrTV.text = arguments?.getString(OVERVIEW)
     }
 }
