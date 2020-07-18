@@ -4,22 +4,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vyakhirev.filmsinfo.App
+import com.vyakhirev.filmsinfo.di.AppModule
 import com.vyakhirev.filmsinfo.di.DaggerViewModelComponent
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.Repository
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel() {
 
     init {
         DaggerViewModelComponent.builder()
-//            .appModule(AppModule(App.instance!!))
+            .appModule(AppModule(App.instance!!))
             .build()
             .inject(this)
     }
 
+    private val disposable = CompositeDisposable()
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies
 
@@ -33,18 +36,18 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
     var page = 1
 
     fun getMovies() {
+        disposable.add(
         repo.getAllMovies(page)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .map {
+            .subscribe({
                 _movies.value = it
                 _isViewLoading.value = false
-            }
-            .onErrorReturn {
+            }, {
                 _isViewLoading.value = false
                 onMessageError.postValue("Internet connection is not available")
-            }
-            .subscribe()
+            })
+        )
     }
 
     fun filmIsViewed(uuid: Int) {
@@ -53,5 +56,10 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
     fun switchFavorite(uuid: Int) {
         repo.switchFavorite(uuid)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposable.clear()
     }
 }

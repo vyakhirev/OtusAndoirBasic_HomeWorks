@@ -1,11 +1,11 @@
 package com.vyakhirev.filmsinfo.model
 
 import com.vyakhirev.filmsinfo.App
-import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.model.db.MovieDao
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -13,6 +13,7 @@ class Repository @Inject constructor (private val moviesApiClient: MovieApiClien
 
     private var refreshTime = java.util.concurrent.TimeUnit.MINUTES.toMillis(5)
     private val prefHelper = App.instance!!.prefHelper
+    private val disposable = CompositeDisposable()
 
     private fun checkCacheDuration() {
 
@@ -33,21 +34,17 @@ class Repository @Inject constructor (private val moviesApiClient: MovieApiClien
             getFromDb()
         } else {
             prefHelper.saveUpdateTime(System.nanoTime())
-
-            moviesApiClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", page)
-                .doOnSuccess {
+            disposable.add(
+            moviesApiClient.getPopular(page)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
                     roomDao.insertAll(it.results)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe()
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
-                    it.message
-                }
-                .subscribe()
-
+                }, { it.message })
+            )
             getFromDb()
         }
     }

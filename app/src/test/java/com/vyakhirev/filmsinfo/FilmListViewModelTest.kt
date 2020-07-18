@@ -78,7 +78,7 @@ class FilmListViewModelTest {
         val testCompl = Completable.fromSingle(testSingle)
 
         Mockito.`when`(prefs.getCacheDuration()).thenReturn("10")
-        Mockito.`when`(listViewModel.storeLocally(movieslist)).thenReturn(testCompl)
+//        Mockito.`when`(listViewModel.storeLocally(movieslist)).thenReturn(testCompl)
         Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
         listViewModel.getMovies()

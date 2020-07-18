@@ -13,7 +13,7 @@ class MovieApiClient {
         DaggerApiComponent.create().inject(this)
     }
 
-    fun getPopular(apiKey: String, language: String, page: Int): Single<MovieResponse> {
-        return api.getPopular(apiKey, language, page)
+    fun getPopular(page: Int): Single<MovieResponse> {
+        return api.getPopular(page)
     }
 }
