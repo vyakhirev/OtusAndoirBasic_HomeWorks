@@ -12,15 +12,14 @@ import javax.inject.Inject
 class Repository @Inject constructor (private val moviesApiClient: MovieApiClient, private val roomDao: MovieDao) {
 
     private var refreshTime = java.util.concurrent.TimeUnit.MINUTES.toMillis(5)
-//    private var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
     private val prefHelper = App.instance!!.prefHelper
 
     private fun checkCacheDuration() {
-        val cachePreference = prefHelper.getCacheDuration()
+
+        val cachePreference = prefHelper.getCacheDuration()?.toLong()
 
         try {
-            val cachePreferenceInt = cachePreference?.toInt() ?: 5 * 60
-            refreshTime = cachePreferenceInt.times(1000 * 1000 * 1000L)
+            refreshTime = java.util.concurrent.TimeUnit.SECONDS.toMillis(cachePreference!!)
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
@@ -81,4 +80,4 @@ class Repository @Inject constructor (private val moviesApiClient: MovieApiClien
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
     }
-        }
+}

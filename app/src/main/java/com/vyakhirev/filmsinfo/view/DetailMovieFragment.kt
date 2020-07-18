@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.fragment_detail_movie.*
 class DetailMovieFragment : Fragment() {
 
     companion object {
-
         private const val POSTER = "poster"
         private const val TITLE = "title"
         private const val OVERVIEW = "overview"
