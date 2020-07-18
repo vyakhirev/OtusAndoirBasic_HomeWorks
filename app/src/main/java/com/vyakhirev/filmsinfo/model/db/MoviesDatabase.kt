@@ -19,7 +19,6 @@ companion object {
         if (tempInstance != null) {
             return tempInstance
         }
-        synchronized(this) {
             val instance = Room.databaseBuilder(
                 context.applicationContext,
                 MoviesDatabase::class.java,
@@ -27,7 +26,6 @@ companion object {
             ).build()
             INSTANCE = instance
             return instance
-            }
         }
     }
 }
