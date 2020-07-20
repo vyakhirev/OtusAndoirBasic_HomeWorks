@@ -1,7 +1,6 @@
-package com.vyakhirev.filmsinfo.di
+package com.vyakhirev.filmsinfo.di.modules
 
 import android.app.Application
-import androidx.room.Room
 import com.vyakhirev.filmsinfo.model.db.MovieDao
 import com.vyakhirev.filmsinfo.model.db.MoviesDatabase
 import dagger.Module
@@ -9,10 +8,12 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class RoomModule(mApplication: Application) {
-    private val moviesDatabase: MoviesDatabase = Room
-        .databaseBuilder(mApplication, MoviesDatabase::class.java, "moviesdatabase")
-        .build()
+open class RoomModule(mApplication: Application) {
+//    private val moviesDatabase: MoviesDatabase = Room
+//        .databaseBuilder(mApplication, MoviesDatabase::class.java, "moviesdatabase")
+//        .build()
+//    private val mApplication
+    private val moviesDatabase: MoviesDatabase = MoviesDatabase.getDatabase(mApplication)
 
     @Singleton
     @Provides

@@ -3,21 +3,20 @@ package com.vyakhirev.filmsinfo
 import android.app.Application
 import android.util.Log
 import androidx.work.Configuration
-import com.vyakhirev.filmsinfo.model.db.MoviesDatabase
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 
 class App : Application(), Configuration.Provider {
 
     lateinit var moviesApiClient: MovieApiClient
-    lateinit var movieDB: MoviesDatabase
+//    lateinit var movieDB: MoviesDatabase
     lateinit var prefHelper: SharedPreferencesHelper
 
     override fun onCreate() {
         super.onCreate()
         instance = this
         moviesApiClient = MovieApiClient()
-        initRoom()
+//        initRoom()
         initSharePref()
 //        initFcm()
     }
@@ -43,9 +42,9 @@ class App : Application(), Configuration.Provider {
         prefHelper = SharedPreferencesHelper.invoke(this)
     }
 
-    private fun initRoom() {
-        movieDB = MoviesDatabase.getDatabase(this)
-    }
+//    private fun initRoom() {
+//        movieDB = MoviesDatabase.getDatabase(this)
+//    }
 
     override fun getWorkManagerConfiguration(): Configuration {
         return if (BuildConfig.DEBUG) {

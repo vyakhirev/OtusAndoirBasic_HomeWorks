@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,20 +20,38 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.di.components.DaggerAppComponent
+import com.vyakhirev.filmsinfo.di.modules.RoomModule
 import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.model.Repository
 import com.vyakhirev.filmsinfo.util.MyWorker
+import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import com.vyakhirev.filmsinfo.view.adapters.FilmsAdapter
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_list_movie.*
 
 class ListMovieFragment : Fragment() {
     private var listener: OnFilmClickListener? = null
     private var listenerMy: OnFilmClickListener? = null
-    private lateinit var viewModel: FilmListViewModel
     private lateinit var adapter: FilmsAdapter
-    private val prefHelper = App.instance!!.prefHelper
+
+    private lateinit var viewModel: FilmListViewModel
+
+    init {
+        DaggerAppComponent.builder()
+            .roomModule(RoomModule(App.instance!!))
+            .build()
+            .inject(this)
+    }
+
+    @Inject
+    lateinit var repository: Repository
+
+    @Inject
+    lateinit var prefHelper: SharedPreferencesHelper
 
     interface OnFilmClickListener {
         fun onFilmClick(ind: Int, detMovie: Movie) { }
@@ -60,7 +77,6 @@ class ListMovieFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_list_movie, container, false)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         if (savedInstanceState == null) {
@@ -71,7 +87,6 @@ class ListMovieFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupRecyclerView() {
         adapter = FilmsAdapter(
             requireContext(),
@@ -124,7 +139,6 @@ class ListMovieFragment : Fragment() {
         })
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun scheduleJob() {
         val request = PeriodicWorkRequest
             .Builder(
@@ -161,7 +175,7 @@ class ListMovieFragment : Fragment() {
     private fun setupViewModel() {
         viewModel = ViewModelProvider(
             requireActivity(),
-            ViewModelFactory(App.instance!!.moviesApiClient)
+            ViewModelFactory(repository)
         ).get(FilmListViewModel::class.java)
 
         viewModel.apply {

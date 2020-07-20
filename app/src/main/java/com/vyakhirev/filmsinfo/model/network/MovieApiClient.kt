@@ -1,6 +1,6 @@
 package com.vyakhirev.filmsinfo.model.network
 
-import com.vyakhirev.filmsinfo.di.DaggerApiComponent
+import com.vyakhirev.filmsinfo.di.components.DaggerApiComponent
 import com.vyakhirev.filmsinfo.model.MovieResponse
 import io.reactivex.Single
 import javax.inject.Inject

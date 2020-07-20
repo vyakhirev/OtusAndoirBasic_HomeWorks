@@ -1,8 +1,8 @@
 package com.vyakhirev.filmsinfo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.vyakhirev.filmsinfo.di.AppModule
 import com.vyakhirev.filmsinfo.di.DaggerViewModelComponent
+import com.vyakhirev.filmsinfo.di.modules.AppModule
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.MovieResponse
 import com.vyakhirev.filmsinfo.model.db.MovieDao

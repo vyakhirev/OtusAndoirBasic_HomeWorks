@@ -3,13 +3,14 @@ package com.vyakhirev.filmsinfo.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.model.Repository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class FavoritesViewModel() : ViewModel() {
+class FavoritesViewModel @Inject constructor(private val repo: Repository) : ViewModel() {
 
     private val _favoritesLiveData = MutableLiveData<List<Movie>>()
     val favoritesLiveData: LiveData<List<Movie>> = _favoritesLiveData
@@ -18,7 +19,7 @@ class FavoritesViewModel() : ViewModel() {
 
     fun loadFavorites() {
         disposable.add(
-            App.instance!!.movieDB.movieDao().getFavorites(true)
+            repo.getFavorites()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -26,34 +27,12 @@ class FavoritesViewModel() : ViewModel() {
                 })
     }
 
-    fun switchFavorite(uuid: Int) {
-        val dao = App.instance!!.movieDB.movieDao()
-        disposable.add(
-            dao.getMovie(uuid)
-                .flatMap {
-                    it.isFavorite = !it.isFavorite
-                    dao.updateMovie(it)
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
-                it.message
-            }
-            .subscribe()
-        )
+    fun filmIsViewed(uuid: Int) {
+        repo.filmIsViewed(uuid)
     }
 
-    fun filmIsViewed(uuid: Int) {
-        val dao = App.instance!!.movieDB.movieDao()
-        disposable.add(dao.getMovie(uuid)
-            .flatMap {
-                it.isViewed = true
-                dao.updateMovie(it)
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
-        )
+    fun switchFavorite(uuid: Int) {
+        repo.switchFavorite(uuid)
     }
 
     override fun onCleared() {

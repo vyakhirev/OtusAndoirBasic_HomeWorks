@@ -8,11 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.di.components.DaggerAppComponent
+import com.vyakhirev.filmsinfo.di.modules.RoomModule
 import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.model.Repository
 import com.vyakhirev.filmsinfo.view.adapters.FavoritesAdapter
 import com.vyakhirev.filmsinfo.viewmodel.FavoritesViewModel
 import com.vyakhirev.filmsinfo.viewmodel.factories.FavoritesViewModelFactory
+import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
 class FavoritesListFragment : Fragment() {
@@ -24,6 +29,16 @@ class FavoritesListFragment : Fragment() {
     private var listenerDel: OnFavorClickListener? = null
     private lateinit var favViewModel: FavoritesViewModel
     private lateinit var adapter: FavoritesAdapter
+
+    init {
+        DaggerAppComponent.builder()
+            .roomModule(RoomModule(App.instance!!))
+            .build()
+            .inject(this)
+    }
+
+    @Inject
+    lateinit var repository: Repository
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +59,7 @@ class FavoritesListFragment : Fragment() {
         favViewModel =
             ViewModelProvider(
                 requireActivity(),
-                FavoritesViewModelFactory()
+                FavoritesViewModelFactory(repository)
             ).get(FavoritesViewModel::class.java)
 
         favViewModel.loadFavorites()

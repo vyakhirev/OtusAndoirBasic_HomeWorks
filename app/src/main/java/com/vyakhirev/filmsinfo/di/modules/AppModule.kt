@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.di
+package com.vyakhirev.filmsinfo.di.modules
 
 import android.app.Application
 import dagger.Module

@@ -1,8 +1,10 @@
 package com.vyakhirev.filmsinfo.model
 
-import com.vyakhirev.filmsinfo.App
+import com.vyakhirev.filmsinfo.di.components.DaggerRepositoryComponent
 import com.vyakhirev.filmsinfo.model.db.MovieDao
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
+import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
+import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -11,9 +13,17 @@ import javax.inject.Inject
 
 class Repository @Inject constructor (private val moviesApiClient: MovieApiClient, private val roomDao: MovieDao) {
 
+    init {
+        DaggerRepositoryComponent.builder()
+            .build()
+            .inject(this)
+    }
+
     private var refreshTime = java.util.concurrent.TimeUnit.MINUTES.toMillis(5)
-    private val prefHelper = App.instance!!.prefHelper
     private val disposable = CompositeDisposable()
+
+    @Inject
+    lateinit var prefHelper: SharedPreferencesHelper
 
     private fun checkCacheDuration() {
 
@@ -35,15 +45,15 @@ class Repository @Inject constructor (private val moviesApiClient: MovieApiClien
         } else {
             prefHelper.saveUpdateTime(System.nanoTime())
             disposable.add(
-            moviesApiClient.getPopular(page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    roomDao.insertAll(it.results)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe()
-                }, { it.message })
+                moviesApiClient.getPopular(page)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        roomDao.insertAll(it.results)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe()
+                    }, { it.message })
             )
             getFromDb()
         }
@@ -54,18 +64,35 @@ class Repository @Inject constructor (private val moviesApiClient: MovieApiClien
     }
 
     fun switchFavorite(uuid: Int) {
+        disposable.add(
         roomDao.getMovie(uuid)
-            .flatMap {
-                it.isFavorite = !it.isFavorite
-                roomDao.updateMovie(it)
-            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnError {
+            .subscribe({
+                it.isFavorite = !it.isFavorite
+                roomDao.updateMovie(it)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe()
+            }, {
                 it.message
-            }
-            .subscribe()
+            })
+        )
     }
+
+//    fun switchFavorite(uuid: Int) {
+//        roomDao.getMovie(uuid)
+//            .flatMap {
+//                it.isFavorite = !it.isFavorite
+//                roomDao.updateMovie(it)
+//            }
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .doOnError {
+//                it.message
+//            }
+//            .subscribe()
+// }
 
     fun filmIsViewed(uuid: Int) {
         roomDao.getMovie(uuid)
@@ -76,5 +103,9 @@ class Repository @Inject constructor (private val moviesApiClient: MovieApiClien
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
+    }
+
+    fun getFavorites(): Flowable<List<Movie>> {
+        return roomDao.getFavorites(true)
     }
 }

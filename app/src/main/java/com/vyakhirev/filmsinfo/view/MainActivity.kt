@@ -10,19 +10,16 @@ import android.view.Gravity
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
-import com.vyakhirev.filmsinfo.viewmodel.factories.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.coordinatorLayout1
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
@@ -56,7 +53,6 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             openFilmDetailed(Movie(1, movieTitle!!, moviePoster!!, movieOverview!!))
         }
     }
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,13 +64,16 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         setupNavigation()
         setupNotification()
 
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(App.instance!!.moviesApiClient)
-        ).get(FilmListViewModel::class.java)
+//        val room = App.instance!!.movieDB.movieDao()
+//        val apiClient = App.instance!!.moviesApiClient
+//        var repo= Repository(apiClient,room)
+//        viewModel = ViewModelProvider(
+//            this,
+//            ViewModelFactory(repo)
+//
+//        ).get(FilmListViewModel::class.java)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.

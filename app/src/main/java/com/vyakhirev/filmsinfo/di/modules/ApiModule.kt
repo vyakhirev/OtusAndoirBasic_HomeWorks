@@ -1,4 +1,4 @@
-package com.vyakhirev.filmsinfo.di
+package com.vyakhirev.filmsinfo.di.modules
 
 import com.vyakhirev.filmsinfo.BuildConfig
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient

@@ -3,26 +3,25 @@ package com.vyakhirev.filmsinfo.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.vyakhirev.filmsinfo.App
-import com.vyakhirev.filmsinfo.di.AppModule
-import com.vyakhirev.filmsinfo.di.DaggerViewModelComponent
+import com.vyakhirev.filmsinfo.di.components.DaggerViewModelComponent
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.Repository
-import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel() {
+class FilmListViewModel @Inject constructor(private val repo: Repository) : ViewModel() {
 
     init {
         DaggerViewModelComponent.builder()
-            .appModule(AppModule(App.instance!!))
             .build()
             .inject(this)
     }
 
     private val disposable = CompositeDisposable()
+    var page = 1
+
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies
 
@@ -30,10 +29,6 @@ class FilmListViewModel(private val moviesApiClient: MovieApiClient) : ViewModel
 
     private val _isViewLoading = MutableLiveData<Boolean>()
     val isViewLoading: LiveData<Boolean> = _isViewLoading
-
-    private val room = App.instance!!.movieDB.movieDao()
-    private val repo = Repository(moviesApiClient, room)
-    var page = 1
 
     fun getMovies() {
         disposable.add(
