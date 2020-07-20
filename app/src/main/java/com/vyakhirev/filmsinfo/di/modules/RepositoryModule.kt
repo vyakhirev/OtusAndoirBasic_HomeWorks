@@ -12,8 +12,6 @@ open class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideMovieRepository(apiClient: MovieApiClient, movieDao: MovieDao): Repository = Repository(moviesApiClient = apiClient, roomDao = movieDao)
-
-//    @Provides
-//    fun providePrefs(app: Application): SharedPreferencesHelper= SharedPreferencesHelper(app)
+    fun provideMovieRepository(apiClient: MovieApiClient, movieDao: MovieDao): Repository =
+        Repository(moviesApiClient = apiClient, roomDao = movieDao)
 }

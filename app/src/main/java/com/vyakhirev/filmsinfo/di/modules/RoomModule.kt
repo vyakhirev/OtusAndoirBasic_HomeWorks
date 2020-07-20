@@ -9,10 +9,7 @@ import javax.inject.Singleton
 
 @Module
 open class RoomModule(mApplication: Application) {
-//    private val moviesDatabase: MoviesDatabase = Room
-//        .databaseBuilder(mApplication, MoviesDatabase::class.java, "moviesdatabase")
-//        .build()
-//    private val mApplication
+
     private val moviesDatabase: MoviesDatabase = MoviesDatabase.getDatabase(mApplication)
 
     @Singleton

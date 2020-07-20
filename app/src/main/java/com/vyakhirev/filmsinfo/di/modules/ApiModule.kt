@@ -5,6 +5,7 @@ import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import com.vyakhirev.filmsinfo.model.network.MovieApiInterface
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -50,11 +51,13 @@ open class ApiModule {
     }
 
     @Provides
+    @Singleton
     fun provideMovieApiService(): MovieApiInterface {
         return getRetrofit().create(MovieApiInterface::class.java)
     }
 
     @Provides
+    @Singleton
     open fun apiClient(): MovieApiClient {
         return MovieApiClient()
     }

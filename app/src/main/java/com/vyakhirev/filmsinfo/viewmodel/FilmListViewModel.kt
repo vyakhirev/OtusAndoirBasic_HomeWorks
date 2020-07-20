@@ -3,7 +3,6 @@ package com.vyakhirev.filmsinfo.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.vyakhirev.filmsinfo.di.components.DaggerViewModelComponent
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.Repository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,12 +11,6 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class FilmListViewModel @Inject constructor(private val repo: Repository) : ViewModel() {
-
-    init {
-        DaggerViewModelComponent.builder()
-            .build()
-            .inject(this)
-    }
 
     private val disposable = CompositeDisposable()
     var page = 1
