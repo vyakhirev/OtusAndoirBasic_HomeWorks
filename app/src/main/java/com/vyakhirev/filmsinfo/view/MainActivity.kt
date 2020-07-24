@@ -29,9 +29,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
-    init {
-    }
-
     @Inject
     lateinit var viewModel: FilmListViewModel
 
@@ -68,6 +65,7 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         if (savedInstanceState == null) {
             openFragment(ListMovieFragment())
         }
+
         DaggerAppComponent.builder()
             .prefsModule(PrefsModule(applicationContext))
             .appModule(AppModule(applicationContext))
