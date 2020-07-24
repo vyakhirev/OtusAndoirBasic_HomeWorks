@@ -1,9 +1,5 @@
 package com.vyakhirev.filmsinfo.model
 
-import com.vyakhirev.filmsinfo.App
-import com.vyakhirev.filmsinfo.di.components.DaggerAppComponent
-import com.vyakhirev.filmsinfo.di.modules.AppModule
-import com.vyakhirev.filmsinfo.di.modules.PrefsModule
 import com.vyakhirev.filmsinfo.model.db.MovieDao
 import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
@@ -19,14 +15,6 @@ class Repository @Inject constructor (
     private val roomDao: MovieDao,
     private val prefHelper: SharedPreferencesHelper
 ) {
-
-    init {
-        DaggerAppComponent.builder()
-            .prefsModule(PrefsModule(App.instance!!))
-            .appModule(AppModule(App.instance!!))
-            .build()
-            .inject(this)
-    }
 
     private var refreshTime = java.util.concurrent.TimeUnit.MINUTES.toMillis(5)
     private val disposable = CompositeDisposable()
@@ -70,7 +58,8 @@ class Repository @Inject constructor (
     }
 
     fun switchFavorite(uuid: Int) {
-        disposable.add(roomDao.getMovie(uuid)
+        disposable.add(
+            roomDao.getMovie(uuid)
             .flatMap {
                 it.isFavorite = !it.isFavorite
                 roomDao.updateMovie(it)
@@ -85,6 +74,7 @@ class Repository @Inject constructor (
     }
 
     fun filmIsViewed(uuid: Int) {
+        disposable.add(
         roomDao.getMovie(uuid)
             .flatMap {
                 it.isViewed = true
@@ -93,6 +83,7 @@ class Repository @Inject constructor (
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
+        )
     }
 
     fun getFavorites(): Flowable<List<Movie>> {

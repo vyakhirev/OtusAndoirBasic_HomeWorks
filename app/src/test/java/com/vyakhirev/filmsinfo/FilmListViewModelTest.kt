@@ -1,12 +1,12 @@
 package com.vyakhirev.filmsinfo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.vyakhirev.filmsinfo.di.DaggerViewModelComponent
+import com.vyakhirev.filmsinfo.di.components.DaggerAppComponent
 import com.vyakhirev.filmsinfo.di.modules.AppModule
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.MovieResponse
+import com.vyakhirev.filmsinfo.model.Repository
 import com.vyakhirev.filmsinfo.model.db.MovieDao
-import com.vyakhirev.filmsinfo.model.network.MovieApiClient
 import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
 import io.reactivex.Completable
@@ -35,17 +35,17 @@ class FilmListViewModelTest {
 
     private val application = Mockito.mock(App::class.java)
 
-    private var movieClient = Mockito.mock(MovieApiClient::class.java)
+    private var repository = Mockito.mock(Repository::class.java)
 
-    private var listViewModel = FilmListViewModel(movieClient)
+    private var listViewModel = FilmListViewModel(repository)
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        DaggerViewModelComponent.builder()
+        DaggerAppComponent.builder()
             .appModule(AppModule(application))
-            .apiModule(ApiModuleTest(movieClient))
+            .apiModule(ApiModuleTest(repository))
             .prefsModule(PrefsModuleTest(prefs))
             .build()
             .inject(listViewModel)
@@ -62,7 +62,7 @@ class FilmListViewModelTest {
     fun isViewLoading() {
         Mockito.`when`(prefs.getCacheDuration()).thenReturn("10")
         val testSingle = Single.error<MovieResponse>(Throwable())
-        Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
+        Mockito.`when`(repository.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
         listViewModel.getMovies()
         Assert.assertEquals(false, listViewModel.isViewLoading.value)
@@ -79,7 +79,7 @@ class FilmListViewModelTest {
 
         Mockito.`when`(prefs.getCacheDuration()).thenReturn("10")
 //        Mockito.`when`(listViewModel.storeLocally(movieslist)).thenReturn(testCompl)
-        Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
+        Mockito.`when`(repository.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
         listViewModel.getMovies()
         Assert.assertEquals(1, listViewModel.movies.value?.size)
@@ -91,7 +91,7 @@ class FilmListViewModelTest {
     fun getMovieError() {
         Mockito.`when`(prefs.getCacheDuration()).thenReturn("10")
         val testSingle = Single.error<MovieResponse>(Throwable())
-        Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
+        Mockito.`when`(repository.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
         listViewModel.getMovies()
         Assert.assertEquals(null, listViewModel.movies.value?.size)
@@ -105,7 +105,7 @@ class FilmListViewModelTest {
         val movieslist = listOf(movie)
         val movieResponce = MovieResponse(1, movieslist, 20, 1, null, "")
         val testSingle = Single.just(movieResponce)
-        Mockito.`when`(movieClient.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
+        Mockito.`when`(repository.getPopular(BuildConfig.TMDB_API_KEY, "ru", 1))
             .thenReturn(testSingle)
         Assert.assertEquals(20, movieResponce.totalResults)
     }

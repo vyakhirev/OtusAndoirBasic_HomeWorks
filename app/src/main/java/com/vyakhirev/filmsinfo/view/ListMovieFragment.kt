@@ -35,11 +35,10 @@ import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_list_movie.*
 
 class ListMovieFragment : Fragment() {
+
     private var listener: OnFilmClickListener? = null
     private var listenerMy: OnFilmClickListener? = null
     private lateinit var adapter: FilmsAdapter
-
-    private lateinit var viewModel: FilmListViewModel
 
     init {
         DaggerAppComponent.builder()
@@ -48,6 +47,9 @@ class ListMovieFragment : Fragment() {
             .build()
             .inject(this)
     }
+
+    @Inject
+    lateinit var viewModel: FilmListViewModel
 
     @Inject
     lateinit var repository: Repository
