@@ -9,13 +9,25 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.di.components.DaggerAppComponent
+import com.vyakhirev.filmsinfo.di.modules.AppModule
+import com.vyakhirev.filmsinfo.di.modules.PrefsModule
 import com.vyakhirev.filmsinfo.view.MainActivity
+import javax.inject.Inject
 
 class NotificationHelper(val context: Context) {
 
-    private val prefs = App.instance!!.prefHelper
+    init {
+        DaggerAppComponent.builder()
+            .prefsModule(PrefsModule(context))
+            .appModule(AppModule(context))
+            .build()
+            .inject(this)
+    }
+
+    @Inject
+    lateinit var prefs: SharedPreferencesHelper
 
     var movieUuid = prefs.getWatchLaterUuid()
     var movieTitle = prefs.getWatchLaterTitle()

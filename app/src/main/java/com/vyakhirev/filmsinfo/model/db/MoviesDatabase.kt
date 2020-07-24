@@ -19,13 +19,13 @@ companion object {
         if (tempInstance != null) {
             return tempInstance
         }
-            val instance = Room.databaseBuilder(
-                context.applicationContext,
-                MoviesDatabase::class.java,
-                "moviesdatabase"
-            ).build()
-            INSTANCE = instance
-            return instance
+        val instance = Room.databaseBuilder(
+            context.applicationContext,
+            MoviesDatabase::class.java,
+            "moviesdatabase"
+        ).build()
+        INSTANCE = instance
+        return instance
         }
     }
 }

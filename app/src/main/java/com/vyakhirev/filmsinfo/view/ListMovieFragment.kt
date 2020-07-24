@@ -21,7 +21,8 @@ import androidx.work.WorkManager
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.di.components.DaggerAppComponent
-import com.vyakhirev.filmsinfo.di.modules.RoomModule
+import com.vyakhirev.filmsinfo.di.modules.AppModule
+import com.vyakhirev.filmsinfo.di.modules.PrefsModule
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.Repository
 import com.vyakhirev.filmsinfo.util.MyWorker
@@ -42,7 +43,8 @@ class ListMovieFragment : Fragment() {
 
     init {
         DaggerAppComponent.builder()
-            .roomModule(RoomModule(App.instance!!))
+            .prefsModule(PrefsModule(App.instance!!))
+            .appModule(AppModule(App.instance!!))
             .build()
             .inject(this)
     }
@@ -54,8 +56,8 @@ class ListMovieFragment : Fragment() {
     lateinit var prefHelper: SharedPreferencesHelper
 
     interface OnFilmClickListener {
-        fun onFilmClick(ind: Int, detMovie: Movie) { }
-        fun onFavorClick(ind: Int) { }
+        fun onFilmClick(detMovie: Movie) { }
+        fun onFavorClick(movie: Movie) { }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,16 +95,14 @@ class ListMovieFragment : Fragment() {
             listOf(),
 
             listener = {
-                val detMovie = viewModel.movies.value?.get(it)
-                viewModel.filmIsViewed(detMovie!!.uuid)
-                adapter.notifyItemChanged(it)
-                listener?.onFilmClick(it, detMovie)
+                viewModel.filmIsViewed(it.uuid)
+                listener?.onFilmClick(it)
             },
 
             listenerMy = {
-                viewModel.switchFavorite(viewModel.movies.value!![it].uuid)
-                viewModel.movies.value!![it].isFavorite = !viewModel.movies.value!![it].isFavorite
-                adapter.notifyItemChanged(it)
+                viewModel.switchFavorite(it.uuid)
+                viewModel.movies.value!![it.uuid - 1].isFavorite = !viewModel.movies.value!![it.uuid-1].isFavorite
+                adapter.notifyItemChanged(it.uuid - 1)
                 listenerMy?.onFavorClick(it)
             },
 
@@ -110,13 +110,11 @@ class ListMovieFragment : Fragment() {
                 prefHelper.saveWatchLaterData("no")
                 dataPicker()
 
-                val movie = viewModel.movies.value!![it]
-
                 prefHelper.apply {
-                    saveWatchLaterUuid(movie.uuid)
-                    saveWatchLaterTitle(movie.title)
-                    saveWatchLaterPoster(movie.posterPath)
-                    saveWatchLaterOverview(movie.overview)
+                    saveWatchLaterUuid(it.uuid)
+                    saveWatchLaterTitle(it.title)
+                    saveWatchLaterPoster(it.posterPath)
+                    saveWatchLaterOverview(it.overview)
                 }
                 scheduleJob()
             })

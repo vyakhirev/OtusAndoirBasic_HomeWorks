@@ -11,6 +11,4 @@ data class MovieResponse(
     var totalPages: Int,
     val status: Int?,
     val msg: String = "Error!"
-) {
-    fun isSuccess(): Boolean = results.isNotEmpty()
-}
+)

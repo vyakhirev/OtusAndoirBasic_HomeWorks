@@ -15,9 +15,9 @@ import kotlinx.android.synthetic.main.movie_item.view.*
 class FilmsAdapter(
     private val context: Context,
     private var films: List<Movie>,
-    private val listener: ((ind: Int) -> Unit)?,
-    private val listenerMy: ((ind: Int) -> Unit)?,
-    private val listenerWl: ((ind: Int) -> Unit)?
+    val listener: ((movie: Movie) -> Unit)?,
+    val listenerMy: ((movie: Movie) -> Unit)?,
+    val listenerWl: ((movie: Movie) -> Unit)?
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -57,43 +57,35 @@ class FilmsAdapter(
             } else holder.itemView.visibility = View.VISIBLE
 
         if (holder is FilmsViewHolder) {
-            val film = films[position]
-            holder.setData(film, position)
-        }
-    }
-
-    inner class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
-    inner class FilmsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var currentPosition = 0
-
-        init {
-            itemView.posterImgView.setOnClickListener {
-                listener?.invoke(currentPosition)
+            holder.bind(films[position])
+            holder.itemView.posterImgView.setOnClickListener {
+                listener?.invoke(films[position])
             }
-            itemView.movieTitleTextView.setOnClickListener {
-                listener?.invoke(currentPosition)
+            holder.itemView.movieTitleTextView.setOnClickListener {
+                listener?.invoke(films[position])
             }
-            itemView.favoritesImgView.setOnClickListener {
-                listenerMy?.invoke(currentPosition)
+            holder.itemView.favoritesImgView.setOnClickListener {
+                listenerMy?.invoke(films[position])
             }
-            itemView.watchLaterImgView.setOnClickListener {
-                listenerWl?.invoke(currentPosition)
+            holder.itemView.watchLaterImgView.setOnClickListener {
+                listenerWl?.invoke(films[position])
             }
-        }
-
-        fun setData(film: Movie, pos: Int) {
-            itemView.movieTitleTextView.text = film.title
-
-            itemView.movieTitleTextView.setTextColor(if (films[pos].isViewed)
-                Color.BLUE else Color.GRAY)
-
-            itemView.posterImgView.loadImage(films[pos].posterPath)
-
-            itemView.favoritesImgView.setImageResource(if (films[pos].isFavorite)
-                R.drawable.ic_star_on_24dp else R.drawable.ic_star_off_36dp)
-
-            this.currentPosition = pos
         }
     }
 }
+
+    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    class FilmsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        fun bind(item: Movie) {
+            itemView.movieTitleTextView.text = item.title
+            itemView.posterImgView.loadImage(item.posterPath)
+
+            itemView.favoritesImgView.setImageResource(if (item.isFavorite)
+                R.drawable.ic_star_on_24dp else R.drawable.ic_star_off_36dp)
+
+            itemView.movieTitleTextView.setTextColor(if (item.isViewed)
+                Color.BLUE else Color.GRAY)
+        }
+    }

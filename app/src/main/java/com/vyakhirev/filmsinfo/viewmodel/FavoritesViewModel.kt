@@ -17,7 +17,7 @@ class FavoritesViewModel @Inject constructor(private val repo: Repository) : Vie
 
     private val disposable = CompositeDisposable()
 
-    fun loadFavorites() {
+    fun getFavorites() {
         disposable.add(
             repo.getFavorites()
                 .subscribeOn(Schedulers.io())

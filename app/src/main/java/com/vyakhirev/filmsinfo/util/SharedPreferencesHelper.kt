@@ -16,6 +16,7 @@ class SharedPreferencesHelper {
         private const val POSTER = "poster"
         private const val OVERVIEW = "overview"
         private const val CACHE_DURATION = "pref_cache_duration"
+
         private var prefs: SharedPreferences? = null
 
         @Volatile

@@ -10,19 +10,19 @@ import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.loadImage
 import kotlinx.android.synthetic.main.favorite_item.view.*
-import kotlinx.android.synthetic.main.movie_item.view.*
 
 class FavoritesAdapter(
     private val context: Context,
     private var favorMovieList: List<Movie>,
-    private val listener: ((ind: Int) -> Unit)?,
-    private val listenerDel: ((ind: Int) -> Unit)?
+    val listener: ((movie: Movie) -> Unit)?,
+    val listenerDel: ((movie: Movie) -> Unit)?
 ) :
-    RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
+    RecyclerView.Adapter<FavoritesViewHolder>() {
     fun update(data: List<Movie>) {
         favorMovieList = data
         notifyDataSetChanged()
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritesViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.favorite_item, parent, false)
         return FavoritesViewHolder(view)
@@ -31,33 +31,24 @@ class FavoritesAdapter(
     override fun getItemCount(): Int = favorMovieList.size
 
     override fun onBindViewHolder(holder: FavoritesViewHolder, position: Int) {
-        val film = favorMovieList[position]
-        holder.setData(film, position)
-    }
-
-    inner class FavoritesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var currentPosition = 0
-
-        init {
-            itemView.favTitleTV.setOnClickListener {
-                listener?.invoke(currentPosition)
-            }
-            itemView.favorPosterIV.setOnClickListener {
-                listener?.invoke(currentPosition)
-            }
-            itemView.deleteIV.setOnClickListener {
-                listenerDel?.invoke(currentPosition)
-            }
-        }
-
-        fun setData(film: Movie, pos: Int) {
-            this.currentPosition = pos
-
-            itemView.favTitleTV.text = film.title
-            itemView.favorPosterIV.loadImage(favorMovieList[pos].posterPath)
-
-            itemView.favTitleTV.setTextColor(if (favorMovieList[pos].isViewed)
+        holder.bind(favorMovieList[position])
+        holder.itemView.favTitleTV.setTextColor(if (favorMovieList[position].isViewed)
                 Color.BLUE else Color.GRAY)
+            holder.itemView.favTitleTV.setOnClickListener {
+                listener?.invoke(favorMovieList[position])
+            }
+        holder.itemView.favorPosterIV.setOnClickListener {
+            listener?.invoke(favorMovieList[position])
+        }
+        holder.itemView.deleteIV.setOnClickListener {
+            listenerDel?.invoke(favorMovieList[position])
         }
     }
+}
+class FavoritesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        fun bind(item: Movie) {
+            itemView.favTitleTV.text = item.title
+            itemView.favorPosterIV.loadImage(item.posterPath)
+        }
 }

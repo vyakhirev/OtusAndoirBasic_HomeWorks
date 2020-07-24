@@ -8,11 +8,24 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.vyakhirev.filmsinfo.App
+import com.vyakhirev.filmsinfo.di.components.DaggerAppComponent
+import com.vyakhirev.filmsinfo.di.modules.AppModule
+import com.vyakhirev.filmsinfo.di.modules.PrefsModule
+import javax.inject.Inject
 
 class MyWorker(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
 
-    private val prefHelper = App.instance!!.prefHelper
+    init {
+        DaggerAppComponent.builder()
+            .prefsModule(PrefsModule(appContext))
+            .appModule(AppModule(appContext))
+            .build()
+            .inject(this)
+    }
+
+    @Inject
+    lateinit var prefHelper: SharedPreferencesHelper
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun doWork(): Result {

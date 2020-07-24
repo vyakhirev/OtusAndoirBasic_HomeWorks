@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
 import com.vyakhirev.filmsinfo.di.components.DaggerAppComponent
-import com.vyakhirev.filmsinfo.di.modules.RoomModule
+import com.vyakhirev.filmsinfo.di.modules.AppModule
+import com.vyakhirev.filmsinfo.di.modules.PrefsModule
 import com.vyakhirev.filmsinfo.model.Movie
 import com.vyakhirev.filmsinfo.model.Repository
 import com.vyakhirev.filmsinfo.view.adapters.FavoritesAdapter
@@ -22,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_favorites_list.*
 
 class FavoritesListFragment : Fragment() {
     interface OnFavorClickListener {
-        fun onFavorToDetails(ind: Int, detMovie: Movie)
+        fun onFavorToDetails(detMovie: Movie)
     }
 
     private var listener: OnFavorClickListener? = null
@@ -32,7 +33,8 @@ class FavoritesListFragment : Fragment() {
 
     init {
         DaggerAppComponent.builder()
-            .roomModule(RoomModule(App.instance!!))
+            .prefsModule(PrefsModule(App.instance!!))
+            .appModule(AppModule(App.instance!!))
             .build()
             .inject(this)
     }
@@ -62,7 +64,7 @@ class FavoritesListFragment : Fragment() {
                 FavoritesViewModelFactory(repository)
             ).get(FavoritesViewModel::class.java)
 
-        favViewModel.loadFavorites()
+        favViewModel.getFavorites()
 
         favViewModel.favoritesLiveData.observe(viewLifecycleOwner, Observer {
             adapter.update(it)
@@ -75,17 +77,12 @@ class FavoritesListFragment : Fragment() {
             listOf(),
 
             listener = {
-                val detMovie = favViewModel.favoritesLiveData.value!![it]
-                favViewModel.filmIsViewed(detMovie.uuid)
-                adapter.notifyItemChanged(it)
-                listener?.onFavorToDetails(it, detMovie)
+                listener?.onFavorToDetails(it)
+                favViewModel.filmIsViewed(it.uuid)
             },
 
             listenerDel = {
-                favViewModel.switchFavorite(favViewModel.favoritesLiveData.value!![it].uuid)
-                favViewModel.favoritesLiveData.value!![it].isFavorite =
-                    !favViewModel.favoritesLiveData.value!![it].isFavorite
-                adapter.notifyItemRemoved(it)
+                favViewModel.switchFavorite(it.uuid)
             }
         )
 

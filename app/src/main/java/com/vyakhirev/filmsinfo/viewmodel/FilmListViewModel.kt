@@ -31,9 +31,10 @@ class FilmListViewModel @Inject constructor(private val repo: Repository) : View
             .subscribe({
                 _movies.value = it
                 _isViewLoading.value = false
+//                onMessageError.value="Internet connection is not available"
             }, {
                 _isViewLoading.value = false
-                onMessageError.postValue("Internet connection is not available")
+                onMessageError.value = "Internet connection is not available"
             })
         )
     }

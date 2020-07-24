@@ -16,30 +16,39 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.vyakhirev.filmsinfo.App
 import com.vyakhirev.filmsinfo.R
+import com.vyakhirev.filmsinfo.di.components.DaggerAppComponent
+import com.vyakhirev.filmsinfo.di.modules.AppModule
+import com.vyakhirev.filmsinfo.di.modules.PrefsModule
 import com.vyakhirev.filmsinfo.model.Movie
+import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
 import com.vyakhirev.filmsinfo.viewmodel.FilmListViewModel
-import kotlinx.android.synthetic.main.activity_main.coordinatorLayout1
+import javax.inject.Inject
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
     FavoritesListFragment.OnFavorClickListener {
 
+    init {
+    }
+
+    @Inject
     lateinit var viewModel: FilmListViewModel
 
-    private val prefs = App.instance!!.prefHelper
+    @Inject
+    lateinit var prefs: SharedPreferencesHelper
 
-    override fun onFilmClick(ind: Int, detMovie: Movie) {
-        super.onFilmClick(ind, detMovie)
+    override fun onFilmClick(detMovie: Movie) {
+        super.onFilmClick(detMovie)
         openFilmDetailed(detMovie)
     }
 
-    override fun onFavorClick(ind: Int) {
-        showSnack(ind)
-        super.onFavorClick(ind)
+    override fun onFavorClick(movie: Movie) {
+        showSnack(movie)
+        super.onFavorClick(movie)
     }
 
-    override fun onFavorToDetails(ind: Int, detMovie: Movie) {
+    override fun onFavorToDetails(detMovie: Movie) {
         openFilmDetailed(detMovie)
     }
 
@@ -59,19 +68,15 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
         if (savedInstanceState == null) {
             openFragment(ListMovieFragment())
         }
+        DaggerAppComponent.builder()
+            .prefsModule(PrefsModule(applicationContext))
+            .appModule(AppModule(applicationContext))
+            .build()
+            .inject(this)
 
         setContentView(R.layout.activity_main)
         setupNavigation()
         setupNotification()
-
-//        val room = App.instance!!.movieDB.movieDao()
-//        val apiClient = App.instance!!.moviesApiClient
-//        var repo= Repository(apiClient,room)
-//        viewModel = ViewModelProvider(
-//            this,
-//            ViewModelFactory(repo)
-//
-//        ).get(FilmListViewModel::class.java)
     }
 
     private fun setupNotification() {
@@ -120,11 +125,13 @@ class MainActivity : AppCompatActivity(), ListMovieFragment.OnFilmClickListener,
             false
         }
 
-    private fun showSnack(ind: Int) {
+    private fun showSnack(movie: Movie) {
         val snack =
             Snackbar.make(coordinatorLayout1, "Films added to favorites", Snackbar.LENGTH_SHORT)
 
-        snack.setAction("Undo") { viewModel.switchFavorite(ind + 1) }
+        snack.setAction("Undo") {
+            viewModel.switchFavorite(movie.uuid)
+        }
 
         snack.setActionTextColor(
             ContextCompat.getColor(

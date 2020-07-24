@@ -3,21 +3,28 @@ package com.vyakhirev.filmsinfo
 import android.app.Application
 import android.util.Log
 import androidx.work.Configuration
-import com.vyakhirev.filmsinfo.model.network.MovieApiClient
-import com.vyakhirev.filmsinfo.util.SharedPreferencesHelper
+import com.vyakhirev.filmsinfo.di.components.DaggerAppComponent
+import com.vyakhirev.filmsinfo.di.modules.AppModule
+import com.vyakhirev.filmsinfo.di.modules.PrefsModule
 
 class App : Application(), Configuration.Provider {
-
-    lateinit var moviesApiClient: MovieApiClient
+//    lateinit var moviesApiClient: MovieApiClient
 //    lateinit var movieDB: MoviesDatabase
-    lateinit var prefHelper: SharedPreferencesHelper
-
+//    lateinit var prefHelper: SharedPreferencesHelper
+init {
+}
     override fun onCreate() {
         super.onCreate()
+        DaggerAppComponent.builder()
+            .prefsModule(PrefsModule(this))
+            .appModule(AppModule(this))
+            .build()
+            .inject(this)
+//
         instance = this
-        moviesApiClient = MovieApiClient()
+//        moviesApiClient = MovieApiClient()
 //        initRoom()
-        initSharePref()
+//        initSharePref()
 //        initFcm()
     }
 
@@ -38,9 +45,9 @@ class App : Application(), Configuration.Provider {
 //            })
 //    }
 
-    private fun initSharePref() {
-        prefHelper = SharedPreferencesHelper.invoke(this)
-    }
+//    private fun initSharePref() {
+//        prefHelper = SharedPreferencesHelper.invoke(this)
+//    }
 
 //    private fun initRoom() {
 //        movieDB = MoviesDatabase.getDatabase(this)
